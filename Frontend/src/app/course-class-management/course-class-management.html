@@ -1,0 +1,72 @@
+<div class="container mt-5">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="text-success fw-bold">QUẢN LÝ LỚP HỌC PHẦN</h2>
+    <button class="btn btn-success shadow" (click)="openForm()">+ Mở lớp mới</button>
+  </div>
+
+  <div class="card shadow border-0">
+    <table class="table table-hover align-middle mb-0">
+      <thead class="table-dark">
+        <tr>
+          <th>Mã lớp</th>
+          <th>Môn học</th>
+          <th>Giảng viên</th>
+          <th>Học kỳ</th>
+          <th class="text-center">Thao tác</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let c of courseClasses; let i = index">
+          <td><strong>{{c.code}}</strong></td>
+          <td>{{c.subject}}</td>
+          <td>{{c.lecturer}}</td>
+          <td>{{c.semester}}</td>
+          <td class="text-center">
+            <button class="btn btn-outline-danger btn-sm" (click)="courseClasses.splice(i,1)">Xóa</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- MODAL FORM -->
+  <div class="modal-backdrop fade show" *ngIf="isShowingForm"></div>
+  <div class="modal fade show d-block" *ngIf="isShowingForm">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content shadow-lg border-0">
+        <div class="modal-header bg-primary text-white">
+          <h5 class="modal-title">TẠO LỚP HỌC PHẦN MỚI</h5>
+          <button type="button" class="btn-close btn-close-white" (click)="closeForm()"></button>
+        </div>
+        <div class="modal-body p-4">
+          <div class="mb-3">
+            <label class="fw-bold">Mã lớp</label>
+            <input type="text" [(ngModel)]="newClass.code" name="cCode" class="form-control">
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Môn học</label>
+            <select [(ngModel)]="newClass.subjectId" name="cSub" class="form-select">
+              <option *ngFor="let s of subjects" [value]="s.id">{{s.name}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Giảng viên</label>
+            <select [(ngModel)]="newClass.lecturerId" name="cLec" class="form-select">
+              <option *ngFor="let l of lecturers" [value]="l.id">{{l.name}}</option>
+            </select>
+          </div>
+          <div class="mb-3">
+            <label class="fw-bold">Học kỳ</label>
+            <select [(ngModel)]="newClass.semester" name="cSem" class="form-select">
+              <option *ngFor="let sem of semesters" [value]="sem">{{sem}}</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeForm()">Hủy</button>
+          <button class="btn btn-primary" (click)="saveClass()">Lưu Lớp Học</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

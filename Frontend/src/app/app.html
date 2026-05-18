@@ -1,0 +1,46 @@
+<!-- THANH NAVBAR (MENU CHÍNH) -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold text-warning" href="#">🎓 STUDENT SYSTEM</a>
+    
+    <div class="navbar-nav ms-auto">
+      <!-- Nút chuyển sang trang Quản lý Môn học -->
+      <button 
+        class="nav-link btn btn-link border-0 px-4 me-2" 
+        [class.active]="currentTab === 'subject'"
+        [class.fw-bold]="currentTab === 'subject'"
+        (click)="switchTab('subject')">
+        📚 Quản lý Môn học
+      </button>
+
+      <!-- Nút chuyển sang trang Quản lý Lớp học phần -->
+      <button 
+        class="nav-link btn btn-link border-0 px-4" 
+        [class.active]="currentTab === 'class'"
+        [class.fw-bold]="currentTab === 'class'"
+        (click)="switchTab('class')">
+        🏫 Quản lý Lớp học phần
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- NỘI DUNG HIỂN THỊ CHI TIẾT -->
+<div class="container mt-2">
+  
+  <!-- Hiển thị trang Môn học nếu currentTab là 'subject' -->
+  <div *ngIf="currentTab === 'subject'">
+    <app-subject-management></app-subject-management>
+  </div>
+
+  <!-- Hiển thị trang Lớp học nếu currentTab là 'class' -->
+  <div *ngIf="currentTab === 'class'">
+    <app-course-class-management></app-course-class-management>
+  </div>
+
+</div>
+
+<!-- FOOTER TRANG WEB -->
+<footer class="text-center text-muted mt-5 py-4 border-top">
+  <small>© 2024 - Dự án Quản lý sinh viên - Member 2 (Yến)</small>
+</footer>
