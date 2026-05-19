@@ -1,0 +1,7 @@
+.hover-text {
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+.hover-text:hover {
+  color: #ffffff !important;
+}

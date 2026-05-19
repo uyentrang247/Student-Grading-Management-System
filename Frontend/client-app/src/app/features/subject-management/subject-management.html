@@ -1,0 +1,60 @@
+<div class="container mt-4">
+  <div class="d-flex justify-content-between mb-3 align-items-center">
+    <h3>📚 QUẢN LÝ MÔN HỌC</h3>
+    <button class="btn btn-success" (click)="openForm()">+ Thêm môn mới</button>
+  </div>
+  <table class="table table-bordered shadow-sm">
+   <thead class="table-dark">
+  <tr>
+    <th>Mã môn</th>
+    <th>Tên môn</th>
+    <th>Tín chỉ</th>
+    <th>Trọng số</th>
+    <th>Thao tác</th>
+  </tr>
+</thead>
+ <tbody>
+     <tr *ngFor="let s of subjects; let i = index">
+
+  <td>{{s.code}}</td>
+  <td>{{s.name}}</td>
+  <td>{{s.credits}}</td>
+  <td>{{s.pw}}% - {{s.fw}}%</td>
+
+  <td>
+   <button class="btn btn-warning btn-sm me-2"
+        (click)="editSubject(s, i)">
+
+  Sửa
+
+</button>
+
+    <button class="btn btn-danger btn-sm"
+            (click)="subjects.splice(i,1)">
+      Xóa
+    </button>
+  </td>
+
+</tr>
+    </tbody>
+  </table>
+
+  <!-- Form Modal lơ lửng -->
+  <div class="modal d-block" *ngIf="isShowingForm" style="background: rgba(0,0,0,0.5)">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header bg-primary text-white"><h5>Nhập môn học</h5></div>
+        <div class="modal-body">
+          <input [(ngModel)]="newSubject.code" name="code" placeholder="Mã môn" class="form-control mb-2">
+          <input [(ngModel)]="newSubject.name" name="name" placeholder="Tên môn" class="form-control mb-2">
+          <input type="number" [(ngModel)]="newSubject.pw" name="pw" placeholder="% Quá trình" class="form-control mb-2">
+          <input type="number" [(ngModel)]="newSubject.fw" name="fw" placeholder="% Cuối kỳ" class="form-control mb-2">
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" (click)="closeForm()">Đóng</button>
+          <button class="btn btn-primary" (click)="saveSubject()">Lưu</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
