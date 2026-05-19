@@ -1,0 +1,29 @@
+<h2>Bảng Điểm Sinh Viên</h2>
+
+<input type="text" placeholder="Tìm MSSV hoặc tên..." [(ngModel)]="searchText" />
+
+<table>
+  <thead>
+    <tr>
+      <th>MSSV</th>
+      <th>Họ tên</th>
+      <th>QT</th>
+      <th>Thi</th>
+      <th>Tổng</th>
+      <th>Điểm chữ</th>
+      <th>Hệ 4</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr *ngFor="let s of students">
+      <td>{{ s.studentId }}</td>
+      <td>{{ s.fullName }}</td>
+      <td>{{ s.processScore }}</td>
+      <td>{{ s.finalExamScore }}</td>
+      <td>{{ s.total10 }}</td>
+      <td>{{ s.letterGrade }}</td>
+      <td>{{ s.gpa4 }}</td>
+    </tr>
+  </tbody>
+</table>

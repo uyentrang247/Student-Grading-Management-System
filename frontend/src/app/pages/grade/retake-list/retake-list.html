@@ -1,0 +1,17 @@
+<h2>Danh Sách Học Lại</h2>
+
+<table>
+  <tr>
+    <th>MSSV</th>
+    <th>Họ tên</th>
+    <th>Điểm</th>
+    <th>Điểm chữ</th>
+  </tr>
+
+  <tr *ngFor="let s of students">
+    <td>{{ s.studentId }}</td>
+    <td>{{ s.fullName }}</td>
+    <td>{{ s.total10 }}</td>
+    <td>{{ s.letterGrade }}</td>
+  </tr>
+</table>
