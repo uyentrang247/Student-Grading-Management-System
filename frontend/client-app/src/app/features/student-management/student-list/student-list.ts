@@ -46,4 +46,8 @@ export class StudentListComponent implements OnInit {
      (s.lastName + ' ' + s.firstName).toLowerCase().includes(tuKhoa)
     );
   }
+  onAddClick(): void {}
+  onEditClick(student: Student): void {}
+  xoaSinhVien(student: Student): void {}
+  getTenLop(homeroomClassId: number): any {}
 }

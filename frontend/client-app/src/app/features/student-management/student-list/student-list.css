@@ -1,0 +1,164 @@
+/* Tổng quan Card */
+.student-card {
+  border-radius: 8px;
+  overflow: hidden;
+  background-color: #ffffff;
+}
+
+/* Định dạng Header theo tông màu của Thanh Topbar EduGrade */
+.qnu-card-header {
+  background-color: #172b4d !important; /* Màu xanh Navy đặc trưng */
+  border-bottom: none;
+}
+
+.header-title {
+  font-size: 16px;
+  letter-spacing: 0.5px;
+}
+
+/* Ô nhập ô tìm kiếm */
+.search-input {
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #ffffff !important;
+  border-radius: 4px;
+}
+
+.search-input::placeholder {
+  color: rgba(255, 255, 255, 0.5);
+}
+
+.search-input:focus {
+  background-color: #ffffff;
+  color: #333333 !important;
+  border-color: #f39c12;
+  box-shadow: none;
+}
+
+/* Các loại nút bấm đồng bộ màu sắc */
+.btn-qnu-primary {
+  background-color: #f39c12; /* Màu cam nhạt nhấn giống icon sidebar */
+  border: none;
+  color: #ffffff;
+  font-weight: 500;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.btn-qnu-primary:hover {
+  background-color: #e67e22;
+  color: #ffffff;
+}
+
+.btn-create-student {
+  background-color: #2be68e; /* Màu xanh lục tươi sáng phù hợp hành động tạo mới */
+  border: none;
+  color: #172b4d;
+  border-radius: 4px;
+  transition: all 0.2s;
+}
+
+.btn-create-student:hover {
+  background-color: #22c67b;
+  transform: translateY(-1px);
+}
+
+/* Cấu trúc Bảng dữ liệu phẳng (Flat Table) */
+.qnu-table {
+  font-size: 14px;
+}
+
+.qnu-table thead th {
+  background-color: #f8f9fe;
+  color: #8898aa;
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 12px;
+  letter-spacing: 0.5px;
+  padding: 12px 15px;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.qnu-table tbody td {
+  padding: 12px 15px;
+  color: #525f7f;
+  border-bottom: 1px solid #e9ecef;
+}
+
+.student-code-text {
+  color: #11cdef; /* Màu xanh nổi bật cho mã sinh viên */
+}
+
+/* Định dạng Badge Giới tính tinh tế */
+.badge-gender {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 500;
+  display: inline-block;
+}
+
+.gender-male {
+  background-color: #e8f4fd;
+  color: #1d9bf0;
+}
+
+.gender-female {
+  background-color: #fde8f0;
+  color: #e91e63;
+}
+
+/* Badge hiển thị Tên lớp học */
+.badge-class {
+  background-color: #f0f3f6;
+  color: #4a5568;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-weight: 500;
+  font-size: 13px;
+}
+
+/* Thiết kế lại nhóm Nút hành động thanh mảnh hơn */
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-action {
+  padding: 4px 12px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.btn-edit {
+  background-color: #ffffff;
+  border-color: #dcdfe6;
+  color: #606266;
+}
+
+.btn-edit:hover {
+  background-color: #fdf6ec;
+  border-color: #f5dab1;
+  color: #e6a23c;
+}
+
+.btn-delete {
+  background-color: #ffffff;
+  border-color: #dcdfe6;
+  color: #606266;
+}
+
+.btn-delete:hover {
+  background-color: #fef0f0;
+  border-color: #fde2e2;
+  color: #f56c6c;
+}
+
+.empty-row {
+  background-color: #fafafa;
+}

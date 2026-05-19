@@ -1,45 +1,68 @@
-<div class="container mt-4">
-  <div class="card shadow-sm">
-    <div class="card-header bg-dark text-white d-flex justify-content-between align-items-center py-3">
-      <h5 class="mb-0 fw-bold">DANH SÁCH SINH VIÊN </h5>
+<div class="container-fluid px-4 mt-4">
+  <div class="card student-card shadow-sm border-0">
+    
+    <div class="card-header qnu-card-header d-flex justify-content-between align-items-center py-3">
+      <div class="d-flex align-items-center gap-3">
+        <h5 class="mb-0 text-white fw-bold header-title">DANH SÁCH SINH VIÊN</h5>
+        <button class="btn btn-create-student btn-sm fw-bold px-3" (click)="onAddClick()">
+          + Tạo Sinh Viên Mới
+        </button>
+      </div>
       
-      <div class="w-25">
-        <input type="text" class="form-control form-control-sm" 
+      <div class="search-box-container d-flex gap-2">
+        <input type="text" class="form-control form-control-sm search-input" 
                placeholder="Tìm theo MSSV hoặc Tên..." 
-               name="search" #search>
-        <button class="btn btn-sm btn-primary mt-2 w-100" (click)="timKiemNhanh(search.value)">Tìm Kiếm Nhanh</button>
+               name="search" #search (keyup.enter)="timKiemNhanh(search.value)">
+        <button class="btn btn-sm btn-qnu-primary px-3" (click)="timKiemNhanh(search.value)">Tìm Kiếm</button>
       </div>
     </div>
     
-    <div class="card-body p-0">
-      <table class="table table-bordered table-striped table-hover mb-0">
-        <thead class="table-light">
+    <div class="card-body p-0 table-responsive">
+      <table class="table qnu-table table-hover align-middle mb-0">
+        <thead>
           <tr>
-            <th style="width: 60px;">STT</th>
+            <th style="width: 60px;" class="text-center">STT</th>
             <th>Mã Số Sinh Viên</th>
             <th>Họ và Tên Lót</th>
             <th>Tên</th>
-            <th>Giới Tính</th>
+            <th style="width: 100px;" class="text-center">Giới Tính</th>
             <th>Ngày Sinh</th>
-            <th>Mã Lớp SH</th>
-            <th>Email</th>
+            <th>Lớp Sinh Hoạt</th> <th>Email</th>
+            <th style="width: 160px;" class="text-center">Hành động</th>
           </tr>
         </thead>
         <tbody>
           @for (sv of filteredStudents; track sv.studentId) {
             <tr>
-              <td>{{ $index + 1 }}</td>
-              <td class="fw-bold text-primary">{{ sv.studentCode }}</td>
+              <td class="text-center text-muted">{{ $index + 1 }}</td>
+              <td class="fw-bold student-code-text">{{ sv.studentCode }}</td>
               <td>{{ sv.lastName }}</td>
-              <td>{{ sv.firstName }}</td>
-              <td>{{ sv.gender }}</td>
+              <td class="fw-bold text-dark">{{ sv.firstName }}</td>
+              <td class="text-center">
+                <span class="badge-gender" [ngClass]="sv.gender === 'Nam' ? 'gender-male' : 'gender-female'">
+                  {{ sv.gender }}
+                </span>
+              </td>
               <td>{{ sv.dateOfBirth | date:'dd/MM/yyyy' }}</td>
-              <td><span class="badge bg-secondary">Lớp ID: {{ sv.homeroomClassId }}</span></td>
-              <td>{{ sv.email }}</td>
+              <td><span class="badge-class">{{ getTenLop(sv.homeroomClassId) }}</span></td>
+              <td class="text-muted text-truncate" style="max-width: 200px;">{{ sv.email }}</td>
+              <td class="text-center">
+                <div class="action-buttons">
+                  <button class="btn-action btn-edit" (click)="onEditClick(sv)" title="Sửa thông tin">
+                    Sửa
+                  </button>
+                  <button class="btn-action btn-delete" (click)="xoaSinhVien(sv)" title="Xóa sinh viên">
+                    Xóa
+                  </button>
+                </div>
+              </td>
             </tr>
           } @empty {
             <tr>
-              <td colspan="7" class="text-center text-muted py-4">Không tìm thấy sinh viên nào phù hợp!</td>
+              <td colspan="9" class="text-center text-muted py-5 empty-row">
+                <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
+                Không tìm thấy sinh viên nào phù hợp trong hệ thống!
+              </td>
             </tr>
           }
         </tbody>
@@ -47,3 +70,6 @@
     </div>
   </div>
 </div>
+
+<!-- <app-student-add-modal [(isVisible)]="isAddModalOpen" (onSaveSuccess)="layDanhSachSinhVien()"></app-student-add-modal>
+<app-student-edit-modal [(isVisible)]="isEditModalOpen" [selectedStudent]="studentToEdit" (onSaveSuccess)="layDanhSachSinhVien()"></app-student-edit-modal> -->
