@@ -1,0 +1,82 @@
+<div class="container-fluid">
+
+  <div class="card">
+
+    <div class="card-header">
+      <h3>Thêm môn học</h3>
+    </div>
+
+    <div class="card-body">
+
+      <div class="mb-3">
+
+        <label>Mã môn học</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="subject.subjectCode"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Tên môn học</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="subject.subjectName"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Số tín chỉ</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="subject.credits"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Trọng số quá trình</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="subject.processWeight"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Trọng số cuối kỳ</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="subject.finalWeight"
+        />
+
+      </div>
+
+      <button
+        class="btn btn-primary"
+        (click)="saveSubject()"
+      >
+        Lưu môn học
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
