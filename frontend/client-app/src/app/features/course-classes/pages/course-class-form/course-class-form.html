@@ -1,0 +1,94 @@
+<div class="container-fluid">
+
+  <div class="card">
+
+    <div class="card-header">
+      <h3>Thêm lớp học phần</h3>
+    </div>
+
+    <div class="card-body">
+
+      <div class="mb-3">
+
+        <label>Mã lớp học phần</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="courseClass.classCode"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Tên môn học</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="courseClass.subjectName"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Giảng viên</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="courseClass.lecturerName"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Học kỳ</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="courseClass.semester"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Năm học</label>
+
+        <input
+          type="text"
+          class="form-control"
+          [(ngModel)]="courseClass.academicYear"
+        />
+
+      </div>
+
+      <div class="mb-3">
+
+        <label>Sĩ số tối đa</label>
+
+        <input
+          type="number"
+          class="form-control"
+          [(ngModel)]="courseClass.maxStudents"
+        />
+
+      </div>
+
+      <button
+        class="btn btn-primary"
+        (click)="saveCourseClass()"
+      >
+        Lưu lớp học phần
+      </button>
+
+    </div>
+
+  </div>
+
+</div>

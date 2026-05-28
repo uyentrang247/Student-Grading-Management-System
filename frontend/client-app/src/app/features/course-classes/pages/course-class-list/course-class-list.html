@@ -1,0 +1,72 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+
+    <h2>Lớp học phần</h2>
+
+    <a
+      routerLink="/course-classes/create"
+      class="btn btn-primary">
+
+      Thêm lớp học phần
+    </a>
+
+  </div>
+
+  <table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+
+      <tr>
+        <th>Mã lớp</th>
+        <th>Môn học</th>
+        <th>Giảng viên</th>
+        <th>Học kỳ</th>
+        <th>Năm học</th>
+        <th>Sĩ số tối đa</th>
+        <th width="180">Thao tác</th>
+      </tr>
+
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let courseClass of courseClasses">
+
+        <td>{{ courseClass.classCode }}</td>
+
+        <td>{{ courseClass.subjectName }}</td>
+
+        <td>{{ courseClass.lecturerName }}</td>
+
+        <td>{{ courseClass.semester }}</td>
+
+        <td>{{ courseClass.academicYear }}</td>
+
+        <td>{{ courseClass.maxStudents }}</td>
+
+        <td>
+
+         <a
+  class="btn btn-warning btn-sm me-2"
+  [routerLink]="['/course-classes/edit', courseClass.id]">
+
+  Sửa
+</a>
+
+          <button
+            class="btn btn-danger btn-sm"
+            (click)="deleteCourseClass(courseClass.id!)">
+
+            Xóa
+          </button>
+
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
