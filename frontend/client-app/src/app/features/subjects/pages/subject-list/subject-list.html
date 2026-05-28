@@ -1,0 +1,60 @@
+<div class="container-fluid">
+
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>Quản lý Môn học</h2>
+
+    <a routerLink="/subjects/create" class="btn btn-primary">
+  Thêm môn học
+</a>
+  </div>
+
+  <table class="table table-bordered table-hover">
+
+    <thead class="table-dark">
+      <tr>
+        <th>Mã môn</th>
+        <th>Tên môn</th>
+        <th>Số tín chỉ</th>
+        <th>Quá trình</th>
+        <th>Cuối kỳ</th>
+        <th>Thao tác</th>
+      </tr>
+    </thead>
+
+    <tbody>
+
+      <tr *ngFor="let subject of subjects">
+
+        <td>{{ subject.subjectCode }}</td>
+
+        <td>{{ subject.subjectName }}</td>
+
+        <td>{{ subject.credits }}</td>
+
+        <td>{{ subject.processWeight }}%</td>
+
+        <td>{{ subject.finalWeight }}%</td>
+
+        <td>
+          <a
+  class="btn btn-warning btn-sm me-2"
+  [routerLink]="['/subjects/edit', subject.id]"
+>
+  Sửa
+</a>
+
+          <button
+  class="btn btn-danger btn-sm"
+  (click)="deleteSubject(subject.id!)"
+>
+  Xóa
+</button>
+        </td>
+
+      </tr>
+
+    </tbody>
+
+  </table>
+
+</div>
