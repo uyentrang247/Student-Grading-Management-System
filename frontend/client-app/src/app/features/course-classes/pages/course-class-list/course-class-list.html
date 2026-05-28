@@ -1,3 +1,14 @@
+<div class="row mb-3">
+  <div class="col-md-4">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Tìm theo mã lớp, môn học, giảng viên..."
+      [(ngModel)]="searchKeyword"
+      (input)="filterCourseClasses()"
+    />
+  </div>
+</div>
 <div class="container-fluid">
 
   <div class="d-flex justify-content-between align-items-center mb-4">
