@@ -7,26 +7,30 @@ import { Subject } from '../models/subject.model';
 export class SubjectService {
 
   private subjects: Subject[] = [
-  {
-    id: 1,
-    subjectCode: 'WEB101',
-    subjectName: 'Công nghệ Web',
-    credits: 3,
-    processWeight: 40,
-    finalWeight: 60
-  },
-  {
-    id: 2,
-    subjectCode: 'JAVA102',
-    subjectName: 'Lập trình Java',
-    credits: 4,
-    processWeight: 30,
-    finalWeight: 70
-  }
-];
+    {
+      id: 1,
+      subjectCode: 'WEB101',
+      subjectName: 'Công nghệ Web',
+      credits: 3,
+      processWeight: 40,
+      finalWeight: 60
+    },
+    {
+      id: 2,
+      subjectCode: 'JAVA102',
+      subjectName: 'Lập trình Java',
+      credits: 4,
+      processWeight: 30,
+      finalWeight: 70
+    }
+  ];
 
   getSubjects(): Subject[] {
     return this.subjects;
+  }
+
+  getSubjectById(id: number): Subject | undefined {
+    return this.subjects.find(subject => subject.id === id);
   }
 
   addSubject(subject: Subject): void {

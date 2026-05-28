@@ -15,6 +15,11 @@ export const routes: Routes = [
   component: SubjectForm
 },
 
+{
+  path: 'subjects/edit/:id',
+  component: SubjectForm
+},
+
   {
   path: 'subjects',
   component: SubjectList
