@@ -7,6 +7,7 @@ import { CourseClassList } from './features/course-classes/course-class-list/cou
 import { CourseClassForm } from './features/course-classes/course-class-form/course-class-form';
 import { SubjectList } from './features/subjects/subject-list/subject-list';
 import { SubjectForm } from './features/subjects/subject-form/subject-form';
+import { GradeEntryComponent } from './features/grade-management/grade-entry/grade-entry';
 
 export const routes: Routes = [
   
@@ -50,5 +51,9 @@ export const routes: Routes = [
   {
     path: 'subjects/edit/:id',
     component: SubjectForm
-  }
+  },
+  {
+  path: 'grades',
+  component: GradeEntryComponent
+}
 ];
