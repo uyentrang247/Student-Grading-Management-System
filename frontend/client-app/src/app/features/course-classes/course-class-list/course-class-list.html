@@ -1,83 +1,99 @@
-<div class="row mb-3">
-  <div class="col-md-4">
-    <input
-      type="text"
-      class="form-control"
-      placeholder="Tìm theo mã lớp, môn học, giảng viên..."
-      [(ngModel)]="searchKeyword"
-      (input)="filterCourseClasses()"
-    />
-  </div>
-</div>
-<div class="container-fluid">
+<div class="card module-card shadow-sm">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
+  <div class="card-header qnu-card-header d-flex justify-content-between align-items-center">
 
-    <h2>Lớp học phần</h2>
+    <h5 class="header-title mb-0">
+      DANH SÁCH LỚP HỌC PHẦN
+    </h5>
 
     <a
       routerLink="/course-classes/create"
-      class="btn btn-primary">
+      class="btn btn-create">
 
-      Thêm lớp học phần
+      + Thêm lớp học phần
+
     </a>
 
   </div>
 
-  <table class="table table-bordered table-hover">
+  <div class="card-body p-3 border-bottom">
 
-    <thead class="table-dark">
+    <input
+      type="text"
+      class="form-control search-box"
+      placeholder="Tìm theo mã lớp, môn học, giảng viên..."
+      [(ngModel)]="searchKeyword"
+      (input)="filterCourseClasses()"
+    />
 
-      <tr>
-        <th>Mã lớp</th>
-        <th>Môn học</th>
-        <th>Giảng viên</th>
-        <th>Học kỳ</th>
-        <th>Năm học</th>
-        <th>Sĩ số tối đa</th>
-        <th width="180">Thao tác</th>
-      </tr>
+  </div>
 
-    </thead>
+  <div class="card-body p-0">
 
-    <tbody>
+    <table class="table qnu-table table-hover mb-0">
 
-      <tr *ngFor="let courseClass of courseClasses">
+      <thead>
 
-        <td>{{ courseClass.classCode }}</td>
+        <tr>
+          <th>Mã lớp</th>
+          <th>Môn học</th>
+          <th>Giảng viên</th>
+          <th>Học kỳ</th>
+          <th>Năm học</th>
+          <th>Sĩ số</th>
+          <th width="160">Thao tác</th>
+        </tr>
 
-        <td>{{ courseClass.subjectName }}</td>
+      </thead>
 
-        <td>{{ courseClass.lecturerName }}</td>
+      <tbody>
 
-        <td>{{ courseClass.semester }}</td>
+        <tr *ngFor="let courseClass of courseClasses">
 
-        <td>{{ courseClass.academicYear }}</td>
+          <td class="code-text">
+            {{ courseClass.classCode }}
+          </td>
 
-        <td>{{ courseClass.maxStudents }}</td>
+          <td>{{ courseClass.subjectName }}</td>
 
-        <td>
+          <td>{{ courseClass.lecturerName }}</td>
 
-         <a
-  class="btn btn-warning btn-sm me-2"
-  [routerLink]="['/course-classes/edit', courseClass.id]">
+          <td>{{ courseClass.semester }}</td>
 
-  Sửa
-</a>
+          <td>{{ courseClass.academicYear }}</td>
 
-          <button
-            class="btn btn-danger btn-sm"
-            (click)="deleteCourseClass(courseClass.id!)">
+          <td>{{ courseClass.maxStudents }}</td>
 
-            Xóa
-          </button>
+          <td>
 
-        </td>
+            <div class="action-buttons">
 
-      </tr>
+              <a
+                class="btn-action btn-edit text-decoration-none"
+                [routerLink]="['/course-classes/edit', courseClass.id]">
 
-    </tbody>
+                Sửa
 
-  </table>
+              </a>
+
+              <button
+                class="btn-action btn-delete"
+                (click)="deleteCourseClass(courseClass.id!)">
+
+                Xóa
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
 
 </div>

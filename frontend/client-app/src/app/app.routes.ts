@@ -30,7 +30,11 @@ export const routes: Routes = [
   component: CourseClassList
 },
 {
-  path: 'course-classes/new',
+  path: 'course-classes/create',
+  component: CourseClassForm
+},
+{
+  path: 'course-classes/edit/:id',
   component: CourseClassForm
 },
 {

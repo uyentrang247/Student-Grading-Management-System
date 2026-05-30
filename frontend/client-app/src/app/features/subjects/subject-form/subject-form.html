@@ -1,79 +1,112 @@
-<div class="container-fluid">
+<div class="card module-card shadow-sm">
 
-  <div class="card">
+  <div class="card-header qnu-card-header">
 
-    <div class="card-header">
-      <h3>Thêm môn học</h3>
-    </div>
+    <h5 class="form-title mb-0">
+      THÔNG TIN MÔN HỌC
+    </h5>
 
-    <div class="card-body">
+  </div>
 
-      <div class="mb-3">
+  <div class="card-body">
 
-        <label>Mã môn học</label>
+    <div class="row">
+
+      <div class="col-md-6 mb-3">
+
+        <label class="form-label">
+          Mã môn học
+        </label>
 
         <input
           type="text"
-          class="form-control"
+          class="form-control qnu-input"
+          placeholder="VD: WEB101"
           [(ngModel)]="subject.subjectCode"
         />
 
       </div>
 
-      <div class="mb-3">
+      <div class="col-md-6 mb-3">
 
-        <label>Tên môn học</label>
+        <label class="form-label">
+          Tên môn học
+        </label>
 
         <input
           type="text"
-          class="form-control"
+          class="form-control qnu-input"
+          placeholder="VD: Công nghệ Web"
           [(ngModel)]="subject.subjectName"
         />
 
       </div>
 
-      <div class="mb-3">
+    </div>
 
-        <label>Số tín chỉ</label>
+    <div class="row">
+
+      <div class="col-md-4 mb-3">
+
+        <label class="form-label">
+          Số tín chỉ
+        </label>
 
         <input
           type="number"
-          class="form-control"
+          class="form-control qnu-input"
           [(ngModel)]="subject.credits"
         />
 
       </div>
 
-      <div class="mb-3">
+      <div class="col-md-4 mb-3">
 
-        <label>Trọng số quá trình</label>
+        <label class="form-label">
+          Trọng số quá trình (%)
+        </label>
 
         <input
           type="number"
-          class="form-control"
+          class="form-control qnu-input"
           [(ngModel)]="subject.processWeight"
         />
 
       </div>
 
-      <div class="mb-3">
+      <div class="col-md-4 mb-3">
 
-        <label>Trọng số cuối kỳ</label>
+        <label class="form-label">
+          Trọng số cuối kỳ (%)
+        </label>
 
         <input
           type="number"
-          class="form-control"
+          class="form-control qnu-input"
           [(ngModel)]="subject.finalWeight"
         />
 
       </div>
 
+    </div>
+
+    <div class="form-actions">
+
       <button
-        class="btn btn-primary"
-        (click)="saveSubject()"
-      >
+        class="btn-save"
+        (click)="saveSubject()">
+
         Lưu môn học
+
       </button>
+
+      <a
+        routerLink="/subjects"
+        class="btn-back text-decoration-none">
+
+        Quay lại
+
+      </a>
 
     </div>
 
