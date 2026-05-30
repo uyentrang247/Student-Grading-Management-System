@@ -1,0 +1,106 @@
+.module-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.qnu-card-header {
+  background: #172b4d;
+  padding: 14px 20px;
+  border: none;
+}
+
+.header-title {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3px;
+}
+
+.btn-create {
+  background: #ffffff;
+  color: #172b4d;
+  border: none;
+  border-radius: 6px;
+  padding: 7px 14px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.btn-create:hover {
+  background: #edf2f8;
+}
+
+.search-input {
+  border: 1px solid #d9e1ec;
+  border-radius: 6px;
+  min-height: 42px;
+}
+
+.search-input:focus {
+  border-color: #172b4d;
+  box-shadow: none;
+}
+
+.qnu-table {
+  font-size: 14px;
+}
+
+.qnu-table thead th {
+  background: #f5f7fb;
+  color: #6b778c;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 13px 15px;
+  border-bottom: 1px solid #e5e9f2;
+}
+
+.qnu-table tbody td {
+  padding: 13px 15px;
+  color: #4e5969;
+  border-bottom: 1px solid #eef2f7;
+}
+
+.qnu-table tbody tr:hover {
+  background: #fafbfd;
+}
+
+.code-text {
+  color: #172b4d;
+  font-weight: 700;
+}
+
+.action-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.btn-action {
+  min-width: 72px;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 12px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.btn-edit {
+  background: #dde8fa;
+  color: #1f3f75;
+}
+
+.btn-edit:hover {
+  background: #cddcf7;
+}
+
+.btn-delete {
+  background: #f0f2f5;
+  color: #495057;
+}
+
+.btn-delete:hover {
+  background: #e1e5ea;
+}

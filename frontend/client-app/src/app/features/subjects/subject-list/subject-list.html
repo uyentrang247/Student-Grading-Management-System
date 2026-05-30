@@ -1,60 +1,84 @@
-<div class="container-fluid">
+<div class="card module-card shadow-sm">
 
-  <div class="d-flex justify-content-between align-items-center mb-4">
-    <h2>Quản lý Môn học</h2>
+  <div class="card-header qnu-card-header d-flex justify-content-between align-items-center">
 
-    <a routerLink="/subjects/create" class="btn btn-primary">
-  Thêm môn học
-</a>
+    <h5 class="header-title mb-0">
+      DANH SÁCH MÔN HỌC
+    </h5>
+
+    <a
+      routerLink="/subjects/create"
+      class="btn btn-create">
+
+      + Thêm môn học
+
+    </a>
+
   </div>
 
-  <table class="table table-bordered table-hover">
+  <div class="card-body p-0">
 
-    <thead class="table-dark">
-      <tr>
-        <th>Mã môn</th>
-        <th>Tên môn</th>
-        <th>Số tín chỉ</th>
-        <th>Quá trình</th>
-        <th>Cuối kỳ</th>
-        <th>Thao tác</th>
-      </tr>
-    </thead>
+    <table class="table qnu-table table-hover mb-0">
 
-    <tbody>
+      <thead>
 
-      <tr *ngFor="let subject of subjects">
+        <tr>
+          <th>Mã môn</th>
+          <th>Tên môn</th>
+          <th>Tín chỉ</th>
+          <th>Quá trình</th>
+          <th>Cuối kỳ</th>
+          <th width="160">Thao tác</th>
+        </tr>
 
-        <td>{{ subject.subjectCode }}</td>
+      </thead>
 
-        <td>{{ subject.subjectName }}</td>
+      <tbody>
 
-        <td>{{ subject.credits }}</td>
+        <tr *ngFor="let subject of subjects">
 
-        <td>{{ subject.processWeight }}%</td>
+          <td class="code-text">
+            {{ subject.subjectCode }}
+          </td>
 
-        <td>{{ subject.finalWeight }}%</td>
+          <td>{{ subject.subjectName }}</td>
 
-        <td>
-          <a
-  class="btn btn-warning btn-sm me-2"
-  [routerLink]="['/subjects/edit', subject.id]"
->
-  Sửa
-</a>
+          <td>{{ subject.credits }}</td>
 
-          <button
-  class="btn btn-danger btn-sm"
-  (click)="deleteSubject(subject.id!)"
->
-  Xóa
-</button>
-        </td>
+          <td>{{ subject.processWeight }}%</td>
 
-      </tr>
+          <td>{{ subject.finalWeight }}%</td>
 
-    </tbody>
+          <td>
 
-  </table>
+            <div class="action-buttons">
+
+              <a
+                class="btn-action btn-edit text-decoration-none"
+                [routerLink]="['/subjects/edit', subject.id]">
+
+                Sửa
+
+              </a>
+
+              <button
+                class="btn-action btn-delete"
+                (click)="deleteSubject(subject.id!)">
+
+                Xóa
+
+              </button>
+
+            </div>
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+  </div>
 
 </div>

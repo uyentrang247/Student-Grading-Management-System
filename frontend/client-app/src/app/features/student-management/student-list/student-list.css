@@ -1,164 +1,187 @@
-/* Tổng quan Card */
+
 .student-card {
-  border-radius: 8px;
+  border-radius: 10px;
   overflow: hidden;
-  background-color: #ffffff;
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
 }
 
-/* Định dạng Header theo tông màu của Thanh Topbar EduGrade */
+
 .qnu-card-header {
-  background-color: #172b4d !important; /* Màu xanh Navy đặc trưng */
+  background: #172b4d !important;
   border-bottom: none;
+  padding: 14px 20px;
 }
 
 .header-title {
-  font-size: 16px;
-  letter-spacing: 0.5px;
+  font-size: 15px;
+  letter-spacing: 0.3px;
 }
 
-/* Ô nhập ô tìm kiếm */
+
 .search-input {
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(255, 255, 255, 0.1);
+  min-width: 260px;
+
+  background: rgba(255,255,255,.08);
+  border: 1px solid rgba(255,255,255,.18);
+
   color: #ffffff !important;
-  border-radius: 4px;
+  border-radius: 6px;
 }
 
 .search-input::placeholder {
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255,255,255,.55);
 }
 
 .search-input:focus {
-  background-color: #ffffff;
-  color: #333333 !important;
-  border-color: #f39c12;
+  background: #ffffff;
+  color: #172b4d !important;
+
+  border-color: #ffffff;
   box-shadow: none;
 }
 
-/* Các loại nút bấm đồng bộ màu sắc */
 .btn-qnu-primary {
-  background-color: #f39c12; /* Màu cam nhạt nhấn giống icon sidebar */
+  background: #304878;
   border: none;
-  color: #ffffff;
+  color: white;
   font-weight: 500;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  border-radius: 6px;
 }
 
 .btn-qnu-primary:hover {
-  background-color: #e67e22;
-  color: #ffffff;
+  background: #243a63;
+  color: white;
 }
 
 .btn-create-student {
-  background-color: #2be68e; /* Màu xanh lục tươi sáng phù hợp hành động tạo mới */
-  border: none;
+  background: #ffffff;
   color: #172b4d;
-  border-radius: 4px;
-  transition: all 0.2s;
+
+  border: none;
+
+  font-weight: 600;
+  border-radius: 6px;
 }
 
 .btn-create-student:hover {
-  background-color: #22c67b;
-  transform: translateY(-1px);
+  background: #edf2f8;
+  color: #172b4d;
 }
 
-/* Cấu trúc Bảng dữ liệu phẳng (Flat Table) */
+
 .qnu-table {
   font-size: 14px;
 }
 
 .qnu-table thead th {
-  background-color: #f8f9fe;
-  color: #8898aa;
-  font-weight: 600;
-  text-transform: uppercase;
+  background: #f5f7fb;
+
+  color: #6b778c;
+
   font-size: 12px;
-  letter-spacing: 0.5px;
-  padding: 12px 15px;
-  border-bottom: 1px solid #e9ecef;
+  font-weight: 700;
+
+  text-transform: uppercase;
+
+  border-bottom: 1px solid #e5e9f2;
+
+  padding: 13px 15px;
 }
 
 .qnu-table tbody td {
-  padding: 12px 15px;
-  color: #525f7f;
-  border-bottom: 1px solid #e9ecef;
+  padding: 13px 15px;
+
+  color: #4e5969;
+
+  border-bottom: 1px solid #eef2f7;
+}
+
+.qnu-table tbody tr:hover {
+  background: #fafbfd;
 }
 
 .student-code-text {
-  color: #11cdef; /* Màu xanh nổi bật cho mã sinh viên */
+  color: #172b4d;
+  font-weight: 700;
 }
 
-/* Định dạng Badge Giới tính tinh tế */
+
 .badge-gender {
-  padding: 4px 10px;
+  padding: 5px 12px;
+
   border-radius: 20px;
+
   font-size: 12px;
-  font-weight: 500;
-  display: inline-block;
+  font-weight: 600;
 }
 
 .gender-male {
-  background-color: #e8f4fd;
-  color: #1d9bf0;
+  background: #eef5ff;
+  color: #3f6fd8;
 }
 
 .gender-female {
-  background-color: #fde8f0;
-  color: #e91e63;
+  background: #fff1f4;
+  color: #d14d72;
 }
 
-/* Badge hiển thị Tên lớp học */
 .badge-class {
-  background-color: #f0f3f6;
-  color: #4a5568;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-weight: 500;
-  font-size: 13px;
+  background: #eef2f7;
+
+  color: #4e5969;
+
+  padding: 4px 10px;
+
+  border-radius: 5px;
+
+  font-size: 12px;
+  font-weight: 600;
 }
 
-/* Thiết kế lại nhóm Nút hành động thanh mảnh hơn */
+
 .action-buttons {
   display: flex;
   justify-content: center;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-action {
-  padding: 4px 12px;
-  border-radius: 4px;
+  min-width: 65px;
+
+  border: none;
+
+  padding: 5px 12px;
+
+  border-radius: 5px;
+
   font-size: 12px;
   font-weight: 600;
-  border: 1px solid transparent;
-  cursor: pointer;
-  transition: all 0.15s;
+
+  transition: .2s;
 }
 
+
 .btn-edit {
-  background-color: #ffffff;
-  border-color: #dcdfe6;
-  color: #606266;
+  background: #e8eef9;
+  color: #172b4d;
 }
 
 .btn-edit:hover {
-  background-color: #fdf6ec;
-  border-color: #f5dab1;
-  color: #e6a23c;
+  background: #d7e2f5;
 }
 
+
 .btn-delete {
-  background-color: #ffffff;
-  border-color: #dcdfe6;
-  color: #606266;
+  background: #eef0f3;
+  color: #495057;
 }
 
 .btn-delete:hover {
-  background-color: #fef0f0;
-  border-color: #fde2e2;
-  color: #f56c6c;
+  background: #dfe3e8;
 }
 
+
 .empty-row {
-  background-color: #fafafa;
+  background: #fafbfd;
 }
