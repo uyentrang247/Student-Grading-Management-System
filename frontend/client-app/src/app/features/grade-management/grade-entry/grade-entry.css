@@ -1,0 +1,63 @@
+.module-card {
+  background: #fff;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.qnu-card-header {
+  background: #172b4d;
+  padding: 14px 20px;
+}
+
+.header-title {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.card-body {
+  padding: 24px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #495057;
+}
+
+.qnu-input {
+  border: 1px solid #d9e1ec;
+  border-radius: 6px;
+}
+
+.qnu-input:focus {
+  border-color: #172b4d;
+  box-shadow: none;
+}
+
+.qnu-table thead th {
+  background: #f5f7fb;
+  color: #6b778c;
+  font-size: 12px;
+  text-transform: uppercase;
+  padding: 12px;
+}
+
+.qnu-table tbody td {
+  padding: 12px;
+  vertical-align: middle;
+}
+
+.btn-save {
+  background: #172b4d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 10px 18px;
+  font-weight: 600;
+}
+
+.btn-save:hover {
+  background: #223b69;
+}

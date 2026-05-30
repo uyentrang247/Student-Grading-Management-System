@@ -1,0 +1,131 @@
+<div class="card module-card shadow-sm">
+
+  <div class="card-header qnu-card-header">
+
+    <h5 class="header-title mb-0">
+
+      QUẢN LÝ ĐIỂM SINH VIÊN
+
+    </h5>
+
+  </div>
+
+  <div class="card-body">
+
+    <div class="row mb-4">
+
+      <div class="col-md-4">
+
+        <label class="form-label">
+
+          Lớp học phần
+
+        </label>
+
+        <select
+          class="form-select qnu-input"
+          [(ngModel)]="selectedClass"
+          (change)="onClassChange()">
+
+          <option
+            *ngFor="let c of courseClasses"
+            [value]="c">
+
+            {{ c }}
+
+          </option>
+
+        </select>
+
+      </div>
+
+      <div class="col-md-4">
+
+        <label class="form-label">
+
+          Tìm sinh viên
+
+        </label>
+
+        <input
+          type="text"
+          class="form-control qnu-input"
+          placeholder="MSSV hoặc họ tên"
+          [(ngModel)]="searchKeyword">
+
+      </div>
+
+    </div>
+
+    <table class="table qnu-table">
+
+      <thead>
+
+        <tr>
+
+          <th>MSSV</th>
+          <th>Họ tên</th>
+          <th>Lớp SH</th>
+          <th>Điểm QT</th>
+          <th>Điểm CK</th>
+
+        </tr>
+
+      </thead>
+
+      <tbody>
+
+        <tr
+          *ngFor="let s of getFilteredStudents()">
+
+          <td>{{ s.studentCode }}</td>
+
+          <td>{{ s.fullName }}</td>
+
+          <td>{{ s.homeroomClass }}</td>
+
+          <td>
+
+            <input
+              type="number"
+              class="form-control"
+              min="0"
+              max="10"
+              step="0.1"
+              [(ngModel)]="s.processScore">
+
+          </td>
+
+          <td>
+
+            <input
+              type="number"
+              class="form-control"
+              min="0"
+              max="10"
+              step="0.1"
+              [(ngModel)]="s.finalScore">
+
+          </td>
+
+        </tr>
+
+      </tbody>
+
+    </table>
+
+    <div class="mt-4">
+
+      <button
+        class="btn-save"
+        (click)="saveGrades()">
+
+        Lưu điểm
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
