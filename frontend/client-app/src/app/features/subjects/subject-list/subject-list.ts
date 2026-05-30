@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
-import { Subject } from '../../models/subject.model';
-import { SubjectService } from '../../services/subject.service';
+import { Subject } from '../../../models/subject';
+import { SubjectService } from '../../../services/subject';
 
 @Component({
   selector: 'app-subject-list',

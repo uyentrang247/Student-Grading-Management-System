@@ -3,8 +3,8 @@ import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
-import { CourseClass } from '../../models/course-class.model';
-import { CourseClassService } from '../../services/course-class.service';
+import { CourseClass } from '../../../models/course-class';
+import { CourseClassService } from '../../../services/course-class';
 
 
 @Component({

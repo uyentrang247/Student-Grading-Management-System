@@ -7,7 +7,7 @@ import {
   Router
 } from '@angular/router';
 
-import { CourseClassService } from '../../services/course-class.service';
+import { CourseClassService } from '../../../services/course-class';
 
 @Component({
   selector: 'app-course-class-form',

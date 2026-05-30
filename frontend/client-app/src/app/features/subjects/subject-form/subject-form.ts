@@ -3,8 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 
-import { SubjectService } from '../../services/subject.service';
-
+import { SubjectService } from '../../../services/subject';
 @Component({
   selector: 'app-subject-form',
   imports: [CommonModule, FormsModule],
