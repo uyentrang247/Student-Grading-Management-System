@@ -1,15 +1,21 @@
-﻿namespace QuanLyDiem.API.Models
+﻿using QuanLyDiem.API.Models;
+using System.ComponentModel.DataAnnotations;
+
+namespace QuanLyDiem.API.Models
 {
     public class Faculty
     {
+        [Key]
         public int FacultyId { get; set; }
 
-        public string FacultyCode { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Mã khoa không được để trống.")]
+        public string FacultyCode { get; set; } = null!; // Ví dụ: 'CNTT', 'TOAN'
 
-        public string FacultyName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Tên khoa không được để trống.")]
+        public string FacultyName { get; set; } = null!; // Ví dụ: 'Công nghệ thông tin'
 
-        public List<HomeroomClass>? HomeroomClasses { get; set; }
-
-        public List<User>? Users { get; set; }
+        // Một khoa quản lý nhiều lớp sinh hoạt và nhiều giảng viên
+        public ICollection<HomeroomClass>? HomeroomClasses { get; set; } = new List<HomeroomClass>();
+        public ICollection<User>? Users { get; set; } = new List<User>();
     }
 }
