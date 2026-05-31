@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace QuanLyDiem.API.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class UpdateModelsValidation : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -45,8 +45,8 @@ namespace QuanLyDiem.API.Migrations
                 {
                     SubjectId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    SubjectCode = table.Column<string>(type: "TEXT", nullable: false),
-                    SubjectName = table.Column<string>(type: "TEXT", nullable: false),
+                    SubjectCode = table.Column<string>(type: "TEXT", maxLength: 20, nullable: false),
+                    SubjectName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Credits = table.Column<int>(type: "INTEGER", nullable: false),
                     ProcessWeight = table.Column<double>(type: "REAL", nullable: false),
                     FinalWeight = table.Column<double>(type: "REAL", nullable: false)
@@ -82,9 +82,9 @@ namespace QuanLyDiem.API.Migrations
                 {
                     UserId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    Username = table.Column<string>(type: "TEXT", nullable: false),
-                    PasswordHash = table.Column<string>(type: "TEXT", nullable: false),
-                    FullName = table.Column<string>(type: "TEXT", nullable: false),
+                    Username = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
+                    Password = table.Column<string>(type: "TEXT", nullable: false),
+                    FullName = table.Column<string>(type: "TEXT", maxLength: 100, nullable: false),
                     Email = table.Column<string>(type: "TEXT", nullable: false),
                     FacultyId = table.Column<int>(type: "INTEGER", nullable: false),
                     Role = table.Column<string>(type: "TEXT", nullable: false)
@@ -131,7 +131,7 @@ namespace QuanLyDiem.API.Migrations
                 {
                     CourseClassId = table.Column<int>(type: "INTEGER", nullable: false)
                         .Annotation("Sqlite:Autoincrement", true),
-                    ClassCode = table.Column<string>(type: "TEXT", nullable: false),
+                    ClassCode = table.Column<string>(type: "TEXT", maxLength: 50, nullable: false),
                     SemesterId = table.Column<int>(type: "INTEGER", nullable: false),
                     SubjectId = table.Column<int>(type: "INTEGER", nullable: false),
                     LecturerId = table.Column<int>(type: "INTEGER", nullable: true)
@@ -207,9 +207,22 @@ namespace QuanLyDiem.API.Migrations
                 column: "CourseClassId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Enrollments_StudentId",
+                name: "IX_Enrollments_StudentId_CourseClassId",
                 table: "Enrollments",
-                column: "StudentId");
+                columns: new[] { "StudentId", "CourseClassId" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Faculties_FacultyCode",
+                table: "Faculties",
+                column: "FacultyCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_HomeroomClasses_ClassName",
+                table: "HomeroomClasses",
+                column: "ClassName",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_HomeroomClasses_FacultyId",
@@ -217,14 +230,38 @@ namespace QuanLyDiem.API.Migrations
                 column: "FacultyId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Semesters_Term_AcademicYear",
+                table: "Semesters",
+                columns: new[] { "Term", "AcademicYear" },
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Students_HomeroomClassId",
                 table: "Students",
                 column: "HomeroomClassId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_Students_StudentCode",
+                table: "Students",
+                column: "StudentCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Subjects_SubjectCode",
+                table: "Subjects",
+                column: "SubjectCode",
+                unique: true);
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Users_FacultyId",
                 table: "Users",
                 column: "FacultyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Users_Username",
+                table: "Users",
+                column: "Username",
+                unique: true);
         }
 
         /// <inheritdoc />
