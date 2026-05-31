@@ -12,7 +12,7 @@ export class CourseClassService {
       id: 1,
       classCode: 'WEB101-01',
       subjectName: 'Công nghệ Web',
-      lecturerName: 'Nguyễn Văn A',
+      lecturerName: 'Nguyễn Văn Nam',
       semester: 'HK1',
       academicYear: '2025-2026',
       maxStudents: 40
