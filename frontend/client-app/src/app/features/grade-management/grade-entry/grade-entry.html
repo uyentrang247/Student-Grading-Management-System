@@ -1,131 +1,125 @@
-<div class="card module-card shadow-sm">
-
-  <div class="card-header qnu-card-header">
-
-    <h5 class="header-title mb-0">
-
-      QUẢN LÝ ĐIỂM SINH VIÊN
-
-    </h5>
-
+<div class="grade-entry-container">
+  
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+    <div *ngIf="notification.show" class="toast show" role="alert" [class]="notification.type === 'success' ? 'bg-success' : 'bg-danger'">
+      <div class="toast-header" [class]="notification.type === 'success' ? 'bg-success' : 'bg-danger'" [class.text-white]="true">
+        <i class="fas me-2" [class.fa-check-circle]="notification.type === 'success'" [class.fa-exclamation-triangle]="notification.type === 'error'"></i>
+        <strong class="me-auto">{{ notification.type === 'success' ? 'Thành công' : 'Lỗi' }}</strong>
+        <button type="button" class="btn-close btn-close-white" (click)="closeNotification()"></button>
+      </div>
+      <div class="toast-body text-white">{{ notification.message }}</div>
+    </div>
   </div>
 
-  <div class="card-body">
-
-    <div class="row mb-4">
-
-      <div class="col-md-4">
-
-        <label class="form-label">
-
-          Lớp học phần
-
-        </label>
-
-        <select
-          class="form-select qnu-input"
-          [(ngModel)]="selectedClass"
-          (change)="onClassChange()">
-
-          <option
-            *ngFor="let c of courseClasses"
-            [value]="c">
-
-            {{ c }}
-
-          </option>
-
-        </select>
-
+  <div class="card module-card shadow-sm">
+    <div class="card-header qnu-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+      <h5 class="header-title mb-0"><i class="fas fa-pen-to-square me-2"></i> NHẬP ĐIỂM SINH VIÊN</h5>
+      <div class="d-flex gap-2">
+        <button class="btn btn-sm btn-outline-light" (click)="resetFilters()"><i class="fas fa-undo-alt me-1"></i> Reset</button>
+        <button class="btn btn-sm" [class.btn-outline-warning]="!showFailOnly" [class.btn-warning]="showFailOnly" (click)="toggleFailFilter()">
+          <i class="fas fa-exclamation-triangle me-1"></i> {{ showFailOnly ? 'Đang lọc F' : 'Lọc học lại' }}
+        </button>
       </div>
-
-      <div class="col-md-4">
-
-        <label class="form-label">
-
-          Tìm sinh viên
-
-        </label>
-
-        <input
-          type="text"
-          class="form-control qnu-input"
-          placeholder="MSSV hoặc họ tên"
-          [(ngModel)]="searchKeyword">
-
-      </div>
-
     </div>
 
-    <table class="table qnu-table">
+    <div class="card-body">
+      <div class="row g-3 mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold"><i class="fas fa-chalkboard me-1"></i> Lớp học phần</label>
+          <select class="form-select qnu-input" [(ngModel)]="selectedClassId" (change)="onClassChange()">
+            <option value="0">-- Chọn lớp học phần --</option>
+            <option *ngFor="let class of courseClasses" [value]="class.courseClassId">
+              {{ class.classCode }} - {{ class.subjectName }} ({{ class.semester }} - {{ class.academicYear }})
+            </option>
+          </select>
+          <small class="text-muted" *ngIf="selectedClassId"><i class="fas fa-user-tie me-1"></i>Giảng viên: {{ getSelectedClassName() }}</small>
+        </div>
 
-      <thead>
+        <div class="col-md-4">
+          <label class="form-label fw-semibold"><i class="fas fa-search me-1"></i> Tìm kiếm sinh viên</label>
+          <div class="input-group">
+            <span class="input-group-text bg-white"><i class="fas fa-user-graduate text-muted"></i></span>
+            <input type="text" class="form-control qnu-input" placeholder="MSSV hoặc Họ tên" [(ngModel)]="searchKeyword" (input)="filterStudents()">
+            <button class="btn btn-outline-secondary" type="button" (click)="searchKeyword = ''; filterStudents()"><i class="fas fa-times"></i></button>
+          </div>
+        </div>
+      </div>
 
-        <tr>
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status"><span class="visually-hidden">Loading...</span></div>
+        <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
+      </div>
 
-          <th>MSSV</th>
-          <th>Họ tên</th>
-          <th>Lớp SH</th>
-          <th>Điểm QT</th>
-          <th>Điểm CK</th>
+      <div *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0" class="table-responsive">
+        <table class="table grade-table">
+          <thead>
+            <tr>
+              <th style="width: 50px;">STT</th>
+              <th>MSSV</th>
+              <th>Họ tên</th>
+              <th>Lớp SH</th>
+              <th class="text-center" style="width: 130px;">Điểm QT (0-10)</th>
+              <th class="text-center" style="width: 130px;">Điểm CK (0-10)</th>
+              <th class="text-center">Điểm TB</th>
+              <th class="text-center">Chữ</th>
+              <th class="text-center">Hệ 4</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let student of filteredStudents; let i = index">
+              <td class="text-center">{{ i + 1 }}</td>
+              <td class="fw-semibold">{{ student.studentCode }}</td>
+              <td>{{ student.fullName }}</td>
+              <td>{{ student.homeroomClass }}</td>
+              <td class="text-center">
+                <input type="number" class="form-control form-control-sm text-center score-input" 
+                       [(ngModel)]="student.processScore" min="0" max="10" step="0.1">
+              </td>
+              <td class="text-center">
+                <input type="number" class="form-control form-control-sm text-center score-input" 
+                       [(ngModel)]="student.finalScore" min="0" max="10" step="0.1">
+              </td>
+              <td class="text-center">
+                <span class="badge score-badge" [class]="getScoreClass(calculateAverage(student.processScore, student.finalScore))">
+                  {{ calculateAverage(student.processScore, student.finalScore) !== null ? (calculateAverage(student.processScore, student.finalScore) | number:'1.1-1') : '---' }}
+                </span>
+              </td>
+              <td class="text-center fw-bold" 
+                  [class.text-success]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'A+' || getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'A'"
+                  [class.text-primary]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'B+'"
+                  [class.text-info]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'B'"
+                  [class.text-info]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'C'"
+                  [class.text-warning]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'D'"
+                  [class.text-danger]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'F'">
+                {{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}
+              </td>
+              <td class="text-center">
+                {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? getGradeScale4(calculateAverage(student.processScore, student.finalScore)) : '---' }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
 
-        </tr>
+      <div *ngIf="!isLoading && selectedClassId && filteredStudents.length === 0 && students.length > 0" class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Không tìm thấy sinh viên phù hợp</p>
+        <button class="btn btn-sm btn-outline-secondary" (click)="resetFilters()"><i class="fas fa-undo-alt me-1"></i> Xóa bộ lọc</button>
+      </div>
 
-      </thead>
+      <div *ngIf="!isLoading && selectedClassId === 0 && courseClasses.length > 0" class="text-center py-5">
+        <i class="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Vui lòng chọn lớp học phần để bắt đầu nhập điểm</p>
+      </div>
 
-      <tbody>
-
-        <tr
-          *ngFor="let s of getFilteredStudents()">
-
-          <td>{{ s.studentCode }}</td>
-
-          <td>{{ s.fullName }}</td>
-
-          <td>{{ s.homeroomClass }}</td>
-
-          <td>
-
-            <input
-              type="number"
-              class="form-control"
-              min="0"
-              max="10"
-              step="0.1"
-              [(ngModel)]="s.processScore">
-
-          </td>
-
-          <td>
-
-            <input
-              type="number"
-              class="form-control"
-              min="0"
-              max="10"
-              step="0.1"
-              [(ngModel)]="s.finalScore">
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-    <div class="mt-4">
-
-      <button
-        class="btn-save"
-        (click)="saveGrades()">
-
-        Lưu điểm
-
-      </button>
-
+      <div class="mt-4 d-flex justify-content-end" *ngIf="selectedClassId && filteredStudents.length > 0">
+        <button class="btn btn-save" (click)="saveGrades()" [disabled]="isSaving">
+          <i class="fas" [class.fa-spinner]="isSaving" [class.fa-save]="!isSaving" [class.fa-spin]="isSaving"></i>
+          {{ isSaving ? 'Đang lưu...' : 'Lưu điểm' }}
+        </button>
+      </div>
     </div>
-
+    
   </div>
 
 </div>
