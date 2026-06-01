@@ -1,19 +1,21 @@
 .module-card {
-  background: #fff;
+  background: #ffffff;
   border: 1px solid #e6ebf2;
-  border-radius: 10px;
+  border-radius: 12px;
   overflow: hidden;
 }
 
 .qnu-card-header {
-  background: #172b4d;
-  padding: 14px 20px;
+  background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
+  padding: 16px 24px;
+  border: none;
 }
 
 .header-title {
-  color: #fff;
-  font-size: 15px;
+  color: #ffffff;
+  font-size: 16px;
   font-weight: 700;
+  letter-spacing: 0.3px;
 }
 
 .card-body {
@@ -23,41 +25,102 @@
 .form-label {
   font-size: 13px;
   font-weight: 600;
-  color: #495057;
+  color: #334155;
+  margin-bottom: 8px;
 }
 
 .qnu-input {
   border: 1px solid #d9e1ec;
-  border-radius: 6px;
+  border-radius: 8px;
+  min-height: 42px;
+  font-size: 14px;
+  transition: all 0.2s ease;
 }
 
 .qnu-input:focus {
   border-color: #172b4d;
-  box-shadow: none;
+  box-shadow: 0 0 0 3px rgba(23, 43, 77, 0.1);
+  outline: none;
 }
 
-.qnu-table thead th {
-  background: #f5f7fb;
-  color: #6b778c;
+.grade-table {
+  font-size: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+}
+
+.grade-table thead th {
+  background: #f8fafc;
+  color: #475569;
   font-size: 12px;
+  font-weight: 700;
   text-transform: uppercase;
-  padding: 12px;
+  letter-spacing: 0.5px;
+  padding: 14px 12px;
+  border-bottom: 2px solid #e2e8f0;
 }
 
-.qnu-table tbody td {
+.grade-table tbody td {
   padding: 12px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
   vertical-align: middle;
 }
 
-.btn-save {
-  background: #172b4d;
-  color: white;
-  border: none;
-  border-radius: 6px;
-  padding: 10px 18px;
-  font-weight: 600;
+.grade-table tbody tr:hover {
+  background: #fafcff;
 }
 
-.btn-save:hover {
-  background: #223b69;
+.score-input {
+  width: 100px;
+  margin: 0 auto;
+  text-align: center;
+  border-radius: 8px;
+  padding: 6px 8px;
+}
+
+.score-badge {
+  font-weight: 600;
+  padding: 6px 12px;
+  border-radius: 20px;
+  color: white;
+}
+
+.bg-success { background-color: #10b981 !important; }
+.bg-primary { background-color: #3b82f6 !important; }
+.bg-info { background-color: #06b6d4 !important; }
+.bg-warning { background-color: #f59e0b !important; }
+.bg-danger { background-color: #ef4444 !important; }
+.bg-secondary { background-color: #94a3b8 !important; }
+
+.btn-save {
+  background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
+  color: white;
+  border: none;
+  border-radius: 10px;
+  padding: 10px 24px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-save:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(23, 43, 77, 0.2);
+}
+
+.btn-save:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.toast {
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+}
+
+@media (max-width: 768px) {
+  .card-body { padding: 16px; }
+  .score-input { width: 80px; }
+  .grade-table thead th, .grade-table tbody td { padding: 8px; font-size: 12px; }
 }

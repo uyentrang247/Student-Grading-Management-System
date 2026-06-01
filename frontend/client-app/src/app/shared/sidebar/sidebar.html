@@ -3,7 +3,10 @@
     
     <div class="sidebar-heading mt-2 mb-2 px-3">HỆ THỐNG</div>
     <div class="list-group list-group-flush mb-3">
-      <a href="#" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-active d-flex align-items-center">
+      <a routerLink="/" 
+         routerLinkActive="custom-active" 
+         [routerLinkActiveOptions]="{exact: true}" 
+         class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
         <i class="fas fa-home menu-icon me-3"></i>
         <span class="fw-semibold">Trang chủ</span>
       </a>
@@ -15,17 +18,21 @@
 
     <div class="sidebar-heading mt-3 mb-2 px-3">QUẢN LÝ ĐÀO TẠO</div>
     <div class="list-group list-group-flush mb-3">
-    <a routerLink="/subjects" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
-    <i class="fas fa-book menu-icon me-3"></i>
-    <span class="fw-medium">Quản lý Môn học</span>
-</a>
-      <a
-  routerLink="/course-classes"
-  class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+      <a routerLink="/subjects" 
+         routerLinkActive="custom-active" 
+         class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+        <i class="fas fa-book menu-icon me-3"></i>
+        <span class="fw-medium">Quản lý Môn học</span>
+      </a>
+      <a routerLink="/course-classes" 
+         routerLinkActive="custom-active" 
+         class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
         <i class="fas fa-layer-group menu-icon me-3"></i>
         <span class="fw-medium">Lớp học phần</span>
       </a>
-      <a routerLink="/student" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+      <a routerLink="/student" 
+         routerLinkActive="custom-active" 
+         class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
         <i class="fas fa-user-graduate menu-icon me-3"></i>
         <span class="fw-medium">Danh sách Sinh viên</span>
       </a>
@@ -33,7 +40,9 @@
 
     <div class="sidebar-heading mt-3 mb-2 px-3">NGHIỆP VỤ ĐIỂM</div>
     <div class="list-group list-group-flush mb-3">
-      <a routerLink="/grades" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+      <a routerLink="/grades" 
+         routerLinkActive="custom-active" 
+         class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
         <i class="fas fa-pen-to-square menu-icon me-3"></i>
         <span class="fw-medium">Nhập điểm</span>
       </a>
@@ -63,7 +72,7 @@
           <span class="fw-medium text-danger">Đăng xuất</span>
         </a>
       } @else {
-        <a href="#" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-login d-flex align-items-center">
+        <a routerLink="/login" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-login d-flex align-items-center">
           <i class="fas fa-sign-in-alt menu-icon me-3 text-success"></i>
           <span class="fw-medium text-success">Đăng nhập</span>
         </a>
