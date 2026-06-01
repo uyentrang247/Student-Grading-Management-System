@@ -1,75 +1,64 @@
-<div class="container-fluid px-4 mt-4">
-  <div class="card student-card shadow-sm border-0">
-    
-    <div class="card-header qnu-card-header d-flex justify-content-between align-items-center py-3">
-      <div class="d-flex align-items-center gap-3">
-        <h5 class="mb-0 text-white fw-bold header-title">DANH SÁCH SINH VIÊN</h5>
-        <button class="btn btn-create-student btn-sm fw-bold px-3" (click)="onAddClick()">
-          + Tạo Sinh Viên Mới
-        </button>
-      </div>
-      
-      <div class="search-box-container d-flex gap-2">
-        <input type="text" class="form-control form-control-sm search-input" 
-               placeholder="Tìm theo MSSV hoặc Tên..." 
-               name="search" #search (keyup.enter)="timKiemNhanh(search.value)">
-        <button class="btn btn-sm btn-qnu-primary px-3" (click)="timKiemNhanh(search.value)">Tìm Kiếm</button>
-      </div>
-    </div>
-    
-    <div class="card-body p-0 table-responsive">
-      <table class="table qnu-table table-hover align-middle mb-0">
-        <thead>
-          <tr>
-            <th style="width: 60px;" class="text-center">STT</th>
-            <th>Mã Số Sinh Viên</th>
-            <th>Họ và Tên Lót</th>
-            <th>Tên</th>
-            <th style="width: 100px;" class="text-center">Giới Tính</th>
-            <th>Ngày Sinh</th>
-            <th>Lớp Sinh Hoạt</th> <th>Email</th>
-            <th style="width: 160px;" class="text-center">Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          @for (sv of filteredStudents; track sv.studentId) {
-            <tr>
-              <td class="text-center text-muted">{{ $index + 1 }}</td>
-              <td class="fw-bold student-code-text">{{ sv.studentCode }}</td>
-              <td>{{ sv.lastName }}</td>
-              <td class="fw-bold text-dark">{{ sv.firstName }}</td>
-              <td class="text-center">
-                <span class="badge-gender" [ngClass]="sv.gender === 'Nam' ? 'gender-male' : 'gender-female'">
-                  {{ sv.gender }}
-                </span>
-              </td>
-              <td>{{ sv.dateOfBirth | date:'dd/MM/yyyy' }}</td>
-              <td><span class="badge-class">{{ getTenLop(sv.homeroomClassId) }}</span></td>
-              <td class="text-muted text-truncate" style="max-width: 200px;">{{ sv.email }}</td>
-              <td class="text-center">
-                <div class="action-buttons">
-                  <button class="btn-action btn-edit" (click)="onEditClick(sv)" title="Sửa thông tin">
-                    Sửa
-                  </button>
-                  <button class="btn-action btn-delete" (click)="xoaSinhVien(sv)" title="Xóa sinh viên">
-                    Xóa
-                  </button>
-                </div>
-              </td>
-            </tr>
-          } @empty {
-            <tr>
-              <td colspan="9" class="text-center text-muted py-5 empty-row">
-                <i class="bi bi-inbox fs-3 d-block mb-2 text-secondary"></i>
-                Không tìm thấy sinh viên nào phù hợp trong hệ thống!
-              </td>
-            </tr>
-          }
-        </tbody>
-      </table>
-    </div>
+<div class="student-manager-wrapper">
+  <h3 class="page-title">QUẢN LÝ DANH SÁCH SINH VIÊN</h3>
+
+<form (ngSubmit)="onSearch()" class="toolbar-container">
+  <div class="search-filter-group">
+    <input 
+      type="text" 
+      [(ngModel)]="searchTerm" 
+      name="searchTerm" placeholder="Nhập tên hoặc mã sinh viên cần tìm..." 
+      class="form-input search-box"
+    />
+
+    <select [(ngModel)]="selectedClassId" name="selectedClassId" class="form-input class-dropdown">
+      <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
+      <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
+        {{ cls.className }}
+      </option>
+    </select>
+
+    <button type="submit" class="btn btn-filter">
+      <i class="fa fa-search"></i> Tìm kiếm
+    </button>
+  </div>
+
+  <button type="button" class="btn btn-add-new">
+    <i class="fa fa-plus"></i> Thêm Sinh Viên
+  </button>
+</form>
+
+  <div class="table-container">
+    <table class="data-table">
+      <thead>
+        <tr>
+          <th>Mã SV</th>
+          <th>Họ và lót</th>
+          <th>Tên</th>
+          <th>Lớp sinh hoạt</th>
+          <th>Giới tính</th>
+          <th>Ngày sinh</th>
+          <th>Email</th>
+          <th style="text-align: center;">Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let student of students">
+          <td><strong>{{ student.studentCode }}</strong></td>
+          <td>{{ student.lastName }}</td>
+          <td>{{ student.firstName }}</td>
+          <td><span class="badge-class">{{ student.homeroomClassName }}</span></td>
+          <td>{{ student.gender }}</td>
+          <td>{{ student.dateOfBirth | date:'dd/MM/yyyy' }}</td>
+          <td>{{ student.email }}</td>
+          <td style="text-align: center;">
+            <button class="btn-action btn-edit" title="Sửa thông tin">Sửa</button>
+            <button class="btn-action btn-delete" (click)="onDelete(student.studentId)" title="Xóa sinh viên">Xóa</button>
+          </td>
+        </tr>
+        <tr *ngIf="students.length === 0">
+          <td colspan="8" class="empty-row">Không tìm thấy sinh viên nào phù hợp với bộ lọc.</td>
+        </tr>
+      </tbody>
+    </table>
   </div>
 </div>
-
-<!-- <app-student-add-modal [(isVisible)]="isAddModalOpen" (onSaveSuccess)="layDanhSachSinhVien()"></app-student-add-modal>
-<app-student-edit-modal [(isVisible)]="isEditModalOpen" [selectedStudent]="studentToEdit" (onSaveSuccess)="layDanhSachSinhVien()"></app-student-edit-modal> -->

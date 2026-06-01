@@ -1,53 +1,74 @@
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { StudentService } from '../../../services/student'; 
+import { StudentResponse } from '../../../models/student';
+import { HomeroomClassResponse } from '../../../models/homeroomclass'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StudentService } from '../../../services/student';
-import { Student } from '../../../models/student';
 @Component({
   selector: 'app-student-list',
-  standalone: true,
-  imports: [CommonModule, FormsModule],
   templateUrl: './student-list.html',
-  styleUrls: ['./student-list.css']
+  styleUrls: ['./student-list.css'],
+  standalone: true, // Nếu là standalone
+  imports: [CommonModule, FormsModule]
 })
 export class StudentListComponent implements OnInit {
-  private studentService = inject(StudentService);
+  // Mảng chứa dữ liệu thật hứng từ database đổ về
+  students: StudentResponse[] = [];
+  homeroomClasses: HomeroomClassResponse[] = []; 
 
-  students: Student[] = [];         // Mảng lưu dữ liệu gốc
-  filteredStudents: Student[] = []; // Mảng dùng để hiển thị (để lọc khi tìm kiếm)
-  txtSearch: string = '';           // Biến hứng từ khóa từ ô Tìm kiếm
+  // Các biến bound 2 chiều với ô Tìm kiếm và Ô chọn lớp
+  searchTerm: string = '';
+  selectedClassId?: number;
+
+  constructor(private studentService: StudentService) { }
 
   ngOnInit(): void {
-    this.layDanhSachSinhVien();
+    this.loadStudents();       // Vừa vào trang là tải danh sách sinh viên liền
+    this.loadHomeroomClasses(); // Tải danh sách lớp thật từ DB bỏ vào ô select dropdown
   }
 
-  layDanhSachSinhVien(): void {
-    this.studentService.getStudents().subscribe({
+  // 1. Gọi API bốc danh sách lớp thật từ database đổ vào ô Dropdown lọc
+  loadHomeroomClasses(): void {
+    this.studentService.getHomeroomClasses().subscribe({
       next: (data) => {
-        this.students = data;
-        this.filteredStudents = data; 
+        this.homeroomClasses = data;
       },
       error: (err) => {
-        console.log('Có lỗi xảy ra: ', err);
+        console.error('Lỗi khi tải danh sách lớp sinh hoạt:', err);
       }
     });
   }
 
-  timKiemNhanh( search: string): void {
-    const tuKhoa = search.toLowerCase().trim();
-
-    if (tuKhoa === '') {
-      this.filteredStudents = this.students;
-      return;
-    }
-
-    this.filteredStudents = this.students.filter(s => 
-      s.studentCode.includes(tuKhoa) || 
-     (s.lastName + ' ' + s.firstName).toLowerCase().includes(tuKhoa)
-    );
+  // 2. Gọi API lấy danh sách sinh viên (có kèm bộ lọc lớp và từ khóa tìm kiếm)
+  loadStudents(): void {
+    this.studentService.getStudents(this.selectedClassId, this.searchTerm)
+      .subscribe({
+        next: (data) => {
+          this.students = data;
+        },
+        error: (err) => {
+          console.error('Lỗi hệ thống khi lấy danh sách sinh viên:', err);
+        }
+      });
   }
-  onAddClick(): void {}
-  onEditClick(student: Student): void {}
-  xoaSinhVien(student: Student): void {}
-  getTenLop(homeroomClassId: number): any {}
+
+  // 3. Hàm kích hoạt lại việc load dữ liệu khi người dùng gõ tìm kiếm hoặc đổi lớp
+onSearch(): void {
+    this.loadStudents();
+  }
+  // 4. Xử lý sự kiện khi nhấn nút Xóa sinh viên
+  onDelete(id: number): void {
+    if (confirm('Bạn có chắc chắn muốn xóa sinh viên này không?')) {
+      this.studentService.deleteStudent(id).subscribe({
+        next: (responseMessage) => {
+          alert(responseMessage); // Hiện thông báo "Xóa sinh viên thành công!" từ .NET
+          this.loadStudents();    // Xóa xong tải lại danh sách mới ngay lập tức
+        },
+        error: (err) => {
+          console.error('Lỗi khi thực hiện xóa:', err);
+        }
+      });
+    }
+  }
+
 }
