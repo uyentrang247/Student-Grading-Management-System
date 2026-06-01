@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
@@ -28,9 +28,12 @@ export class GradeEntryComponent implements OnInit {
     type: 'success' as 'success' | 'error'
   };
 
-  private readonly lecturerId = 1;
+  private readonly lecturerId = 2;
 
-  constructor(private gradeEntryService: GradeEntryService) {}
+  constructor(
+    private gradeEntryService: GradeEntryService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
     this.loadCourseClasses();
@@ -38,15 +41,28 @@ export class GradeEntryComponent implements OnInit {
 
   loadCourseClasses(): void {
     this.isLoading = true;
+    this.cdr.detectChanges(); 
+    
     this.gradeEntryService.getCourseClassesByLecturer(this.lecturerId).subscribe({
       next: (data) => {
         this.courseClasses = data;
         this.isLoading = false;
+        this.cdr.detectChanges();  
+        
+        if (!this.courseClasses || this.courseClasses.length === 0) {
+          console.log('Không có lớp học phần nào được phân công');
+        }
       },
       error: (err) => {
         console.error('Lỗi tải lớp học phần:', err);
-        this.showNotification('Không thể tải danh sách lớp học phần', 'error');
         this.isLoading = false;
+        this.cdr.detectChanges(); 
+        
+        if (err.status === 0) {
+          this.showNotification('Không thể kết nối đến máy chủ. Vui lòng kiểm tra backend!', 'error');
+        } else if (err.status === 500) {
+          this.showNotification('Lỗi máy chủ. Vui lòng thử lại sau!', 'error');
+        }
       }
     });
   }
@@ -56,23 +72,34 @@ export class GradeEntryComponent implements OnInit {
       this.students = [];
       this.filteredStudents = [];
       this.showFailOnly = false;
+      this.cdr.detectChanges();
       return;
     }
     
     this.isLoading = true;
     this.showFailOnly = false;
     this.searchKeyword = '';
+    this.cdr.detectChanges();  
     
     this.gradeEntryService.getStudentsByClass(this.selectedClassId).subscribe({
       next: (data) => {
         this.students = data;
         this.filteredStudents = [...data];
         this.isLoading = false;
+        this.cdr.detectChanges();  
+        
+        if (!this.students || this.students.length === 0) {
+          console.log('Lớp này chưa có sinh viên');
+        }
       },
       error: (err) => {
         console.error('Lỗi tải danh sách sinh viên:', err);
-        this.showNotification('Không thể tải danh sách sinh viên', 'error');
         this.isLoading = false;
+        this.cdr.detectChanges();  
+        
+        if (err.status === 0) {
+          this.showNotification('Không thể kết nối đến máy chủ', 'error');
+        }
       }
     });
   }
@@ -97,21 +124,26 @@ export class GradeEntryComponent implements OnInit {
     }
     
     this.filteredStudents = filtered;
+    this.cdr.detectChanges();  
   }
 
   toggleFailFilter(): void {
     this.showFailOnly = !this.showFailOnly;
     this.filterStudents();
     
-    if (this.showFailOnly) {
-      this.showNotification('Đang hiển thị danh sách sinh viên học lại (điểm F)', 'success');
+    if (this.showFailOnly && this.filteredStudents.length === 0) {
+      this.showNotification('Không có sinh viên học lại (điểm F) trong lớp này', 'error');
+    } else if (this.showFailOnly) {
+      this.showNotification(`Đang hiển thị ${this.filteredStudents.length} sinh viên học lại`, 'success');
     }
+    this.cdr.detectChanges();
   }
 
   resetFilters(): void {
     this.searchKeyword = '';
     this.showFailOnly = false;
     this.filteredStudents = [...this.students];
+    this.cdr.detectChanges();
   }
 
   validateScores(): boolean {
@@ -152,6 +184,7 @@ export class GradeEntryComponent implements OnInit {
     
     this.roundScores();
     this.isSaving = true;
+    this.cdr.detectChanges();
     
     const gradeData: SaveGradeDto[] = this.filteredStudents.map(student => ({
       enrollmentId: student.enrollmentId,
@@ -164,12 +197,14 @@ export class GradeEntryComponent implements OnInit {
       next: (response) => {
         this.isSaving = false;
         this.showNotification(response.message || 'Lưu điểm thành công!', 'success');
+        this.cdr.detectChanges();
         this.onClassChange();
       },
       error: (err) => {
         console.error('Lỗi lưu điểm:', err);
         this.isSaving = false;
         this.showNotification(err.error?.message || 'Lưu điểm thất bại', 'error');
+        this.cdr.detectChanges();
       }
     });
   }
@@ -204,24 +239,18 @@ export class GradeEntryComponent implements OnInit {
     return 0.0;
   }
 
-  getScoreClass(score: number | null): string {
-    if (score === null) return 'bg-secondary';
-    if (score >= 9.0) return 'bg-success';
-    if (score >= 8.0) return 'bg-success';
-    if (score >= 7.0) return 'bg-primary';
-    if (score >= 6.0) return 'bg-info';
-    if (score >= 5.0) return 'bg-info';
-    if (score >= 4.0) return 'bg-warning';
-    return 'bg-danger';
-  }
-
   showNotification(message: string, type: 'success' | 'error'): void {
     this.notification = { show: true, message, type };
-    setTimeout(() => { this.notification.show = false; }, 3000);
+    this.cdr.detectChanges();
+    setTimeout(() => { 
+      this.notification.show = false;
+      this.cdr.detectChanges();
+    }, 3000);
   }
 
   closeNotification(): void {
     this.notification.show = false;
+    this.cdr.detectChanges();
   }
 
   getSelectedClassName(): string {
