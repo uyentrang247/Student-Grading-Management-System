@@ -12,71 +12,26 @@
     </div>
   </div>
 
-  <!-- Popup sửa điểm -->
-  <div class="modal-overlay" *ngIf="showEditPopup" (click)="closeEditPopup()">
-    <div class="modal-content" (click)="$event.stopPropagation()">
-      <div class="modal-header">
-        <h5><i class="fas fa-edit me-2"></i>Sửa điểm sinh viên</h5>
-        <button class="modal-close" (click)="closeEditPopup()">&times;</button>
-      </div>
-      <div class="modal-body" *ngIf="editingStudent">
-        <p><strong>MSSV:</strong> {{ editingStudent.studentCode }}</p>
-        <p><strong>Họ tên:</strong> {{ editingStudent.fullName }}</p>
-        <p><strong>Lớp:</strong> {{ editingStudent.homeroomClass }}</p>
-        <hr>
-        <div class="mb-3">
-          <label class="form-label">Điểm quá trình (0-10)</label>
-          <input type="number" class="form-control" [(ngModel)]="editProcessScore" min="0" max="10" step="0.1">
-        </div>
-        <div class="mb-3">
-          <label class="form-label">Điểm cuối kỳ (0-10)</label>
-          <input type="number" class="form-control" [(ngModel)]="editFinalScore" min="0" max="10" step="0.1">
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-secondary" (click)="closeEditPopup()">Hủy</button>
-        <button class="btn btn-save" (click)="saveSingleGrade()" [disabled]="isSaving">
-          <i class="fas" [class.fa-spinner]="isSaving" [class.fa-save]="!isSaving" [class.fa-spin]="isSaving"></i>
-          {{ isSaving ? 'Đang lưu...' : 'Lưu điểm' }}
-        </button>
-      </div>
-    </div>
-  </div>
-
+  
   <div class="card module-card shadow-sm">
-    <div class="card-header qnu-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
+    <div class="card-header qnu-card-header">
       <h5 class="header-title mb-0"><i class="fas fa-pen-to-square me-2"></i> NHẬP ĐIỂM SINH VIÊN</h5>
-      <div class="d-flex gap-2">
-        <button class="btn btn-sm btn-outline-light" (click)="resetFilters()"><i class="fas fa-undo-alt me-1"></i> Reset</button>
-        <button class="btn btn-sm" [class.btn-outline-warning]="!showFailOnly" [class.btn-warning]="showFailOnly" (click)="toggleFailFilter()">
-          <i class="fas fa-exclamation-triangle me-1"></i> {{ showFailOnly ? 'Đang lọc F' : 'Lọc học lại' }}
-        </button>
-      </div>
+    
     </div>
 
     <div class="card-body">
-      <div class="row g-3 mb-4">
-        <div class="col-md-6">
-          <label class="form-label fw-semibold"><i class="fas fa-chalkboard me-1"></i> Lớp học phần</label>
-          <select class="form-select qnu-input" [(ngModel)]="selectedClassId" (change)="onClassChange()">
-            <option value="0">-- Chọn lớp học phần --</option>
-            <option *ngFor="let class of courseClasses" [value]="class.courseClassId">
-              {{ class.classCode }} - {{ class.subjectName }} ({{ class.semester }} - {{ class.academicYear }})
-            </option>
-          </select>
-        </div>
+      
+      <!-- Filter -->
+      <app-grade-filter
+        [courseClasses]="courseClasses"
+        [selectedClassId]="selectedClassId"
+        [originalStudents]="students"
+        (classChange)="onClassChange($event)"
+        (filterChange)="onFilterChange($event)"
+        (reset)="onResetFilter()">
+      </app-grade-filter>
 
-        <div class="col-md-4">
-          <label class="form-label fw-semibold"><i class="fas fa-search me-1"></i> Tìm kiếm sinh viên</label>
-          <div class="input-group">
-            <span class="input-group-text bg-white"><i class="fas fa-user-graduate text-muted"></i></span>
-            <input type="text" class="form-control qnu-input" placeholder="MSSV hoặc Họ tên" [(ngModel)]="searchKeyword" (input)="filterStudents()">
-            <button class="btn btn-outline-secondary" type="button" (click)="searchKeyword = ''; filterStudents()"><i class="fas fa-times"></i></button>
-          </div>
-        </div>
-      </div>
-
-      <!-- Loading spinner -->
+      <!-- Loading -->
       <div *ngIf="isLoading" class="text-center py-5">
         <div class="spinner-border text-primary" role="status">
           <span class="visually-hidden">Loading...</span>
@@ -84,88 +39,39 @@
         <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
       </div>
 
-      <!-- Thông báo khi không có lớp -->
+      <!-- Thông báo không có lớp -->
       <div *ngIf="!isLoading && courseClasses.length === 0 && selectedClassId === 0" class="text-center py-5">
         <i class="fas fa-info-circle fa-3x text-info mb-3"></i>
         <p class="text-muted">Hiện tại chưa có lớp học phần nào được phân công.</p>
       </div>
 
-      <!-- Bảng nhập điểm -->
-      <div *ngIf="!isLoading && selectedClassId && displayedStudents.length > 0" class="table-responsive">
-        <table class="table grade-table">
-          <thead>
-            <tr>
-              <th style="width: 50px;">STT</th>
-              <th>MSSV</th>
-              <th>Họ tên</th>
-              <th>Lớp SH</th>
-              <th class="text-center">Điểm QT</th>
-              <th class="text-center">Điểm CK</th>
-              <th class="text-center">Điểm TB</th>
-              <th class="text-center">Chữ</th>
-              <th class="text-center">Hệ 4</th>
-              <th style="width: 80px;" class="text-center">Thao tác</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr *ngFor="let student of displayedStudents; let i = index">
-              <td class="text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
-              <td class="fw-semibold">{{ student.studentCode }}</td>
-              <td>{{ student.fullName }}</td>
-              <td>{{ student.homeroomClass }}</td>
-              <td class="text-center">
-                <span *ngIf="student.processScore !== null">{{ student.processScore }}</span>
-                <span *ngIf="student.processScore === null" class="text-muted">---</span>
-              </td>
-              <td class="text-center">
-                <span *ngIf="student.finalScore !== null">{{ student.finalScore }}</span>
-                <span *ngIf="student.finalScore === null" class="text-muted">---</span>
-              </td>
-              <td class="text-center">
-                <span class="grade-score" [class.text-muted]="calculateAverage(student.processScore, student.finalScore) === null">
-                  {{ calculateAverage(student.processScore, student.finalScore) !== null ? (calculateAverage(student.processScore, student.finalScore) | number:'1.1-1') : '---' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <span [class.text-muted]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'Chưa có'">
-                  {{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}
-                </span>
-              </td>
-              <td class="text-center">
-                <span [class.text-muted]="getGradeScale4(calculateAverage(student.processScore, student.finalScore)) === null">
-                  {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? (getGradeScale4(calculateAverage(student.processScore, student.finalScore)) | number:'1.1-1') : '---' }}
-                </span>
-              </td>
-              <td class="text-center">
-                <button class="btn-edit-single" (click)="openEditPopup(student)" title="Sửa điểm">
-                  <i class="fas fa-pen"></i>
-                </button>
-              </td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
+      <!-- Danh sách sinh viên -->
+      <app-grade-list
+        *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0"
+        [students]="filteredStudents"
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        (edit)="onEditStudent($event)">
+      </app-grade-list>
 
       <!-- Phân trang -->
-      <div *ngIf="!isLoading && selectedClassId && displayedStudents.length > 0 && totalPages > 1" class="pagination-container">
-        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
-          <button class="btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
-            <i class="fas fa-chevron-left"></i>
-          </button>
-          <span class="page-info">Trang {{ currentPage }} / {{ totalPages }} (Tổng: {{ getTotalCount() }} sinh viên)</span>
-          <button class="btn-pagination" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
-            <i class="fas fa-chevron-right"></i>
-          </button>
-        </div>
+      <app-grade-pagination
+        *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="getTotalCount()"
+        (pageChange)="onPageChange($event)">
+      </app-grade-pagination>
+
+      <!-- Thông báo không có sinh viên -->
+      <div *ngIf="!isLoading && selectedClassId && getTotalCount() === 0 && students.length > 0" class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Không tìm thấy sinh viên phù hợp.</p>
       </div>
 
-      <!-- Thông báo khi không có sinh viên -->
-      <div *ngIf="!isLoading && selectedClassId && getTotalCount() === 0" class="text-center py-5">
+      <div *ngIf="!isLoading && selectedClassId && students.length === 0" class="text-center py-5">
         <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
-        <p class="text-muted">Không tìm thấy sinh viên phù hợp.</p>
-        <button class="btn btn-sm btn-outline-secondary" (click)="resetFilters()">
-          <i class="fas fa-undo-alt me-1"></i> Xóa bộ lọc
-        </button>
+        <p class="text-muted">Lớp này chưa có sinh viên nào được ghi danh.</p>
       </div>
 
       <!-- Chưa chọn lớp -->
@@ -173,6 +79,16 @@
         <i class="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
         <p class="text-muted">Vui lòng chọn lớp học phần để xem danh sách sinh viên</p>
       </div>
+
     </div>
   </div>
+
+  <!-- Modal sửa điểm -->
+  <app-grade-edit-modal
+    [show]="showEditPopup"
+    [student]="selectedStudent"
+    (close)="closeEditPopup()"
+    (save)="onSaveSuccess($event)">
+  </app-grade-edit-modal>
+
 </div>
