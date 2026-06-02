@@ -90,7 +90,7 @@ namespace QuanLyDiem.API.Services
                 FirstName = dto.FirstName,
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth,
-                HomeroomClassId = dto.HomeroomClassId,
+                HomeroomClassId = dto.HomeroomClassId.Value,
                 Email = dto.Email
             };
 
@@ -109,7 +109,7 @@ namespace QuanLyDiem.API.Services
             student.FirstName = dto.FirstName;
             student.Gender = dto.Gender;
             student.DateOfBirth = dto.DateOfBirth;
-            student.HomeroomClassId = dto.HomeroomClassId;
+            student.HomeroomClassId = dto.HomeroomClassId.Value;
             student.Email = dto.Email;
 
             await _context.SaveChangesAsync();
