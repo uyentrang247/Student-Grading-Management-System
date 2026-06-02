@@ -85,8 +85,8 @@ export class SubjectForm implements OnInit {
       Number(this.subject.processWeight) +
       Number(this.subject.finalWeight);
 
-    if (totalWeight !== 1 && totalWeight !== 100) {
-      alert('Tổng trọng số phải bằng 1 hoặc 100%');
+    if (totalWeight !== 100) {
+      alert('Tổng trọng số phải bằng 100%');
       return;
     }
 
