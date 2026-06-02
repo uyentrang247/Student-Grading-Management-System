@@ -15,12 +15,23 @@ export class GradeEntryComponent implements OnInit {
   courseClasses: CourseClassForGrade[] = [];
   selectedClassId: number = 0;
   students: StudentGrade[] = [];
-  filteredStudents: StudentGrade[] = [];
+  displayedStudents: StudentGrade[] = [];
   
   isLoading = false;
   searchKeyword = '';
   isSaving = false;
   showFailOnly = false;
+  
+  // Phân trang
+  currentPage: number = 1;
+  pageSize: number = 10;
+  totalPages: number = 1;
+  
+  // Popup sửa điểm
+  showEditPopup: boolean = false;
+  editingStudent: StudentGrade | null = null;
+  editProcessScore: number | null = null;
+  editFinalScore: number | null = null;
   
   notification = {
     show: false,
@@ -41,27 +52,20 @@ export class GradeEntryComponent implements OnInit {
 
   loadCourseClasses(): void {
     this.isLoading = true;
-    this.cdr.detectChanges(); 
+    this.cdr.detectChanges();
     
     this.gradeEntryService.getCourseClassesByLecturer(this.lecturerId).subscribe({
       next: (data) => {
         this.courseClasses = data;
         this.isLoading = false;
-        this.cdr.detectChanges();  
-        
-        if (!this.courseClasses || this.courseClasses.length === 0) {
-          console.log('Không có lớp học phần nào được phân công');
-        }
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Lỗi tải lớp học phần:', err);
         this.isLoading = false;
-        this.cdr.detectChanges(); 
-        
+        this.cdr.detectChanges();
         if (err.status === 0) {
-          this.showNotification('Không thể kết nối đến máy chủ. Vui lòng kiểm tra backend!', 'error');
-        } else if (err.status === 500) {
-          this.showNotification('Lỗi máy chủ. Vui lòng thử lại sau!', 'error');
+          this.showNotification('Không thể kết nối đến máy chủ!', 'error');
         }
       }
     });
@@ -70,8 +74,8 @@ export class GradeEntryComponent implements OnInit {
   onClassChange(): void {
     if (!this.selectedClassId) {
       this.students = [];
-      this.filteredStudents = [];
-      this.showFailOnly = false;
+      this.displayedStudents = [];
+      this.currentPage = 1;
       this.cdr.detectChanges();
       return;
     }
@@ -79,24 +83,20 @@ export class GradeEntryComponent implements OnInit {
     this.isLoading = true;
     this.showFailOnly = false;
     this.searchKeyword = '';
-    this.cdr.detectChanges();  
+    this.currentPage = 1;
+    this.cdr.detectChanges();
     
     this.gradeEntryService.getStudentsByClass(this.selectedClassId).subscribe({
       next: (data) => {
         this.students = data;
-        this.filteredStudents = [...data];
+        this.applyFiltersAndPagination();
         this.isLoading = false;
-        this.cdr.detectChanges();  
-        
-        if (!this.students || this.students.length === 0) {
-          console.log('Lớp này chưa có sinh viên');
-        }
+        this.cdr.detectChanges();
       },
       error: (err) => {
         console.error('Lỗi tải danh sách sinh viên:', err);
         this.isLoading = false;
-        this.cdr.detectChanges();  
-        
+        this.cdr.detectChanges();
         if (err.status === 0) {
           this.showNotification('Không thể kết nối đến máy chủ', 'error');
         }
@@ -104,11 +104,11 @@ export class GradeEntryComponent implements OnInit {
     });
   }
 
-  filterStudents(): void {
-    const keyword = this.searchKeyword.trim().toLowerCase();
-    
+  applyFiltersAndPagination(): void {
     let filtered = [...this.students];
     
+    // Tìm kiếm
+    const keyword = this.searchKeyword.trim().toLowerCase();
     if (keyword) {
       filtered = filtered.filter(student =>
         student.studentCode.toLowerCase().includes(keyword) ||
@@ -116,6 +116,7 @@ export class GradeEntryComponent implements OnInit {
       );
     }
     
+    // Lọc học lại
     if (this.showFailOnly) {
       filtered = filtered.filter(student => {
         const avg = this.calculateAverage(student.processScore, student.finalScore);
@@ -123,82 +124,100 @@ export class GradeEntryComponent implements OnInit {
       });
     }
     
-    this.filteredStudents = filtered;
-    this.cdr.detectChanges();  
+    // Phân trang
+    this.totalPages = Math.ceil(filtered.length / this.pageSize);
+    const start = (this.currentPage - 1) * this.pageSize;
+    this.displayedStudents = filtered.slice(start, start + this.pageSize);
+    this.cdr.detectChanges();
+  }
+
+  filterStudents(): void {
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
   }
 
   toggleFailFilter(): void {
     this.showFailOnly = !this.showFailOnly;
-    this.filterStudents();
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
     
-    if (this.showFailOnly && this.filteredStudents.length === 0) {
-      this.showNotification('Không có sinh viên học lại (điểm F) trong lớp này', 'error');
-    } else if (this.showFailOnly) {
-      this.showNotification(`Đang hiển thị ${this.filteredStudents.length} sinh viên học lại`, 'success');
+    if (this.showFailOnly && this.displayedStudents.length === 0) {
+      this.showNotification('Không có sinh viên học lại (điểm F)', 'error');
     }
-    this.cdr.detectChanges();
   }
 
   resetFilters(): void {
     this.searchKeyword = '';
     this.showFailOnly = false;
-    this.filteredStudents = [...this.students];
+    this.currentPage = 1;
+    this.applyFiltersAndPagination();
+  }
+
+  goToPage(page: number): void {
+    if (page >= 1 && page <= this.totalPages) {
+      this.currentPage = page;
+      this.applyFiltersAndPagination();
+    }
+  }
+
+  // Mở popup sửa điểm
+  openEditPopup(student: StudentGrade): void {
+    this.editingStudent = student;
+    this.editProcessScore = student.processScore;
+    this.editFinalScore = student.finalScore;
+    this.showEditPopup = true;
     this.cdr.detectChanges();
   }
 
-  validateScores(): boolean {
-    for (const student of this.filteredStudents) {
-      if (student.processScore === null || student.finalScore === null) {
-        this.showNotification(`Sinh viên ${student.studentCode} chưa nhập đủ điểm`, 'error');
-        return false;
-      }
-      
-      if (student.processScore < 0 || student.processScore > 10) {
-        this.showNotification(`Điểm quá trình của ${student.studentCode} không hợp lệ (0-10)`, 'error');
-        return false;
-      }
-      
-      if (student.finalScore < 0 || student.finalScore > 10) {
-        this.showNotification(`Điểm cuối kỳ của ${student.studentCode} không hợp lệ (0-10)`, 'error');
-        return false;
-      }
-    }
-    return true;
+  closeEditPopup(): void {
+    this.showEditPopup = false;
+    this.editingStudent = null;
+    this.editProcessScore = null;
+    this.editFinalScore = null;
+    this.cdr.detectChanges();
   }
 
-  roundScores(): void {
-    for (const student of this.filteredStudents) {
-      if (student.processScore !== null) {
-        student.processScore = Math.round(student.processScore * 10) / 10;
-      }
-      if (student.finalScore !== null) {
-        student.finalScore = Math.round(student.finalScore * 10) / 10;
-      }
-    }
-  }
-
-  saveGrades(): void {
-    if (!this.validateScores()) {
+  saveSingleGrade(): void {
+    if (!this.editingStudent) return;
+    
+    if (this.editProcessScore === null || this.editFinalScore === null) {
+      this.showNotification('Vui lòng nhập đủ điểm!', 'error');
       return;
     }
     
-    this.roundScores();
+    if (this.editProcessScore < 0 || this.editProcessScore > 10) {
+      this.showNotification('Điểm quá trình không hợp lệ (0-10)', 'error');
+      return;
+    }
+    
+    if (this.editFinalScore < 0 || this.editFinalScore > 10) {
+      this.showNotification('Điểm cuối kỳ không hợp lệ (0-10)', 'error');
+      return;
+    }
+    
     this.isSaving = true;
     this.cdr.detectChanges();
     
-    const gradeData: SaveGradeDto[] = this.filteredStudents.map(student => ({
-      enrollmentId: student.enrollmentId,
-      courseClassId: student.courseClassId,
-      processScore: student.processScore,
-      finalScore: student.finalScore
-    }));
+    const gradeData: SaveGradeDto[] = [{
+      enrollmentId: this.editingStudent.enrollmentId,
+      courseClassId: this.editingStudent.courseClassId,
+      processScore: Math.round(this.editProcessScore * 10) / 10,
+      finalScore: Math.round(this.editFinalScore * 10) / 10
+    }];
     
     this.gradeEntryService.saveGradesBulk(gradeData).subscribe({
       next: (response) => {
         this.isSaving = false;
-        this.showNotification(response.message || 'Lưu điểm thành công!', 'success');
+        // Cập nhật lại dữ liệu trong mảng students
+        const index = this.students.findIndex(s => s.enrollmentId === this.editingStudent!.enrollmentId);
+        if (index !== -1) {
+          this.students[index].processScore = gradeData[0].processScore;
+          this.students[index].finalScore = gradeData[0].finalScore;
+        }
+        this.applyFiltersAndPagination();
+        this.showNotification('Lưu điểm thành công!', 'success');
+        this.closeEditPopup();
         this.cdr.detectChanges();
-        this.onClassChange();
       },
       error: (err) => {
         console.error('Lỗi lưu điểm:', err);
@@ -207,6 +226,10 @@ export class GradeEntryComponent implements OnInit {
         this.cdr.detectChanges();
       }
     });
+  }
+
+  hasNoScore(student: StudentGrade): boolean {
+    return student.processScore === null && student.finalScore === null;
   }
 
   calculateAverage(process: number | null, final: number | null): number | null {
@@ -256,5 +279,20 @@ export class GradeEntryComponent implements OnInit {
   getSelectedClassName(): string {
     const selected = this.courseClasses.find(c => c.courseClassId === this.selectedClassId);
     return selected ? `${selected.classCode} - ${selected.subjectName}` : '';
+  }
+
+  getTotalCount(): number {
+    let filtered = [...this.students];
+    const keyword = this.searchKeyword.trim().toLowerCase();
+    if (keyword) {
+      filtered = filtered.filter(s => s.studentCode.toLowerCase().includes(keyword) || s.fullName.toLowerCase().includes(keyword));
+    }
+    if (this.showFailOnly) {
+      filtered = filtered.filter(s => {
+        const avg = this.calculateAverage(s.processScore, s.finalScore);
+        return avg !== null && avg < 4.0;
+      });
+    }
+    return filtered.length;
   }
 }

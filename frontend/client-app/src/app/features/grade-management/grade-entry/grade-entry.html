@@ -12,6 +12,37 @@
     </div>
   </div>
 
+  <!-- Popup sửa điểm -->
+  <div class="modal-overlay" *ngIf="showEditPopup" (click)="closeEditPopup()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h5><i class="fas fa-edit me-2"></i>Sửa điểm sinh viên</h5>
+        <button class="modal-close" (click)="closeEditPopup()">&times;</button>
+      </div>
+      <div class="modal-body" *ngIf="editingStudent">
+        <p><strong>MSSV:</strong> {{ editingStudent.studentCode }}</p>
+        <p><strong>Họ tên:</strong> {{ editingStudent.fullName }}</p>
+        <p><strong>Lớp:</strong> {{ editingStudent.homeroomClass }}</p>
+        <hr>
+        <div class="mb-3">
+          <label class="form-label">Điểm quá trình (0-10)</label>
+          <input type="number" class="form-control" [(ngModel)]="editProcessScore" min="0" max="10" step="0.1">
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Điểm cuối kỳ (0-10)</label>
+          <input type="number" class="form-control" [(ngModel)]="editFinalScore" min="0" max="10" step="0.1">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-secondary" (click)="closeEditPopup()">Hủy</button>
+        <button class="btn btn-save" (click)="saveSingleGrade()" [disabled]="isSaving">
+          <i class="fas" [class.fa-spinner]="isSaving" [class.fa-save]="!isSaving" [class.fa-spin]="isSaving"></i>
+          {{ isSaving ? 'Đang lưu...' : 'Lưu điểm' }}
+        </button>
+      </div>
+    </div>
+  </div>
+
   <div class="card module-card shadow-sm">
     <div class="card-header qnu-card-header d-flex justify-content-between align-items-center flex-wrap gap-2">
       <h5 class="header-title mb-0"><i class="fas fa-pen-to-square me-2"></i> NHẬP ĐIỂM SINH VIÊN</h5>
@@ -33,7 +64,6 @@
               {{ class.classCode }} - {{ class.subjectName }} ({{ class.semester }} - {{ class.academicYear }})
             </option>
           </select>
-          <small class="text-muted" *ngIf="selectedClassId"><i class="fas fa-user-tie me-1"></i>Giảng viên: {{ getSelectedClassName() }}</small>
         </div>
 
         <div class="col-md-4">
@@ -58,11 +88,10 @@
       <div *ngIf="!isLoading && courseClasses.length === 0 && selectedClassId === 0" class="text-center py-5">
         <i class="fas fa-info-circle fa-3x text-info mb-3"></i>
         <p class="text-muted">Hiện tại chưa có lớp học phần nào được phân công.</p>
-        <small class="text-muted">Vui lòng liên hệ quản trị viên để được phân công lớp.</small>
       </div>
 
       <!-- Bảng nhập điểm -->
-      <div *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0" class="table-responsive">
+      <div *ngIf="!isLoading && selectedClassId && displayedStudents.length > 0" class="table-responsive">
         <table class="table grade-table">
           <thead>
             <tr>
@@ -70,53 +99,70 @@
               <th>MSSV</th>
               <th>Họ tên</th>
               <th>Lớp SH</th>
-              <th class="text-center" style="width: 130px;">Điểm QT</th>
-              <th class="text-center" style="width: 130px;">Điểm CK</th>
+              <th class="text-center">Điểm QT</th>
+              <th class="text-center">Điểm CK</th>
               <th class="text-center">Điểm TB</th>
               <th class="text-center">Chữ</th>
               <th class="text-center">Hệ 4</th>
+              <th style="width: 80px;" class="text-center">Thao tác</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let student of filteredStudents; let i = index">
-              <td class="text-center">{{ i + 1 }}</td>
+            <tr *ngFor="let student of displayedStudents; let i = index">
+              <td class="text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
               <td class="fw-semibold">{{ student.studentCode }}</td>
               <td>{{ student.fullName }}</td>
               <td>{{ student.homeroomClass }}</td>
               <td class="text-center">
-                <input type="number" class="form-control form-control-sm text-center score-input" 
-                       [(ngModel)]="student.processScore" min="0" max="10" step="0.1">
+                <span *ngIf="student.processScore !== null">{{ student.processScore }}</span>
+                <span *ngIf="student.processScore === null" class="text-muted">---</span>
               </td>
               <td class="text-center">
-                <input type="number" class="form-control form-control-sm text-center score-input" 
-                       [(ngModel)]="student.finalScore" min="0" max="10" step="0.1">
+                <span *ngIf="student.finalScore !== null">{{ student.finalScore }}</span>
+                <span *ngIf="student.finalScore === null" class="text-muted">---</span>
               </td>
               <td class="text-center">
-                <span class="grade-score">
+                <span class="grade-score" [class.text-muted]="calculateAverage(student.processScore, student.finalScore) === null">
                   {{ calculateAverage(student.processScore, student.finalScore) !== null ? (calculateAverage(student.processScore, student.finalScore) | number:'1.1-1') : '---' }}
                 </span>
               </td>
               <td class="text-center">
-                {{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}
+                <span [class.text-muted]="getGradeLetter(calculateAverage(student.processScore, student.finalScore)) === 'Chưa có'">
+                  {{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}
+                </span>
               </td>
               <td class="text-center">
-                {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? getGradeScale4(calculateAverage(student.processScore, student.finalScore)) : '---' }}
+                <span [class.text-muted]="getGradeScale4(calculateAverage(student.processScore, student.finalScore)) === null">
+                  {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? (getGradeScale4(calculateAverage(student.processScore, student.finalScore)) | number:'1.1-1') : '---' }}
+                </span>
+              </td>
+              <td class="text-center">
+                <button class="btn-edit-single" (click)="openEditPopup(student)" title="Sửa điểm">
+                  <i class="fas fa-pen"></i>
+                </button>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
 
-      <!-- Thông báo khi lớp không có sinh viên -->
-      <div *ngIf="!isLoading && selectedClassId && filteredStudents.length === 0 && students.length === 0" class="text-center py-5">
-        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
-        <p class="text-muted">Lớp này chưa có sinh viên nào được ghi danh.</p>
+      <!-- Phân trang -->
+      <div *ngIf="!isLoading && selectedClassId && displayedStudents.length > 0 && totalPages > 1" class="pagination-container">
+        <div class="d-flex justify-content-center align-items-center gap-2 mt-3">
+          <button class="btn-pagination" [disabled]="currentPage === 1" (click)="goToPage(currentPage - 1)">
+            <i class="fas fa-chevron-left"></i>
+          </button>
+          <span class="page-info">Trang {{ currentPage }} / {{ totalPages }} (Tổng: {{ getTotalCount() }} sinh viên)</span>
+          <button class="btn-pagination" [disabled]="currentPage === totalPages" (click)="goToPage(currentPage + 1)">
+            <i class="fas fa-chevron-right"></i>
+          </button>
+        </div>
       </div>
 
-      <!-- Thông báo khi tìm kiếm không có kết quả -->
-      <div *ngIf="!isLoading && selectedClassId && filteredStudents.length === 0 && students.length > 0" class="text-center py-5">
-        <i class="fas fa-search fa-3x text-muted mb-3"></i>
-        <p class="text-muted">Không tìm thấy sinh viên phù hợp với từ khóa "{{ searchKeyword }}"</p>
+      <!-- Thông báo khi không có sinh viên -->
+      <div *ngIf="!isLoading && selectedClassId && getTotalCount() === 0" class="text-center py-5">
+        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Không tìm thấy sinh viên phù hợp.</p>
         <button class="btn btn-sm btn-outline-secondary" (click)="resetFilters()">
           <i class="fas fa-undo-alt me-1"></i> Xóa bộ lọc
         </button>
@@ -125,18 +171,8 @@
       <!-- Chưa chọn lớp -->
       <div *ngIf="!isLoading && selectedClassId === 0 && courseClasses.length > 0" class="text-center py-5">
         <i class="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
-        <p class="text-muted">Vui lòng chọn lớp học phần để bắt đầu nhập điểm</p>
-      </div>
-
-      <!-- Nút lưu -->
-      <div class="mt-4 d-flex justify-content-end" *ngIf="selectedClassId && filteredStudents.length > 0">
-        <button class="btn btn-save" (click)="saveGrades()" [disabled]="isSaving">
-          <i class="fas" [class.fa-spinner]="isSaving" [class.fa-save]="!isSaving" [class.fa-spin]="isSaving"></i>
-          {{ isSaving ? 'Đang lưu...' : 'Lưu điểm' }}
-        </button>
+        <p class="text-muted">Vui lòng chọn lớp học phần để xem danh sách sinh viên</p>
       </div>
     </div>
-    
   </div>
-
 </div>
