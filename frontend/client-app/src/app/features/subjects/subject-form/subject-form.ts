@@ -1,13 +1,13 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 
 import { SubjectService } from '../../../services/subject';
 
 @Component({
   selector: 'app-subject-form',
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './subject-form.html',
   styleUrls: ['./subject-form.css']
 })
@@ -51,21 +51,42 @@ export class SubjectForm implements OnInit {
           error: (error) => {
             alert('Không tìm thấy môn học');
             console.error(error);
-            this.router.navigate(['/subjects']).then(() => {
-              window.location.reload();
-            });
+            this.router.navigate(['/subjects']);
           }
         });
     }
   }
 
   saveSubject(): void {
+    if (!this.subject.subjectCode.trim()) {
+      alert('Vui lòng nhập mã môn học');
+      return;
+    }
+
+    if (!this.subject.subjectName.trim()) {
+      alert('Vui lòng nhập tên môn học');
+      return;
+    }
+
+    if (Number(this.subject.credits) <= 0) {
+      alert('Số tín chỉ phải lớn hơn 0');
+      return;
+    }
+
+    if (
+      Number(this.subject.processWeight) < 0 ||
+      Number(this.subject.finalWeight) < 0
+    ) {
+      alert('Trọng số không được âm');
+      return;
+    }
+
     const totalWeight =
       Number(this.subject.processWeight) +
       Number(this.subject.finalWeight);
 
-    if (totalWeight !== 100) {
-      alert('Tổng trọng số phải bằng 100%');
+    if (totalWeight !== 1 && totalWeight !== 100) {
+      alert('Tổng trọng số phải bằng 1 hoặc 100%');
       return;
     }
 
@@ -76,9 +97,7 @@ export class SubjectForm implements OnInit {
       ).subscribe({
         next: () => {
           alert('Cập nhật môn học thành công');
-          this.router.navigate(['/subjects']).then(() => {
-            window.location.reload();
-          });
+          this.router.navigate(['/subjects']);
         },
         error: (error) => {
           alert(error.error || 'Cập nhật môn học thất bại');
@@ -90,9 +109,7 @@ export class SubjectForm implements OnInit {
         .subscribe({
           next: () => {
             alert('Lưu môn học thành công');
-            this.router.navigate(['/subjects']).then(() => {
-              window.location.reload();
-            });
+            this.router.navigate(['/subjects']);
           },
           error: (error) => {
             alert(error.error || 'Lưu môn học thất bại');
