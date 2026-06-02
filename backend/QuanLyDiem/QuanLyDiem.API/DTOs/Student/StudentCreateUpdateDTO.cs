@@ -22,7 +22,7 @@ namespace QuanLyDiem.API.DTOs.Student
         public DateTime DateOfBirth { get; set; }
 
         [Required(ErrorMessage = "Vui lòng chọn lớp sinh hoạt")]
-        public int HomeroomClassId { get; set; }
+        public int? HomeroomClassId { get; set; }
 
         [Required(ErrorMessage = "Email không được để trống")]
         [EmailAddress(ErrorMessage = "Email không đúng định dạng")]
