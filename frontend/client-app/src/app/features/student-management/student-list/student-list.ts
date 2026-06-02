@@ -4,12 +4,14 @@ import { StudentResponse } from '../../../models/student';
 import { HomeroomClassResponse } from '../../../models/homeroomclass'; 
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-student-list',
   templateUrl: './student-list.html',
   styleUrls: ['./student-list.css'],
+  imports: [CommonModule, FormsModule, RouterModule],
   standalone: true, // Nếu là standalone
-  imports: [CommonModule, FormsModule]
 })
 export class StudentListComponent implements OnInit {
   // Mảng chứa dữ liệu thật hứng từ database đổ về
@@ -23,8 +25,9 @@ export class StudentListComponent implements OnInit {
   constructor(private studentService: StudentService) { }
 
   ngOnInit(): void {
-    this.loadStudents();       // Vừa vào trang là tải danh sách sinh viên liền
-    this.loadHomeroomClasses(); // Tải danh sách lớp thật từ DB bỏ vào ô select dropdown
+        this.loadHomeroomClasses(); // Tải danh sách lớp thật từ DB bỏ vào ô select dropdown
+        this.loadStudents();       // Vừa vào trang là tải danh sách sinh viên liền
+
   }
 
   // 1. Gọi API bốc danh sách lớp thật từ database đổ vào ô Dropdown lọc
@@ -41,13 +44,17 @@ export class StudentListComponent implements OnInit {
 
   // 2. Gọi API lấy danh sách sinh viên (có kèm bộ lọc lớp và từ khóa tìm kiếm)
   loadStudents(): void {
+    
     this.studentService.getStudents(this.selectedClassId, this.searchTerm)
       .subscribe({
         next: (data) => {
           this.students = data;
+              this.loadStudents();       // Vừa vào trang là tải danh sách sinh viên liền
+
         },
         error: (err) => {
           console.error('Lỗi hệ thống khi lấy danh sách sinh viên:', err);
+          this.loadStudents();       // Vừa vào trang là tải danh sách sinh viên liềns
         }
       });
   }

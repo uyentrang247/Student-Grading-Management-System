@@ -22,9 +22,9 @@
     </button>
   </div>
 
-  <button type="button" class="btn btn-add-new">
-    <i class="fa fa-plus"></i> Thêm Sinh Viên
-  </button>
+<a routerLink="/student/create" class="btn btn-add-new">
+  <i class="fa fa-plus"></i> Thêm Sinh Viên
+</a>
 </form>
 
   <div class="table-container">
@@ -51,8 +51,10 @@
           <td>{{ student.dateOfBirth | date:'dd/MM/yyyy' }}</td>
           <td>{{ student.email }}</td>
           <td style="text-align: center;">
-            <button class="btn-action btn-edit" title="Sửa thông tin">Sửa</button>
-            <button class="btn-action btn-delete" (click)="onDelete(student.studentId)" title="Xóa sinh viên">Xóa</button>
+            <a [routerLink]="['/student/edit', student.studentId]" class="btn-action btn-edit" title="Sửa thông tin">
+                Sửa
+              </a>
+              <button class="btn-action btn-delete" (click)="onDelete(student.studentId)" title="Xóa sinh viên">Xóa</button>
           </td>
         </tr>
         <tr *ngIf="students.length === 0">
