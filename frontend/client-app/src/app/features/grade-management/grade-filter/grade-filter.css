@@ -1,0 +1,20 @@
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.qnu-input {
+  border: 1px solid #d9e1ec;
+  border-radius: 8px;
+  min-height: 42px;
+  font-size: 14px;
+  transition: all 0.2s ease;
+}
+
+.qnu-input:focus {
+  border-color: #172b4d;
+  box-shadow: 0 0 0 3px rgba(23, 43, 77, 0.1);
+  outline: none;
+}
