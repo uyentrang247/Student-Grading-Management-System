@@ -25,6 +25,7 @@ namespace QuanLyDiem.API.Migrations
 
                     b.Property<string>("ClassCode")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.Property<int?>("LecturerId")
@@ -69,7 +70,8 @@ namespace QuanLyDiem.API.Migrations
 
                     b.HasIndex("CourseClassId");
 
-                    b.HasIndex("StudentId");
+                    b.HasIndex("StudentId", "CourseClassId")
+                        .IsUnique();
 
                     b.ToTable("Enrollments");
                 });
@@ -90,6 +92,9 @@ namespace QuanLyDiem.API.Migrations
 
                     b.HasKey("FacultyId");
 
+                    b.HasIndex("FacultyCode")
+                        .IsUnique();
+
                     b.ToTable("Faculties");
                 });
 
@@ -107,6 +112,9 @@ namespace QuanLyDiem.API.Migrations
                         .HasColumnType("INTEGER");
 
                     b.HasKey("HomeroomClassId");
+
+                    b.HasIndex("ClassName")
+                        .IsUnique();
 
                     b.HasIndex("FacultyId");
 
@@ -128,6 +136,9 @@ namespace QuanLyDiem.API.Migrations
                         .HasColumnType("TEXT");
 
                     b.HasKey("SemesterId");
+
+                    b.HasIndex("Term", "AcademicYear")
+                        .IsUnique();
 
                     b.ToTable("Semesters");
                 });
@@ -168,6 +179,9 @@ namespace QuanLyDiem.API.Migrations
 
                     b.HasIndex("HomeroomClassId");
 
+                    b.HasIndex("StudentCode")
+                        .IsUnique();
+
                     b.ToTable("Students");
                 });
 
@@ -188,13 +202,18 @@ namespace QuanLyDiem.API.Migrations
 
                     b.Property<string>("SubjectCode")
                         .IsRequired()
+                        .HasMaxLength(20)
                         .HasColumnType("TEXT");
 
                     b.Property<string>("SubjectName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
                     b.HasKey("SubjectId");
+
+                    b.HasIndex("SubjectCode")
+                        .IsUnique();
 
                     b.ToTable("Subjects");
                 });
@@ -214,9 +233,16 @@ namespace QuanLyDiem.API.Migrations
 
                     b.Property<string>("FullName")
                         .IsRequired()
+                        .HasMaxLength(100)
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("PasswordHash")
+                    b.Property<string>("OtpCode")
+                        .HasColumnType("TEXT");
+
+                    b.Property<DateTime?>("OtpExpiredAt")
+                        .HasColumnType("TEXT");
+
+                    b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("TEXT");
 
@@ -226,11 +252,15 @@ namespace QuanLyDiem.API.Migrations
 
                     b.Property<string>("Username")
                         .IsRequired()
+                        .HasMaxLength(50)
                         .HasColumnType("TEXT");
 
                     b.HasKey("UserId");
 
                     b.HasIndex("FacultyId");
+
+                    b.HasIndex("Username")
+                        .IsUnique();
 
                     b.ToTable("Users");
                 });

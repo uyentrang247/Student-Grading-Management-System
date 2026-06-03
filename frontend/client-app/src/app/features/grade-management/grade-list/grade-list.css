@@ -1,0 +1,61 @@
+.grade-table {
+  font-size: 14px;
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+}
+
+.grade-table thead th {
+  background: #f8fafc;
+  color: #475569;
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  padding: 14px 12px;
+  border-bottom: 2px solid #e2e8f0;
+}
+
+.grade-table tbody td {
+  padding: 12px;
+  color: #334155;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.grade-table tbody tr:hover {
+  background: #fafcff;
+}
+
+.grade-score {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 700;
+  padding: 4px 10px;
+  background-color: #eef2ff;
+  color: #1e3a8a;
+  border-radius: 8px;
+  min-width: 55px;
+  text-align: center;
+}
+
+.btn-edit-single {
+  background: none;
+  border: none;
+  color: #6c757d;
+  font-size: 16px;
+  cursor: pointer;
+  padding: 6px 10px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.btn-edit-single:hover {
+  background-color: rgba(255, 152, 0, 0.1);
+  transform: scale(1.1);
+}
+
+@media (max-width: 768px) {
+  .grade-table thead th, .grade-table tbody td { padding: 8px; font-size: 12px; }
+  .grade-score { font-size: 13px; padding: 2px 8px; min-width: 45px; }
+  .btn-edit-single { font-size: 14px; }
+}

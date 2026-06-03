@@ -1,23 +1,43 @@
-﻿namespace QuanLyDiem.API.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace QuanLyDiem.API.Models
 {
     public class User
     {
+        [Key]
         public int UserId { get; set; }
 
-        public string Username { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Tên đăng nhập không được để trống.")]
+        [StringLength(50, ErrorMessage = "Tài khoản không quá 50 ký tự.")]
+        public string Username { get; set; }
 
-        public string PasswordHash { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Mật khẩu không được để trống.")]
+        [MinLength(8, ErrorMessage = "Mật khẩu phải từ 8 ký tự trở lên.")]
+        public string Password { get; set; }
 
-        public string FullName { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Vui lòng nhập họ tên")]
+        [MaxLength(100)]
+        public string FullName { get; set; }
 
-        public string Email { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Email không được để trống.")]
+        [EmailAddress(ErrorMessage = "Địa chỉ Email không đúng định dạng.")]
+        public string Email { get; set; } = null!;
 
+        [Required(ErrorMessage = "Vui lòng chọn Khoa công tác.")]
         public int FacultyId { get; set; }
 
-        public string Role { get; set; } = string.Empty;
-
+        [ForeignKey("FacultyId")]
         public Faculty? Faculty { get; set; }
 
-        public List<CourseClass>? CourseClasses { get; set; }
+        [Required]
+        [RegularExpression("^(Admin|Lecturer)$", ErrorMessage = "Quyền phải là Admin hoặc Lecturer.")]
+        public string Role { get; set; } = null!;
+
+        public string? OtpCode { get; set; }
+
+        public DateTime? OtpExpiredAt { get; set; }
+
+        public ICollection<CourseClass>? CourseClasses { get; set; } = new List<CourseClass>();
     }
 }

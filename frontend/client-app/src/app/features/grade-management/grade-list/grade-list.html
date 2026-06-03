@@ -1,0 +1,48 @@
+<div class="table-responsive">
+  <table class="table grade-table">
+    <thead>
+      <tr>
+        <th style="width: 50px;">STT</th>
+        <th>MSSV</th>
+        <th>Họ tên</th>
+        <th>Lớp SH</th>
+        <th class="text-center">Điểm QT</th>
+        <th class="text-center">Điểm CK</th>
+        <th class="text-center">Điểm TB</th>
+        <th class="text-center">Chữ</th>
+        <th class="text-center">Hệ 4</th>
+        <th style="width: 80px;" class="text-center">Thao tác</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let student of getDisplayedStudents(); let i = index">
+        <td class="text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
+        <td class="fw-semibold">{{ student.studentCode }}</td>
+        <td>{{ student.fullName }}</td>
+        <td>{{ student.homeroomClass }}</td>
+        <td class="text-center">
+          <span *ngIf="student.processScore !== null">{{ student.processScore }}</span>
+          <span *ngIf="student.processScore === null" class="text-muted">---</span>
+        </td>
+        <td class="text-center">
+          <span *ngIf="student.finalScore !== null">{{ student.finalScore }}</span>
+          <span *ngIf="student.finalScore === null" class="text-muted">---</span>
+        </td>
+        <td class="text-center">
+          <span class="grade-score">
+            {{ calculateAverage(student.processScore, student.finalScore) !== null ? (calculateAverage(student.processScore, student.finalScore) | number:'1.1-1') : '---' }}
+          </span>
+        </td>
+        <td class="text-center">{{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}</td>
+        <td class="text-center">
+          {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? (getGradeScale4(calculateAverage(student.processScore, student.finalScore)) | number:'1.1-1') : '---' }}
+        </td>
+        <td class="text-center">
+          <button class="btn-edit-single" (click)="onEdit(student)" title="Sửa điểm">
+            <i class="fas fa-pen"></i>
+          </button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

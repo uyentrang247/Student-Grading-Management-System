@@ -1,47 +1,54 @@
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Student } from '../models/student';
+import { HttpClient, HttpParams } from '@angular/common/http';
+import { Observable } from 'rxjs';
+
+import { StudentResponse, StudentCreateUpdate } from '../models/student';
+import { HomeroomClassResponse } from '../models/homeroomclass'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class StudentService {
-  // Mảng dữ liệu giả lập (Mock Data) giống như Database tạm thời
-  private mockStudents: Student[] = [
-    {
-      studentId: 1,
-      studentCode: '2052012345',
-      lastName: 'Nguyễn Văn',
-      firstName: 'An',
-      gender: 'Nam',
-      dateOfBirth: '2004-05-15',
-      homeroomClassId: 101,
-      email: 'an.nguyen@gmail.com'
-    },
-    {
-      studentId: 2,
-      studentCode: '2052012346',
-      lastName: 'Trần Thị',
-      firstName: 'Bình',
-      gender: 'Nữ',
-      dateOfBirth: '2004-11-20',
-      homeroomClassId: 101,
-      email: 'binh.tran@gmail.com'
-    },
-    {
-      studentId: 3,
-      studentCode: '2052012347',
-      lastName: 'Lê Hoàng',
-      firstName: 'Cường',
-      gender: 'Nam',
-      dateOfBirth: '2004-02-02',
-      homeroomClassId: 102,
-      email: 'cuong.le@gmail.com'
-    }
-  ];
+  private apiUrl = 'http://localhost:5059/api/Students'; 
 
-  // Trả về Observable chứa mảng dữ liệu giả để sau này thay bằng API không bị lỗi
-  getStudents(): Observable<Student[]> {
-    return of(this.mockStudents);
+  constructor(private http: HttpClient) { }
+
+  // 1. Gọi API bốc danh sách lớp từ database đổ vào ô Dropdown lọc (Dùng model của bạn)
+  getHomeroomClasses(): Observable<HomeroomClassResponse[]> {
+    return this.http.get<HomeroomClassResponse[]>(`${this.apiUrl}/classes`);
+  }
+
+  // 2. Lấy danh sách sinh viên (Có truyền tham số để Lọc theo lớp và Tìm kiếm)
+  getStudents(homeroomClassId?: number, searchTerm?: string): Observable<StudentResponse[]> {
+    let params = new HttpParams();
+    
+    if (homeroomClassId) {
+      params = params.set('homeroomClassId', homeroomClassId.toString());
+    }
+    if (searchTerm) {
+      params = params.set('searchTerm', searchTerm);
+    }
+
+    return this.http.get<StudentResponse[]>(this.apiUrl, { params });
+  }
+
+  // 3. Lấy chi tiết 1 sinh viên theo ID (Đã fix logic kết nối bảng ở Backend)
+  getStudentById(id: number): Observable<StudentResponse> {
+    return this.http.get<StudentResponse>(`${this.apiUrl}/${id}`);
+  }
+
+  // 4. Thêm mới sinh viên
+  createStudent(student: StudentCreateUpdate): Observable<string> {
+    return this.http.post(this.apiUrl, student, { responseType: 'text' });
+  }
+
+  // 5. Cập nhật thông tin sinh viên
+  updateStudent(id: number, student: StudentCreateUpdate): Observable<string> {
+    return this.http.put(`${this.apiUrl}/${id}`, student, { responseType: 'text' });
+  }
+
+  // 6. Xóa sinh viên theo ID
+  deleteStudent(id: number): Observable<string> {
+    return this.http.delete(`${this.apiUrl}/${id}`, { responseType: 'text' });
   }
 }

@@ -1,52 +1,62 @@
+/* Container chính */
 .qnu-sidebar {
   background: linear-gradient(180deg, #162a52 0%, #0d1a33 100%);
   border-right: none;
 }
 
+/* Tiêu đề nhóm menu */
 .sidebar-heading {
   color: #8fa6d3;
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 1px;
+  text-transform: uppercase;
 }
 
+/* Các Item menu */
 .list-group-item {
-  background-color: transparent;
-  color: #c0cde5;
+  background-color: transparent !important;
+  color: #c0cde5 !important;
   font-size: 14px;
   transition: all 0.2s ease;
   text-decoration: none;
+  border: none !important; /* Xóa vệt ngang gây khó chịu */
+  display: flex;
+  align-items: center;
+  padding: 12px 20px;
 }
 
+/* Icon */
 .menu-icon {
   font-size: 15px;
   opacity: 0.7;
+  transition: 0.3s;
 }
 
-/* Hover: Lên màu xanh sáng hơn một chút */
+/* Hiệu ứng Hover */
 .custom-hover:hover {
   background-color: rgba(255, 255, 255, 0.08) !important;
   color: #ffffff !important;
   transform: translateX(4px);
+  cursor: pointer;
 }
-
 .custom-hover:hover .menu-icon { opacity: 1; }
 
-/* Active: Viền Cam QNU đặc trưng, nền xanh sáng */
+/* Hiệu ứng Active (Vệt cam) */
 .custom-active {
   background-color: rgba(255, 255, 255, 0.12) !important;
   color: #ffffff !important;
-  border-left: 4px solid #ff9800 !important;
+  border-left: 4px solid #ff9800 !important; /* Vệt màu cam đặc trưng */
 }
-
 .custom-active .menu-icon {
-  color: #ff9800;
+  color: #ff9800 !important;
   opacity: 1;
 }
 
+/* Scrollbar tùy chỉnh */
 .custom-scrollbar::-webkit-scrollbar { width: 4px; }
-.custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
 .custom-scrollbar::-webkit-scrollbar-thumb { background: #3b4d75; border-radius: 10px; }
 
+/* Hiệu ứng đặc biệt cho nút Đăng xuất/Đăng nhập */
 .custom-logout:hover { background-color: rgba(220, 53, 69, 0.15) !important; color: #ff6b6b !important; }
 .custom-login:hover { background-color: rgba(40, 167, 69, 0.15) !important; color: #51cf66 !important; }

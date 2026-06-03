@@ -1,23 +1,34 @@
-﻿namespace QuanLyDiem.API.Models
+﻿using QuanLyDiem.API.Models;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace QuanLyDiem.API.Models
 {
     public class CourseClass
     {
+        [Key]
         public int CourseClassId { get; set; }
 
-        public string ClassCode { get; set; } = string.Empty;
+        [Required(ErrorMessage = "Mã lớp học phần không được để trống")]
+        [MaxLength(50)]
+        public string ClassCode { get; set; } // VD: IT01_N01
 
+        [Required(ErrorMessage = "Vui lòng chọn học kỳ.")]
         public int SemesterId { get; set; }
 
-        public int SubjectId { get; set; }
-
-        public int? LecturerId { get; set; }
-
+        [ForeignKey("SemesterId")]
         public Semester? Semester { get; set; }
 
+        [Required(ErrorMessage = "Vui lòng chọn môn học.")]
+        public int SubjectId { get; set; }
+        [ForeignKey("SubjectId")]
         public Subject? Subject { get; set; }
 
+        public int? LecturerId { get; set; }
+        [ForeignKey("LecturerId")]
         public User? Lecturer { get; set; }
 
-        public List<Enrollment>? Enrollments { get; set; }
+        public ICollection<Enrollment>? Enrollments { get; set; } = new List<Enrollment>();
     }
 }

@@ -1,187 +1,166 @@
-
-.student-card {
-  border-radius: 10px;
-  overflow: hidden;
-  background: #ffffff;
-  border: 1px solid #e6ebf2;
+.student-manager-wrapper {
+  padding: 24px;
+  background-color: #ffffff;
+  border-radius: 4px;
+  min-height: 500px;
 }
 
-
-.qnu-card-header {
-  background: #172b4d !important;
-  border-bottom: none;
-  padding: 14px 20px;
-}
-
-.header-title {
-  font-size: 15px;
-  letter-spacing: 0.3px;
-}
-
-
-.search-input {
-  min-width: 260px;
-
-  background: rgba(255,255,255,.08);
-  border: 1px solid rgba(255,255,255,.18);
-
-  color: #ffffff !important;
-  border-radius: 6px;
-}
-
-.search-input::placeholder {
-  color: rgba(255,255,255,.55);
-}
-
-.search-input:focus {
-  background: #ffffff;
-  color: #172b4d !important;
-
-  border-color: #ffffff;
-  box-shadow: none;
-}
-
-.btn-qnu-primary {
-  background: #304878;
-  border: none;
-  color: white;
-  font-weight: 500;
-  border-radius: 6px;
-}
-
-.btn-qnu-primary:hover {
-  background: #243a63;
-  color: white;
-}
-
-.btn-create-student {
-  background: #ffffff;
-  color: #172b4d;
-
-  border: none;
-
+.page-title {
+  color: #1a2d54; /* Màu xanh đậm trùng tone với hệ thống */
+  font-size: 18px;
   font-weight: 600;
-  border-radius: 6px;
+  margin-bottom: 24px;
+  border-left: 4px solid #1e3d73; /* Thanh gạch màu đồng bộ */
+  padding-left: 12px;
+  text-transform: uppercase;
 }
 
-.btn-create-student:hover {
-  background: #edf2f8;
-  color: #172b4d;
+/* Thanh công cụ dàn hàng ngang */
+.toolbar-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 20px;
 }
 
+.search-filter-group {
+  display: flex;
+  gap: 10px;
+  flex: 1;
+  max-width: 80%;
+}
 
-.qnu-table {
+/* Ô nhập liệu tinh chỉnh mềm mại */
+.form-input {
+  padding: 8px 12px;
+  border: 1px solid #ced4da;
+  border-radius: 4px;
+  font-size: 14px;
+  outline: none;
+  transition: border-color 0.15s ease-in-out;
+}
+
+.form-input:focus {
+  border-color: #1e3d73;
+}
+
+.search-box {
+  flex: 1;
+}
+
+.class-dropdown {
+  width: 260px;
+  cursor: pointer;
+}
+
+/* Hệ thống nút bấm theo phong cách EDUGRADE */
+.btn {
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease;
+}
+
+/* Nút tìm kiếm đồng bộ màu xanh tối của hệ thống */
+.btn-filter {
+  background-color: #1e3d73;
+  color: white;
+}
+
+.btn-filter:hover {
+  background-color: #12284c;
+}
+
+/* Nút thêm mới giữ màu xanh lá nổi bật tương tự ảnh của bạn */
+.btn-add-new {
+  background-color: #28a745;
+  color: white;
+  white-space: nowrap;
+}
+
+.btn-add-new:hover {
+  background-color: #218838;
+}
+
+/* Cấu trúc Bảng đồng điệu */
+.table-container {
+  background: #fff;
+  border: 1px solid #dee2e6;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.data-table th {
+  background-color: #f1f4f9; /* Màu nền xám nhẹ dịu mắt */
+  color: #1a2d54; /* Chữ màu xanh tối */
+  font-weight: 600;
+  padding: 12px;
+  border-bottom: 2px solid #dee2e6;
   font-size: 14px;
 }
 
-.qnu-table thead th {
-  background: #f5f7fb;
-
-  color: #6b778c;
-
-  font-size: 12px;
-  font-weight: 700;
-
-  text-transform: uppercase;
-
-  border-bottom: 1px solid #e5e9f2;
-
-  padding: 13px 15px;
+.data-table td {
+  padding: 12px;
+  border-bottom: 1px solid #dee2e6;
+  color: #333;
+  font-size: 14px;
 }
 
-.qnu-table tbody td {
-  padding: 13px 15px;
-
-  color: #4e5969;
-
-  border-bottom: 1px solid #eef2f7;
-}
-
-.qnu-table tbody tr:hover {
-  background: #fafbfd;
-}
-
-.student-code-text {
-  color: #172b4d;
-  font-weight: 700;
-}
-
-
-.badge-gender {
-  padding: 5px 12px;
-
-  border-radius: 20px;
-
-  font-size: 12px;
-  font-weight: 600;
-}
-
-.gender-male {
-  background: #eef5ff;
-  color: #3f6fd8;
-}
-
-.gender-female {
-  background: #fff1f4;
-  color: #d14d72;
+/* Hàng xen kẽ màu cho dễ nhìn (người dùng cực thích cái này) */
+.data-table tbody tr:nth-of-type(even) {
+  background-color: #f8f9fa;
 }
 
 .badge-class {
-  background: #eef2f7;
-
-  color: #4e5969;
-
-  padding: 4px 10px;
-
-  border-radius: 5px;
-
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 3px 8px;
+  border-radius: 4px;
   font-size: 12px;
-  font-weight: 600;
+  font-weight: 500;
 }
 
-
-.action-buttons {
-  display: flex;
-  justify-content: center;
-  gap: 6px;
-}
-
+/* Nút thao tác Sửa/Xóa nhỏ gọn */
 .btn-action {
-  min-width: 65px;
-
-  border: none;
-
   padding: 5px 12px;
-
-  border-radius: 5px;
-
-  font-size: 12px;
-  font-weight: 600;
-
-  transition: .2s;
+  margin: 0 4px;
+  border: none;
+  border-radius: 4px;
+  font-size: 13px;
+  cursor: pointer;
+  font-weight: 500;
 }
-
 
 .btn-edit {
-  background: #e8eef9;
-  color: #172b4d;
+  background-color: #ffc107;
+  color: #212529;
 }
 
-.btn-edit:hover {
-  background: #d7e2f5;
-}
-
+.btn-edit:hover { background-color: #e0a800; }
 
 .btn-delete {
-  background: #eef0f3;
-  color: #495057;
+  background-color: #dc3545;
+  color: white;
 }
 
-.btn-delete:hover {
-  background: #dfe3e8;
-}
-
+.btn-delete:hover { background-color: #bd2130; }
 
 .empty-row {
-  background: #fafbfd;
+  text-align: center;
+  padding: 30px !important;
+  color: #6c757d;
+  font-style: italic;
+  background-color: #fefefe;
 }

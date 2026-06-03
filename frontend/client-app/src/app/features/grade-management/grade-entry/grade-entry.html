@@ -1,131 +1,94 @@
-<div class="card module-card shadow-sm">
-
-  <div class="card-header qnu-card-header">
-
-    <h5 class="header-title mb-0">
-
-      QUẢN LÝ ĐIỂM SINH VIÊN
-
-    </h5>
-
+<div class="grade-entry-container">
+  
+  <!-- Toast thông báo -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index: 1050">
+    <div *ngIf="notification.show" class="toast show" role="alert" [class]="notification.type === 'success' ? 'bg-success' : 'bg-danger'">
+      <div class="toast-header" [class]="notification.type === 'success' ? 'bg-success' : 'bg-danger'" [class.text-white]="true">
+        <i class="fas me-2" [class.fa-check-circle]="notification.type === 'success'" [class.fa-exclamation-triangle]="notification.type === 'error'"></i>
+        <strong class="me-auto">{{ notification.type === 'success' ? 'Thành công' : 'Lỗi' }}</strong>
+        <button type="button" class="btn-close btn-close-white" (click)="closeNotification()"></button>
+      </div>
+      <div class="toast-body text-white">{{ notification.message }}</div>
+    </div>
   </div>
 
-  <div class="card-body">
+  
+  <div class="card module-card shadow-sm">
+    <div class="card-header qnu-card-header">
+      <h5 class="header-title mb-0"><i class="fas fa-pen-to-square me-2"></i> NHẬP ĐIỂM SINH VIÊN</h5>
+    
+    </div>
 
-    <div class="row mb-4">
+    <div class="card-body">
+      
+      <!-- Filter -->
+      <app-grade-filter
+        [courseClasses]="courseClasses"
+        [selectedClassId]="selectedClassId"
+        [originalStudents]="students"
+        (classChange)="onClassChange($event)"
+        (filterChange)="onFilterChange($event)"
+        (reset)="onResetFilter()">
+      </app-grade-filter>
 
-      <div class="col-md-4">
-
-        <label class="form-label">
-
-          Lớp học phần
-
-        </label>
-
-        <select
-          class="form-select qnu-input"
-          [(ngModel)]="selectedClass"
-          (change)="onClassChange()">
-
-          <option
-            *ngFor="let c of courseClasses"
-            [value]="c">
-
-            {{ c }}
-
-          </option>
-
-        </select>
-
+      <!-- Loading -->
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
       </div>
 
-      <div class="col-md-4">
+      <!-- Thông báo không có lớp -->
+      <div *ngIf="!isLoading && courseClasses.length === 0 && selectedClassId === 0" class="text-center py-5">
+        <i class="fas fa-info-circle fa-3x text-info mb-3"></i>
+        <p class="text-muted">Hiện tại chưa có lớp học phần nào được phân công.</p>
+      </div>
 
-        <label class="form-label">
+      <!-- Danh sách sinh viên -->
+      <app-grade-list
+        *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0"
+        [students]="filteredStudents"
+        [currentPage]="currentPage"
+        [pageSize]="pageSize"
+        (edit)="onEditStudent($event)">
+      </app-grade-list>
 
-          Tìm sinh viên
+      <!-- Phân trang -->
+      <app-grade-pagination
+        *ngIf="!isLoading && selectedClassId && filteredStudents.length > 0"
+        [currentPage]="currentPage"
+        [totalPages]="totalPages"
+        [totalItems]="getTotalCount()"
+        (pageChange)="onPageChange($event)">
+      </app-grade-pagination>
 
-        </label>
+      <!-- Thông báo không có sinh viên -->
+      <div *ngIf="!isLoading && selectedClassId && getTotalCount() === 0 && students.length > 0" class="text-center py-5">
+        <i class="fas fa-search fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Không tìm thấy sinh viên phù hợp.</p>
+      </div>
 
-        <input
-          type="text"
-          class="form-control qnu-input"
-          placeholder="MSSV hoặc họ tên"
-          [(ngModel)]="searchKeyword">
+      <div *ngIf="!isLoading && selectedClassId && students.length === 0" class="text-center py-5">
+        <i class="fas fa-users-slash fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Lớp này chưa có sinh viên nào được ghi danh.</p>
+      </div>
 
+      <!-- Chưa chọn lớp -->
+      <div *ngIf="!isLoading && selectedClassId === 0 && courseClasses.length > 0" class="text-center py-5">
+        <i class="fas fa-hand-pointer fa-3x text-muted mb-3"></i>
+        <p class="text-muted">Vui lòng chọn lớp học phần để xem danh sách sinh viên</p>
       </div>
 
     </div>
-
-    <table class="table qnu-table">
-
-      <thead>
-
-        <tr>
-
-          <th>MSSV</th>
-          <th>Họ tên</th>
-          <th>Lớp SH</th>
-          <th>Điểm QT</th>
-          <th>Điểm CK</th>
-
-        </tr>
-
-      </thead>
-
-      <tbody>
-
-        <tr
-          *ngFor="let s of getFilteredStudents()">
-
-          <td>{{ s.studentCode }}</td>
-
-          <td>{{ s.fullName }}</td>
-
-          <td>{{ s.homeroomClass }}</td>
-
-          <td>
-
-            <input
-              type="number"
-              class="form-control"
-              min="0"
-              max="10"
-              step="0.1"
-              [(ngModel)]="s.processScore">
-
-          </td>
-
-          <td>
-
-            <input
-              type="number"
-              class="form-control"
-              min="0"
-              max="10"
-              step="0.1"
-              [(ngModel)]="s.finalScore">
-
-          </td>
-
-        </tr>
-
-      </tbody>
-
-    </table>
-
-    <div class="mt-4">
-
-      <button
-        class="btn-save"
-        (click)="saveGrades()">
-
-        Lưu điểm
-
-      </button>
-
-    </div>
-
   </div>
+
+  <!-- Modal sửa điểm -->
+  <app-grade-edit-modal
+    [show]="showEditPopup"
+    [student]="selectedStudent"
+    (close)="closeEditPopup()"
+    (save)="onSaveSuccess($event)">
+  </app-grade-edit-modal>
 
 </div>
