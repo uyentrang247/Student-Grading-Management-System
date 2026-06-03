@@ -1,9 +1,265 @@
-<div class="d-flex flex-column justify-content-center align-items-center text-center py-5" style="min-height: 60vh;">
-  <div class="rounded-circle p-4 mb-4" style="background-color: #e3f2fd; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center;">
-    <i class="fas fa-graduation-cap fs-1 text-primary"></i>
+<div class="home-container">
+  <!-- Hero Banner chung -->
+  <div class="hero-section mb-4">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Chào mừng, {{ getUserName() }}!</h1>
+        <p class="hero-subtitle">{{ getRoleTitle() }} - Hệ thống Quản lý Đào tạo & Điểm tín chỉ</p>
+        
+        <!-- Stats riêng cho Admin -->
+        <div class="hero-stats" *ngIf="isAdmin()">
+          <div class="stat-item">
+            <div class="stat-number">Quản trị</div>
+            <div class="stat-label">Toàn bộ hệ thống</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">Full quyền</div>
+            <div class="stat-label">Thêm/Sửa/Xóa</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ currentSemester }}</div>
+            <div class="stat-label">Học kỳ</div>
+          </div>
+        </div>
+        
+        <!-- Stats riêng cho Lecturer -->
+        <div class="hero-stats" *ngIf="isLecturer()">
+          <div class="stat-item">
+            <div class="stat-number">Giảng dạy</div>
+            <div class="stat-label">Các lớp được phân công</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">Nhập điểm</div>
+            <div class="stat-label">Quá trình & Cuối kỳ</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">{{ currentSemester }}</div>
+            <div class="stat-label">Học kỳ</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-icon">
+        <i class="fas fa-graduation-cap"></i>
+      </div>
+    </div>
   </div>
-  <h3 class="fw-bold" style="color: #093661; letter-spacing: 0.5px;">CỔNG THÔNG TIN QUẢN LÝ ĐIỂM</h3>
-  <p class="text-secondary mt-2 shadow-none" style="max-width: 500px; font-size: 15px;">
-    Chào mừng bạn đến với hệ thống quản lý điểm tín chỉ. Vui lòng chọn một tác vụ ở thanh menu bên trái để thực hiện nghiệp vụ.
-  </p>
+
+  <!-- ==================== PHẦN DÀNH CHO ADMIN ==================== -->
+  <ng-container *ngIf="isAdmin()">
+    <!-- Thống kê nhanh -->
+    <div class="section">
+      <h3 class="section-title">
+        <i class="fas fa-chart-pie me-2"></i> Tổng quan hệ thống
+      </h3>
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-card-icon bg-primary">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="stat-card-info">
+            <div class="stat-card-number">0</div>
+            <div class="stat-card-label">Sinh viên</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon bg-success">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <div class="stat-card-info">
+            <div class="stat-card-number">0</div>
+            <div class="stat-card-label">Giảng viên</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon bg-info">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="stat-card-info">
+            <div class="stat-card-number">0</div>
+            <div class="stat-card-label">Môn học</div>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-card-icon bg-warning">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="stat-card-info">
+            <div class="stat-card-number">0</div>
+            <div class="stat-card-label">Lớp học phần</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quản lý nhanh -->
+    <div class="section">
+      <h3 class="section-title">
+        <i class="fas fa-bolt me-2"></i> Quản lý nhanh
+      </h3>
+      <div class="quick-actions">
+        <div class="action-card" routerLink="/admin/students">
+          <div class="action-icon bg-primary">
+            <i class="fas fa-user-graduate"></i>
+          </div>
+          <div class="action-info">
+            <h4>Quản lý sinh viên</h4>
+            <p>Thêm, sửa, xóa, tìm kiếm sinh viên</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/subjects">
+          <div class="action-icon bg-success">
+            <i class="fas fa-book"></i>
+          </div>
+          <div class="action-info">
+            <h4>Quản lý môn học</h4>
+            <p>Thêm môn học, tín chỉ, trọng số</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/course-classes">
+          <div class="action-icon bg-info">
+            <i class="fas fa-layer-group"></i>
+          </div>
+          <div class="action-info">
+            <h4>Quản lý lớp học phần</h4>
+            <p>Phân công giảng viên, xếp lớp</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/lecturers">
+          <div class="action-icon bg-warning">
+            <i class="fas fa-chalkboard-teacher"></i>
+          </div>
+          <div class="action-info">
+            <h4>Quản lý giảng viên</h4>
+            <p>Tạo tài khoản, phân quyền</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hướng dẫn Admin -->
+    <div class="section">
+      <h3 class="section-title">
+        <i class="fas fa-question-circle me-2"></i> Hướng dẫn quản trị
+      </h3>
+      <div class="guide-list">
+        <div class="guide-item">
+          <div class="guide-number">1</div>
+          <div class="guide-content">
+            <h4>Quản lý sinh viên</h4>
+            <p>Thêm mới, cập nhật, xóa thông tin sinh viên. Tìm kiếm theo mã hoặc tên.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">2</div>
+          <div class="guide-content">
+            <h4>Quản lý môn học</h4>
+            <p>Thiết lập môn học, số tín chỉ, trọng số điểm (tổng = 100%).</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">3</div>
+          <div class="guide-content">
+            <h4>Quản lý lớp học phần</h4>
+            <p>Tạo lớp học phần, phân công giảng viên, chọn học kỳ.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">4</div>
+          <div class="guide-content">
+            <h4>Quản lý giảng viên</h4>
+            <p>Tạo tài khoản cho giảng viên, phân quyền truy cập.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- ==================== PHẦN DÀNH CHO LECTURER ==================== -->
+  <ng-container *ngIf="isLecturer()">
+    <!-- Thông báo chức năng -->
+    <div class="section">
+      <h3 class="section-title">
+        <i class="fas fa-info-circle me-2"></i> Chức năng giảng viên
+      </h3>
+      <div class="func-list">
+        <div class="func-item">
+          <div class="func-icon">
+            <i class="fas fa-pen-to-square"></i>
+          </div>
+          <div class="func-content">
+            <h4>Nhập điểm</h4>
+            <p>Vào menu <strong>Nhập điểm</strong>, chọn lớp học phần và nhập điểm quá trình, điểm cuối kỳ cho sinh viên.</p>
+          </div>
+        </div>
+        <div class="func-item">
+          <div class="func-icon">
+            <i class="fas fa-folder-open"></i>
+          </div>
+          <div class="func-content">
+            <h4>Xem lớp phụ trách</h4>
+            <p>Xem danh sách các lớp bạn được phân công giảng dạy trong học kỳ.</p>
+          </div>
+        </div>
+        <div class="func-item">
+          <div class="func-icon">
+            <i class="fas fa-file-excel"></i>
+          </div>
+          <div class="func-content">
+            <h4>Xuất bảng điểm</h4>
+            <p>Xuất bảng điểm chi tiết của lớp ra file Excel để lưu trữ.</p>
+          </div>
+        </div>
+        <div class="func-item">
+          <div class="func-icon">
+            <i class="fas fa-chart-line"></i>
+          </div>
+          <div class="func-content">
+            <h4>Xem báo cáo</h4>
+            <p>Thống kê kết quả học tập, danh sách sinh viên rớt.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Lưu ý -->
+    <div class="section">
+      <h3 class="section-title">
+        <i class="fas fa-lightbulb me-2"></i> Lưu ý
+      </h3>
+      <div class="notice-list">
+        <div class="notice-item">
+          <i class="fas fa-check-circle text-success"></i>
+          <span>Điểm quá trình và cuối kỳ nhập theo thang điểm 0-10</span>
+        </div>
+        <div class="notice-item">
+          <i class="fas fa-check-circle text-success"></i>
+          <span>Điểm trung bình = Điểm QT x 40% + Điểm CK x 60%</span>
+        </div>
+        <div class="notice-item">
+          <i class="fas fa-check-circle text-success"></i>
+          <span>Sinh viên có điểm TB < 4.0 là rớt môn</span>
+        </div>
+        <div class="notice-item">
+          <i class="fas fa-envelope text-info"></i>
+          <span>Liên hệ Phòng Đào tạo nếu có thắc mắc về điểm</span>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- System Info chung -->
+  <div class="system-info">
+    <div class="info-card">
+      <i class="fas fa-calendar-alt"></i>
+      <span>Năm học: 2025-2026</span>
+    </div>
+    <div class="info-card">
+      <i class="fas fa-clock"></i>
+      <span>Học kỳ: {{ currentSemester }}</span>
+    </div>
+    <div class="info-card">
+      <i class="fas fa-chart-simple"></i>
+      <span>Quản lý điểm tín chỉ</span>
+    </div>
+  </div>
 </div>
