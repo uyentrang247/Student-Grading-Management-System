@@ -28,12 +28,14 @@ namespace QuanLyDiem.API.Controllers
             return Ok(result);
         }
 
-       [HttpPost("forgot-password")]
-    public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
-    {
-        var result = await _authService.ForgotPasswordAsync(model);
-        if (result == null) return NotFound(new { message = "Email không tồn tại!" });
-        return Ok(new { message = "Thành công", data = result });
-    }
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
+        {
+            var result = await _authService.ForgotPasswordAsync(model);
+            
+            if (result == null) return NotFound(new { message = "Email không tồn tại!" });
+            
+            return Ok(new { message = "Thành công", data = result });
+        }
     }
 }
