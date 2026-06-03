@@ -38,7 +38,7 @@ namespace QuanLyDiem.API.Controllers
         [HttpPost]
         public async Task<ActionResult<Subject>> CreateSubject(Subject subject)
         {
-            if (subject.ProcessWeight + subject.FinalWeight != 100)
+            if (Math.Abs((subject.ProcessWeight + subject.FinalWeight) - 1) > 0.0001)
             {
                 return BadRequest("Tổng trọng số phải bằng 100%");
             }
@@ -74,7 +74,7 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest("Id không khớp");
             }
 
-            if (subject.ProcessWeight + subject.FinalWeight != 100)
+            if (Math.Abs((subject.ProcessWeight + subject.FinalWeight) - 1) > 0.0001)
             {
                 return BadRequest("Tổng trọng số phải bằng 100%");
             }

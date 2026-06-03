@@ -49,11 +49,11 @@
             </td>
 
             <td>
-              {{ subject.processWeight }}%
+              {{ subject.processWeight <= 1 ? subject.processWeight : subject.processWeight / 100 }}%
             </td>
 
             <td>
-              {{ subject.finalWeight }}%
+              {{ subject.finalWeight <= 1 ? subject.finalWeight : subject.finalWeight / 100 }}%
             </td>
 
             <td>
