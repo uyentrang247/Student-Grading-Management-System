@@ -34,8 +34,10 @@ namespace QuanLyDiem.API.Models
         [RegularExpression("^(Admin|Lecturer)$", ErrorMessage = "Quyền phải là Admin hoặc Lecturer.")]
         public string Role { get; set; } = null!;
 
-        // Một giảng viên có thể phụ trách nhiều lớp
-        public ICollection<CourseClass>? CourseClasses { get; set; } = new List<CourseClass>();
+        public string? OtpCode { get; set; }
 
+        public DateTime? OtpExpiredAt { get; set; }
+
+        public ICollection<CourseClass>? CourseClasses { get; set; } = new List<CourseClass>();
     }
 }

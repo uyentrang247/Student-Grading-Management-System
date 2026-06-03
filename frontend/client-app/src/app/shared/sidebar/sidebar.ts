@@ -1,17 +1,25 @@
 import { Component } from '@angular/core';
-import { RouterModule } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
+import { CommonModule } from '@angular/common';
+import { AuthService } from '../../services/auth';
 
 @Component({
   selector: 'app-sidebar',
-  imports: [RouterModule],
   standalone: true,
+  imports: [CommonModule, RouterModule],
   templateUrl: './sidebar.html',
   styleUrl: './sidebar.css'
 })
-export class Sidebar {
-  isLoggedIn: boolean = true;
+export class SidebarComponent {
+  constructor(
+    public authService: AuthService,
+    private router: Router
+  ) {}
 
   logout(): void {
-    this.isLoggedIn = false;
+    this.authService.logout();
+    this.router.navigate(['/login']).then(() => {
+      window.location.reload();
+    });
   }
 }

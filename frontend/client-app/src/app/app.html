@@ -1,16 +1,20 @@
-<div style="background-color: #f4f7fa; min-height: 100vh; display: flex; flex-direction: column;">
-  <app-navbar></app-navbar>
+@if (isLoginPage()) {
+  <router-outlet></router-outlet>
+} @else {
+  <div style="background-color: #f4f7fa; min-height: 100vh; display: flex; flex-direction: column;">
+    <app-navbar></app-navbar>
 
-  <div class="d-flex flex-grow-1" style="margin-top: 70px;">
-    <app-sidebar></app-sidebar>
+    <div class="d-flex flex-grow-1" style="margin-top: 70px;">
+      <app-sidebar></app-sidebar>
 
-    <div class="flex-grow-1 d-flex flex-column" style="margin-left: 250px; min-height: calc(100vh - 70px);">
-      <div class="p-4 flex-grow-1">
-        <div class="bg-white rounded-3 border border-light p-4 h-100" style="box-shadow: 0 2px 12px rgba(0,0,0,0.01);">
-          <router-outlet></router-outlet>
+      <div class="flex-grow-1 d-flex flex-column" style="margin-left: 250px; min-height: calc(100vh - 70px);">
+        <div class="p-4 flex-grow-1">
+          <div class="bg-white rounded-3 border border-light p-4 h-100" style="box-shadow: 0 2px 12px rgba(0,0,0,0.01);">
+            <router-outlet></router-outlet>
+          </div>
         </div>
+        <app-footer></app-footer>
       </div>
-      <app-footer></app-footer>
     </div>
   </div>
-</div>
+}
