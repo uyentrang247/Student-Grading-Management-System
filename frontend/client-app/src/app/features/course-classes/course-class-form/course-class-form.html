@@ -14,14 +14,17 @@
 
       <div class="col-md-6 mb-3">
 
-        <label class="form-label">
+        <label for="classCode" class="form-label">
           Mã lớp học phần
         </label>
 
         <input
+          id="classCode"
+          name="classCode"
           type="text"
           class="form-control qnu-input"
           placeholder="VD: WEB101-01"
+          aria-label="Mã lớp học phần"
           [(ngModel)]="courseClass.classCode"
         />
 
@@ -29,12 +32,15 @@
 
       <div class="col-md-6 mb-3">
 
-        <label class="form-label">
+        <label for="subjectId" class="form-label">
           Môn học
         </label>
 
         <select
+          id="subjectId"
+          name="subjectId"
           class="form-select qnu-input"
+          aria-label="Chọn môn học"
           [(ngModel)]="courseClass.subjectId">
 
           <option [ngValue]="0">-- Chọn môn học --</option>
@@ -56,12 +62,15 @@
 
       <div class="col-md-6 mb-3">
 
-        <label class="form-label">
+        <label for="lecturerId" class="form-label">
           Giảng viên
         </label>
 
         <select
+          id="lecturerId"
+          name="lecturerId"
           class="form-select qnu-input"
+          aria-label="Chọn giảng viên"
           [(ngModel)]="courseClass.lecturerId">
 
           <option [ngValue]="null">
@@ -79,12 +88,15 @@
 
       <div class="col-md-6 mb-3">
 
-        <label class="form-label">
+        <label for="semesterId" class="form-label">
           Học kỳ
         </label>
 
         <select
+          id="semesterId"
+          name="semesterId"
           class="form-select qnu-input"
+          aria-label="Chọn học kỳ"
           [(ngModel)]="courseClass.semesterId">
 
           <option [ngValue]="0">
@@ -104,24 +116,6 @@
           </option>
 
         </select>
-
-      </div>
-
-    </div>
-
-    <div class="row">
-
-      <div class="col-md-4 mb-3">
-
-        <label class="form-label">
-          Sĩ số tối đa
-        </label>
-
-        <input
-          type="number"
-          class="form-control qnu-input"
-          [(ngModel)]="courseClass.maxStudents"
-        />
 
       </div>
 

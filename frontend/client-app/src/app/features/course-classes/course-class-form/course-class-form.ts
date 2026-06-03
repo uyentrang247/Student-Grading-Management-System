@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -29,7 +29,8 @@ export class CourseClassForm implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private courseClassService: CourseClassService
+    private courseClassService: CourseClassService,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -38,20 +39,28 @@ export class CourseClassForm implements OnInit {
     if (id) {
       this.isEditMode = true;
 
-      this.courseClassService.getCourseClassById(id)
-        .subscribe({
-          next: (data) => {
-            this.courseClass = {
-              ...data,
-              maxStudents: data.maxStudents ?? 40
-            };
-          },
-          error: (error) => {
-            alert('Không tìm thấy lớp học phần');
-            console.error(error);
-            this.router.navigate(['/course-classes']);
-          }
-        });
+      this.courseClassService.getCourseClassById(id).subscribe({
+        next: (data: any) => {
+          this.courseClass = {
+            id: Number(data.id ?? data.courseClassId ?? id),
+            classCode: data.classCode ?? '',
+            subjectId: Number(data.subjectId ?? 0),
+            semesterId: Number(data.semesterId ?? 1),
+            lecturerId: data.lecturerId !== undefined && data.lecturerId !== null
+              ? Number(data.lecturerId)
+              : null,
+            maxStudents: Number(data.maxStudents ?? 40)
+          };
+
+          // Ép Angular cập nhật giao diện ngay sau khi nhận dữ liệu
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          alert('Không tìm thấy lớp học phần');
+          console.error(error);
+          this.router.navigate(['/course-classes']);
+        }
+      });
     }
   }
 
@@ -71,30 +80,44 @@ export class CourseClassForm implements OnInit {
       return;
     }
 
+    if (!this.courseClass.maxStudents || this.courseClass.maxStudents <= 0) {
+      alert('Sĩ số tối đa phải lớn hơn 0');
+      return;
+    }
+
+    const courseClassToSave: CourseClass = {
+      id: Number(this.courseClass.id),
+      classCode: this.courseClass.classCode.trim(),
+      subjectId: Number(this.courseClass.subjectId),
+      semesterId: Number(this.courseClass.semesterId),
+      lecturerId: this.courseClass.lecturerId !== null
+        ? Number(this.courseClass.lecturerId)
+        : null,
+      maxStudents: Number(this.courseClass.maxStudents)
+    };
+
     if (this.isEditMode) {
-      this.courseClassService.updateCourseClass(this.courseClass)
-        .subscribe({
-          next: () => {
-            alert('Cập nhật lớp học phần thành công');
-            this.router.navigate(['/course-classes']);
-          },
-          error: (error) => {
-            alert(error.error || 'Cập nhật lớp học phần thất bại');
-            console.error(error);
-          }
-        });
+      this.courseClassService.updateCourseClass(courseClassToSave).subscribe({
+        next: () => {
+          alert('Cập nhật lớp học phần thành công');
+          this.router.navigate(['/course-classes']);
+        },
+        error: (error) => {
+          console.error(error);
+          alert(error.error || 'Cập nhật lớp học phần thất bại');
+        }
+      });
     } else {
-      this.courseClassService.addCourseClass(this.courseClass)
-        .subscribe({
-          next: () => {
-            alert('Lưu lớp học phần thành công');
-            this.router.navigate(['/course-classes']);
-          },
-          error: (error) => {
-            alert(error.error || 'Lưu lớp học phần thất bại');
-            console.error(error);
-          }
-        });
+      this.courseClassService.addCourseClass(courseClassToSave).subscribe({
+        next: () => {
+          alert('Lưu lớp học phần thành công');
+          this.router.navigate(['/course-classes']);
+        },
+        error: (error) => {
+          console.error(error);
+          alert(error.error || 'Lưu lớp học phần thất bại');
+        }
+      });
     }
   }
 }
