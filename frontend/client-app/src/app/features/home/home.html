@@ -1,9 +1,182 @@
-<div class="d-flex flex-column justify-content-center align-items-center text-center py-5" style="min-height: 60vh;">
-  <div class="rounded-circle p-4 mb-4" style="background-color: #e3f2fd; width: 90px; height: 90px; display: flex; align-items: center; justify-content: center;">
-    <i class="fas fa-graduation-cap fs-1 text-primary"></i>
+<div class="home-container">
+  <div class="hero-section mb-4">
+    <div class="hero-content">
+      <div class="hero-text">
+        <h1 class="hero-title">Chào mừng, {{ getUserName() }}!</h1>
+        <p class="hero-subtitle">{{ getRoleTitle() }} - Hệ thống Quản lý Điểm sinh viên</p>
+        
+        <div class="hero-stats">
+          <div class="stat-item">
+            <div class="stat-number">Đại học Quy Nhơn</div>
+            <div class="stat-label">Đào tạo tín chỉ</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">Quản lý điểm</div>
+            <div class="stat-label">Trực tuyến</div>
+          </div>
+          <div class="stat-item">
+            <div class="stat-number">Nhập điểm</div>
+            <div class="stat-label">Nhanh chóng</div>
+          </div>
+        </div>
+      </div>
+      <div class="hero-icon">
+        <i class="fas fa-university"></i>
+      </div>
+    </div>
   </div>
-  <h3 class="fw-bold" style="color: #093661; letter-spacing: 0.5px;">CỔNG THÔNG TIN QUẢN LÝ ĐIỂM</h3>
-  <p class="text-secondary mt-2 shadow-none" style="max-width: 500px; font-size: 15px;">
-    Chào mừng bạn đến với hệ thống quản lý điểm tín chỉ. Vui lòng chọn một tác vụ ở thanh menu bên trái để thực hiện nghiệp vụ.
-  </p>
+
+  <!-- Giới thiệu hệ thống -->
+  <div class="section">
+    <h3 class="section-title">Giới thiệu</h3>
+    <div class="about-content">
+      <p>Hệ thống quản lý điểm sinh viên hỗ trợ giảng viên nhập điểm, quản lý sinh viên, môn học và lớp học phần. Dữ liệu được cập nhật theo thời gian thực, đảm bảo chính xác và minh bạch.</p>
+    </div>
+  </div>
+
+  <!-- PHẦN DÀNH CHO ADMIN -->
+  <ng-container *ngIf="isAdmin()">
+    
+    <div class="section">
+      <h3 class="section-title">Quản lý</h3>
+      <div class="quick-actions">
+        <div class="action-card" routerLink="/admin/students">
+         
+          <div class="action-info">
+            <h4>Sinh viên</h4>
+            <p>Thêm, sửa, xóa, tìm kiếm thông tin sinh viên</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/subjects">
+          
+          <div class="action-info">
+            <h4>Môn học</h4>
+            <p>Quản lý danh sách môn học, tín chỉ, trọng số điểm</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/course-classes">
+          
+          <div class="action-info">
+            <h4>Lớp học phần</h4>
+            <p>Phân công giảng viên, tạo lớp học phần</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/admin/lecturers">
+         
+          <div class="action-info">
+            <h4>Giảng viên</h4>
+            <p>Tạo tài khoản, phân quyền truy cập</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section">
+      <h3 class="section-title">Hướng dẫn sử dụng</h3>
+      <div class="guide-list">
+        <div class="guide-item">
+          <div class="guide-number">1</div>
+          <div class="guide-content">
+            <h4>Quản lý sinh viên</h4>
+            <p>Truy cập menu "Quản lý sinh viên" để xem danh sách, thêm mới, cập nhật hoặc xóa sinh viên. Có thể tìm kiếm theo mã số, họ tên và lọc theo lớp.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">2</div>
+          <div class="guide-content">
+            <h4>Quản lý môn học</h4>
+            <p>Thiết lập danh sách môn học, mã môn, tên môn, số tín chỉ. Mỗi môn có trọng số điểm quá trình và cuối kỳ riêng (tổng bằng 100%).</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">3</div>
+          <div class="guide-content">
+            <h4>Quản lý lớp học phần</h4>
+            <p>Tạo lớp học phần, chọn môn học, phân công giảng viên. Mỗi lớp có mã riêng để quản lý.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">4</div>
+          <div class="guide-content">
+            <h4>Quản lý giảng viên</h4>
+            <p>Tạo tài khoản cho giảng viên, phân quyền truy cập hệ thống.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  <!-- PHẦN DÀNH CHO LECTURER -->
+  <ng-container *ngIf="isLecturer()">
+    
+    <div class="section">
+      <h3 class="section-title">Nghiệp vụ giảng dạy</h3>
+      <div class="quick-actions">
+        <div class="action-card" routerLink="/lecturer/grades">
+          <div class="action-info">
+            <h4>Nhập điểm</h4>
+            <p>Chọn lớp học phần, nhập điểm quá trình và cuối kỳ</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/lecturer/classes">
+          <div class="action-info">
+            <h4>Lớp phụ trách</h4>
+            <p>Xem danh sách lớp học phần được phân công giảng dạy</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/lecturer/export">
+          <div class="action-info">
+            <h4>Xuất bảng điểm</h4>
+            <p>Xuất bảng điểm lớp ra file Excel</p>
+          </div>
+        </div>
+        <div class="action-card" routerLink="/lecturer/reports">
+          <div class="action-info">
+            <h4>Báo cáo</h4>
+            <p>Xem thống kê kết quả học tập</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="section">
+      <h3 class="section-title">Hướng dẫn nhập điểm</h3>
+      <div class="guide-list">
+        <div class="guide-item">
+          <div class="guide-number">1</div>
+          <div class="guide-content">
+            <h4>Chọn lớp</h4>
+            <p>Truy cập menu "Nhập điểm", chọn lớp học phần từ danh sách các lớp bạn được phân công.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">2</div>
+          <div class="guide-content">
+            <h4>Nhập điểm</h4>
+            <p>Nhập điểm quá trình và điểm cuối kỳ cho từng sinh viên. Hệ thống tự động tính điểm trung bình theo trọng số của môn học.</p>
+          </div>
+        </div>
+        <div class="guide-item">
+          <div class="guide-number">3</div>
+          <div class="guide-content">
+            <h4>Xuất kết quả</h4>
+            <p>Sau khi nhập xong, có thể xuất bảng điểm hoặc xem danh sách sinh viên rớt.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </ng-container>
+
+  
+  <div class="system-info">
+    <div class="info-card">
+      <span>Đại học Quy Nhơn</span>
+    </div>
+    <div class="info-card">
+      
+      <span>Quản lý điểm sinh viên</span>
+    </div>
+  </div>
 </div>
