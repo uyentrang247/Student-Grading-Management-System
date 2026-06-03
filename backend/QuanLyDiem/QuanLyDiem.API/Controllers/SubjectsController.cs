@@ -43,9 +43,14 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest("Tổng trọng số phải bằng 100%");
             }
 
-            if (subject.Credits <= 0)
+            if (subject.ProcessWeight < 0.3 || subject.FinalWeight < 0.3)
             {
-                return BadRequest("Số tín chỉ phải lớn hơn 0");
+                return BadRequest("Mỗi trọng số phải từ 30% trở lên");
+            }
+
+            if (subject.Credits < 1 || subject.Credits > 6)
+            {
+                return BadRequest("Số tín chỉ phải từ 1 đến 6");
             }
 
             var isCodeExists = await _context.Subjects
@@ -79,9 +84,14 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest("Tổng trọng số phải bằng 100%");
             }
 
-            if (subject.Credits <= 0)
+            if (subject.ProcessWeight < 0.3 || subject.FinalWeight < 0.3)
             {
-                return BadRequest("Số tín chỉ phải lớn hơn 0");
+                return BadRequest("Mỗi trọng số phải từ 30% trở lên");
+            }
+
+            if (subject.Credits < 1 || subject.Credits > 6)
+            {
+                return BadRequest("Số tín chỉ phải từ 1 đến 6");
             }
 
             var isCodeExists = await _context.Subjects

@@ -71,6 +71,7 @@ export class SubjectForm implements OnInit {
   }
 
   saveSubject(): void {
+    const credits = Number(this.subject.credits);
     const processWeight = Number(this.subject.processWeight);
     const finalWeight = Number(this.subject.finalWeight);
     const totalWeight = processWeight + finalWeight;
@@ -85,18 +86,13 @@ export class SubjectForm implements OnInit {
       return;
     }
 
-    if (Number(this.subject.credits) <= 0) {
-      alert('Số tín chỉ phải lớn hơn 0');
+    if (credits < 1 || credits > 6) {
+      alert('Số tín chỉ phải từ 1 đến 6');
       return;
     }
 
-    if (processWeight < 0 || finalWeight < 0) {
-      alert('Trọng số không được âm');
-      return;
-    }
-
-    if (processWeight > 100 || finalWeight > 100) {
-      alert('Trọng số không được lớn hơn 100%');
+    if (processWeight < 30 || finalWeight < 30) {
+      alert('Mỗi trọng số phải từ 30% trở lên');
       return;
     }
 
@@ -105,12 +101,12 @@ export class SubjectForm implements OnInit {
       return;
     }
 
-    // Form nhập 40/60, backend nhận 0.4/0.6
+    // Form nhập 30/70, backend nhận 0.3/0.7
     const subjectToSave = {
       subjectId: this.subject.subjectId,
       subjectCode: this.subject.subjectCode.trim(),
       subjectName: this.subject.subjectName.trim(),
-      credits: Number(this.subject.credits),
+      credits: credits,
       processWeight: processWeight / 100,
       finalWeight: finalWeight / 100
     };
@@ -126,7 +122,15 @@ export class SubjectForm implements OnInit {
         },
         error: (error) => {
           console.error(error);
-          alert('Cập nhật môn học thất bại');
+
+          const errorMessage =
+            typeof error.error === 'string'
+              ? error.error
+              : error.error?.message
+                || error.error?.title
+                || 'Cập nhật môn học thất bại';
+
+          alert(errorMessage);
         }
       });
     } else {
@@ -137,7 +141,15 @@ export class SubjectForm implements OnInit {
         },
         error: (error) => {
           console.error(error);
-          alert('Lưu môn học thất bại');
+
+          const errorMessage =
+            typeof error.error === 'string'
+              ? error.error
+              : error.error?.message
+                || error.error?.title
+                || 'Lưu môn học thất bại';
+
+          alert(errorMessage);
         }
       });
     }
