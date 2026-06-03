@@ -35,15 +35,16 @@
 
         <select
           class="form-select qnu-input"
-          [(ngModel)]="courseClass.subjectName">
+          [(ngModel)]="courseClass.subjectId">
 
-          <option value="">-- Chọn môn học --</option>
-          <option value="Công nghệ Web">Công nghệ Web</option>
-          <option value="Lập trình Java">Lập trình Java</option>
-          <option value="Cơ sở dữ liệu">Cơ sở dữ liệu</option>
-          <option value="Phân tích thiết kế hệ thống">
-            Phân tích thiết kế hệ thống
-          </option>
+          <option [ngValue]="0">-- Chọn môn học --</option>
+
+          <option [ngValue]="1">Lập trình trên Desktop</option>
+          <option [ngValue]="2">Lập trình ứng dụng Web</option>
+          <option [ngValue]="3">Lập trình cơ bản</option>
+          <option [ngValue]="4">Công nghệ Web</option>
+          <option [ngValue]="5">Lập trình hướng đối tượng</option>
+          <option [ngValue]="6">Kiểm thử và đảm bảo chất lượng phần mềm</option>
 
         </select>
 
@@ -61,18 +62,22 @@
 
         <select
           class="form-select qnu-input"
-          [(ngModel)]="courseClass.lecturerName">
+          [(ngModel)]="courseClass.lecturerId">
 
-          <option value="">-- Chọn giảng viên --</option>
-          <option value="Nguyễn Thị Loan">Nguyễn Thị Loan</option>
-          <option value="Trần Thị Liên">Trần Thị Liên</option>
-          <option value="Vũ Sơn Lâm">Vũ Sơn Lâm</option>
+          <option [ngValue]="null">
+            Chưa phân công
+          </option>
+
+          <option [ngValue]="2">Vũ Sơn Lâm</option>
+          <option [ngValue]="3">Nguyễn Thị Loan</option>
+          <option [ngValue]="4">Nguyễn Thanh Bình</option>
+          <option [ngValue]="5">Đinh Thị Mỹ Cảnh</option>
 
         </select>
 
       </div>
 
-      <div class="col-md-3 mb-3">
+      <div class="col-md-6 mb-3">
 
         <label class="form-label">
           Học kỳ
@@ -80,31 +85,23 @@
 
         <select
           class="form-select qnu-input"
-          [(ngModel)]="courseClass.semester">
+          [(ngModel)]="courseClass.semesterId">
 
-          <option value="">-- Chọn --</option>
-          <option value="HK1">HK1</option>
-          <option value="HK2">HK2</option>
-          <option value="HK3">HK3</option>
+          <option [ngValue]="0">
+            -- Chọn học kỳ --
+          </option>
 
-        </select>
+          <option [ngValue]="1">
+            HK1 - 2026-2027
+          </option>
 
-      </div>
+          <option [ngValue]="2">
+            HK2 - 2026-2027
+          </option>
 
-      <div class="col-md-3 mb-3">
-
-        <label class="form-label">
-          Năm học
-        </label>
-
-        <select
-          class="form-select qnu-input"
-          [(ngModel)]="courseClass.academicYear">
-
-          <option value="">-- Chọn --</option>
-          <option>2025-2026</option>
-          <option>2026-2027</option>
-          <option>2027-2028</option>
+          <option [ngValue]="3">
+            HK3 - 2026-2027
+          </option>
 
         </select>
 
@@ -133,6 +130,7 @@
     <div class="form-actions">
 
       <button
+        type="button"
         class="btn-save"
         (click)="saveCourseClass()">
 

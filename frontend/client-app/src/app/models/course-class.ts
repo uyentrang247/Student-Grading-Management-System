@@ -3,13 +3,19 @@ export interface CourseClass {
 
   classCode: string;
 
-  subjectName: string;
+  subjectId: number;
 
-  lecturerName: string;
+  semesterId: number;
 
-  semester: string;
+  lecturerId?: number | null;
 
-  academicYear: string;
+  subjectName?: string;
 
-  maxStudents: number;
+  lecturerName?: string;
+
+  semester?: string;
+
+  academicYear?: string;
+
+  maxStudents?: number;
 }

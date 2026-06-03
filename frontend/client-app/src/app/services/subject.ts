@@ -1,52 +1,33 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable } from 'rxjs';
 import { Subject } from '../models/subject';
 
 @Injectable({
   providedIn: 'root'
 })
 export class SubjectService {
+  private apiUrl = 'http://localhost:5059/api/Subjects';
 
-  private subjects: Subject[] = [
-    {
-      id: 1,
-      subjectCode: 'WEB101',
-      subjectName: 'Công nghệ Web',
-      credits: 3,
-      processWeight: 40,
-      finalWeight: 60
-    },
-    {
-      id: 2,
-      subjectCode: 'JAVA102',
-      subjectName: 'Lập trình Java',
-      credits: 4,
-      processWeight: 30,
-      finalWeight: 70
-    }
-  ];
+  constructor(private http: HttpClient) {}
 
-  getSubjects(): Subject[] {
-    return this.subjects;
+  getSubjects(): Observable<Subject[]> {
+    return this.http.get<Subject[]>(this.apiUrl);
   }
 
-  getSubjectById(id: number): Subject | undefined {
-    return this.subjects.find(subject => subject.id === id);
+  getSubjectById(id: number): Observable<Subject> {
+    return this.http.get<Subject>(`${this.apiUrl}/${id}`);
   }
 
-  addSubject(subject: Subject): void {
-    this.subjects.push({
-      ...subject,
-      id: Date.now()
-    });
+  addSubject(subject: Subject): Observable<Subject> {
+    return this.http.post<Subject>(this.apiUrl, subject);
   }
 
-  updateSubject(updatedSubject: Subject): void {
-    this.subjects = this.subjects.map(subject =>
-      subject.id === updatedSubject.id ? updatedSubject : subject
-    );
+  updateSubject(id: number, subject: Subject): Observable<void> {
+    return this.http.put<void>(`${this.apiUrl}/${id}`, subject);
   }
 
-  deleteSubject(id: number): void {
-    this.subjects = this.subjects.filter(subject => subject.id !== id);
+  deleteSubject(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

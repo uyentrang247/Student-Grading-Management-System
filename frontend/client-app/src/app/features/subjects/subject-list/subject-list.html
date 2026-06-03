@@ -21,7 +21,6 @@
     <table class="table qnu-table table-hover mb-0">
 
       <thead>
-
         <tr>
           <th>Mã môn</th>
           <th>Tên môn</th>
@@ -30,50 +29,63 @@
           <th>Cuối kỳ</th>
           <th width="160">Thao tác</th>
         </tr>
-
       </thead>
 
       <tbody>
 
-        <tr *ngFor="let subject of subjects">
+        @for (subject of subjects; track subject.subjectId) {
 
-          <td class="code-text">
-            {{ subject.subjectCode }}
-          </td>
+          <tr>
+            <td class="code-text">
+              {{ subject.subjectCode }}
+            </td>
 
-          <td>{{ subject.subjectName }}</td>
+            <td>
+              {{ subject.subjectName }}
+            </td>
 
-          <td>{{ subject.credits }}</td>
+            <td>
+              {{ subject.credits }}
+            </td>
 
-          <td>{{ subject.processWeight }}%</td>
+            <td>
+              {{ subject.processWeight }}%
+            </td>
 
-          <td>{{ subject.finalWeight }}%</td>
+            <td>
+              {{ subject.finalWeight }}%
+            </td>
 
-          <td>
+            <td>
+              <div class="action-buttons">
 
-            <div class="action-buttons">
+                <a
+                  class="btn-action btn-edit text-decoration-none"
+                  [routerLink]="['/subjects/edit', subject.subjectId]">
+                  Sửa
+                </a>
 
-              <a
-                class="btn-action btn-edit text-decoration-none"
-                [routerLink]="['/subjects/edit', subject.id]">
+                <button
+                  class="btn-action btn-delete"
+                  (click)="deleteSubject(subject.subjectId!)">
+                  Xóa
+                </button>
 
-                Sửa
+              </div>
+            </td>
+          </tr>
 
-              </a>
+        } @empty {
 
-              <button
-                class="btn-action btn-delete"
-                (click)="deleteSubject(subject.id!)">
+          @if (!isLoading) {
+            <tr>
+              <td colspan="6" class="text-center py-4">
+                Chưa có môn học nào
+              </td>
+            </tr>
+          }
 
-                Xóa
-
-              </button>
-
-            </div>
-
-          </td>
-
-        </tr>
+        }
 
       </tbody>
 

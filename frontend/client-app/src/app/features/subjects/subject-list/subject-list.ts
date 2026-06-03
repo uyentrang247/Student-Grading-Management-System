@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 
@@ -7,33 +7,61 @@ import { SubjectService } from '../../../services/subject';
 
 @Component({
   selector: 'app-subject-list',
-
+  standalone: true,
   imports: [CommonModule, RouterModule],
-
   templateUrl: './subject-list.html',
   styleUrls: ['./subject-list.css']
 })
 export class SubjectList implements OnInit {
 
   subjects: Subject[] = [];
+  isLoading = true;
 
-  constructor(private subjectService: SubjectService) {}
+  constructor(
+    private subjectService: SubjectService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit(): void {
-    this.subjects = this.subjectService.getSubjects();
-  }
-  deleteSubject(id: number) {
-
-  const confirmDelete =
-    confirm('Bạn có chắc muốn xóa môn học?');
-
-  if (!confirmDelete) {
-    return;
+    this.loadSubjects();
   }
 
-  this.subjectService.deleteSubject(id);
+  loadSubjects(): void {
+    this.isLoading = true;
 
-  this.subjects =
-    this.subjectService.getSubjects();
-}
+    this.subjectService.getSubjects()
+      .subscribe({
+        next: (data) => {
+          this.subjects = data;
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        },
+        error: (error) => {
+          console.error('Lỗi gọi API Subjects:', error);
+          this.subjects = [];
+          this.isLoading = false;
+          this.cdr.detectChanges();
+        }
+      });
+  }
+
+  deleteSubject(id: number): void {
+    const confirmDelete = confirm('Bạn có chắc muốn xóa môn học?');
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    this.subjectService.deleteSubject(id)
+      .subscribe({
+        next: () => {
+          alert('Xóa môn học thành công');
+          this.loadSubjects();
+        },
+        error: (error) => {
+          alert('Xóa môn học thất bại');
+          console.error(error);
+        }
+      });
+  }
 }

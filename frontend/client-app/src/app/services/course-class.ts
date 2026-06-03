@@ -1,4 +1,7 @@
 import { Injectable } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Observable, map } from 'rxjs';
+
 import { CourseClass } from '../models/course-class';
 
 @Injectable({
@@ -6,92 +9,67 @@ import { CourseClass } from '../models/course-class';
 })
 export class CourseClassService {
 
-  private courseClasses: CourseClass[] = [
+  private apiUrl = 'http://localhost:5059/api/CourseClasses';
 
-    {
-      id: 1,
-      classCode: 'WEB101-01',
-      subjectName: 'Công nghệ Web',
-      lecturerName: 'Nguyễn Văn A',
-      semester: 'HK1',
-      academicYear: '2025-2026',
-      maxStudents: 40
-    }
+  constructor(private http: HttpClient) {}
 
-  ];
-
-  getCourseClasses(): CourseClass[] {
-
-    return this.courseClasses;
-  }
-
-  getCourseClassById(
-    id: number
-  ): CourseClass | undefined {
-
-    return this.courseClasses.find(
-      courseClass => courseClass.id === id
+  getCourseClasses(): Observable<CourseClass[]> {
+    return this.http.get<any[]>(this.apiUrl).pipe(
+      map(data => data.map(item => ({
+        id: item.courseClassId,
+        classCode: item.classCode,
+        subjectId: item.subjectId,
+        semesterId: item.semesterId,
+        lecturerId: item.lecturerId,
+        subjectName: item.subject?.subjectName ?? '',
+        lecturerName: item.lecturer?.fullName ?? 'Chưa phân công',
+        semester: item.semester?.term ?? '',
+        academicYear: item.semester?.academicYear ?? '',
+        maxStudents: 40
+      })))
     );
   }
 
-  isClassCodeExists(
-    classCode: string,
-    ignoreId?: number
-  ): boolean {
+  getCourseClassById(id: number): Observable<CourseClass> {
+    return this.http.get<any>(`${this.apiUrl}/${id}`).pipe(
+      map(item => ({
+        id: item.courseClassId,
+        classCode: item.classCode,
+        subjectId: item.subjectId,
+        semesterId: item.semesterId,
+        lecturerId: item.lecturerId,
+        subjectName: item.subject?.subjectName ?? '',
+        lecturerName: item.lecturer?.fullName ?? 'Chưa phân công',
+        semester: item.semester?.term ?? '',
+        academicYear: item.semester?.academicYear ?? '',
+        maxStudents: 40
+      }))
+    );
+  }
 
-    return this.courseClasses.some(courseClass => {
-
-      return (
-
-        courseClass.id !== ignoreId &&
-
-        courseClass.classCode
-          .trim()
-          .toLowerCase()
-
-          ===
-
-        classCode
-          .trim()
-          .toLowerCase()
-
-      );
-
+  addCourseClass(courseClass: CourseClass): Observable<CourseClass> {
+    return this.http.post<CourseClass>(this.apiUrl, {
+      classCode: courseClass.classCode,
+      subjectId: courseClass.subjectId,
+      semesterId: courseClass.semesterId,
+      lecturerId: courseClass.lecturerId ?? null
     });
   }
 
-  addCourseClass(
-    courseClass: CourseClass
-  ): void {
-
-    this.courseClasses.push({
-
-      ...courseClass,
-
-      id: Date.now()
-    });
+  updateCourseClass(courseClass: CourseClass): Observable<void> {
+    return this.http.put<void>(
+      `${this.apiUrl}/${courseClass.id}`,
+      {
+        courseClassId: courseClass.id,
+        classCode: courseClass.classCode,
+        subjectId: courseClass.subjectId,
+        semesterId: courseClass.semesterId,
+        lecturerId: courseClass.lecturerId ?? null
+      }
+    );
   }
 
-  updateCourseClass(
-    updatedCourseClass: CourseClass
-  ): void {
-
-    this.courseClasses =
-      this.courseClasses.map(courseClass =>
-
-        courseClass.id === updatedCourseClass.id
-
-          ? updatedCourseClass
-
-          : courseClass
-      );
-  }
-
-  deleteCourseClass(id: number): void {
-
-    this.courseClasses =
-      this.courseClasses.filter(
-        courseClass => courseClass.id !== id
-      );
+  deleteCourseClass(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
   }
 }

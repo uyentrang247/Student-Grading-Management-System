@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Models;
 using QuanLyDiem.API.Data;
+using System.Text.Json.Serialization;
 using QuanLyDiem.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -9,7 +10,11 @@ using QuanLyDiem.API.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    });
 
 // Cấu hình SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
