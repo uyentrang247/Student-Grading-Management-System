@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { AuthService } from '../../services/auth';
-import { SemesterService } from '../../services/semester';
+
 
 @Component({
   selector: 'app-home',
@@ -12,16 +12,12 @@ import { SemesterService } from '../../services/semester';
   styleUrl: './home.css'
 })
 export class HomeComponent implements OnInit {
-  currentSemester: string = 'Đang tải...';
-  currentAcademicYear: string = '';
 
-  constructor(
-    private authService: AuthService,
-    private semesterService: SemesterService
-  ) {}
+
+  constructor(private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.getCurrentSemester();
+
   }
 
   getUserName(): string {
@@ -42,21 +38,5 @@ export class HomeComponent implements OnInit {
     return this.authService.isLecturer();
   }
 
-  getCurrentSemester(): void {
-    this.semesterService.getSemesters().subscribe({
-      next: (data) => {
-        if (data && data.length > 0) {
-          const current = data[0];
-          this.currentSemester = current.term;
-          this.currentAcademicYear = current.academicYear;
-        } else {
-          this.currentSemester = 'Chưa có';
-        }
-      },
-      error: (err) => {
-        console.error('Lỗi:', err);
-        this.currentSemester = 'Lỗi tải';
-      }
-    });
-  }
+  
 }
