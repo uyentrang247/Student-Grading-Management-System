@@ -22,7 +22,7 @@ export class CourseClassForm implements OnInit {
     classCode: '',
     subjectId: 0,
     semesterId: 1,
-    lecturerId: null,
+    lecturerId: 0,
     maxStudents: 40
   };
 
@@ -48,11 +48,10 @@ export class CourseClassForm implements OnInit {
             semesterId: Number(data.semesterId ?? 1),
             lecturerId: data.lecturerId !== undefined && data.lecturerId !== null
               ? Number(data.lecturerId)
-              : null,
+              : 0,
             maxStudents: Number(data.maxStudents ?? 40)
           };
 
-          // Ép Angular cập nhật giao diện ngay sau khi nhận dữ liệu
           this.cdr.detectChanges();
         },
         error: (error) => {
@@ -75,13 +74,13 @@ export class CourseClassForm implements OnInit {
       return;
     }
 
-    if (!this.courseClass.semesterId || this.courseClass.semesterId <= 0) {
-      alert('Vui lòng chọn học kỳ');
+    if (!this.courseClass.lecturerId || Number(this.courseClass.lecturerId) <= 0) {
+      alert('Vui lòng chọn giảng viên');
       return;
     }
 
-    if (!this.courseClass.maxStudents || this.courseClass.maxStudents <= 0) {
-      alert('Sĩ số tối đa phải lớn hơn 0');
+    if (!this.courseClass.semesterId || this.courseClass.semesterId <= 0) {
+      alert('Vui lòng chọn học kỳ');
       return;
     }
 
@@ -90,10 +89,8 @@ export class CourseClassForm implements OnInit {
       classCode: this.courseClass.classCode.trim(),
       subjectId: Number(this.courseClass.subjectId),
       semesterId: Number(this.courseClass.semesterId),
-      lecturerId: this.courseClass.lecturerId !== null
-        ? Number(this.courseClass.lecturerId)
-        : null,
-      maxStudents: Number(this.courseClass.maxStudents)
+      lecturerId: Number(this.courseClass.lecturerId),
+      maxStudents: Number(this.courseClass.maxStudents ?? 40)
     };
 
     if (this.isEditMode) {
