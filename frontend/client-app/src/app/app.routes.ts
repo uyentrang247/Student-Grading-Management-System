@@ -10,6 +10,7 @@ import { SubjectList } from './features/subjects/subject-list/subject-list';
 import { SubjectForm } from './features/subjects/subject-form/subject-form';
 import { GradeEntryComponent } from './features/grade-management/grade-entry/grade-entry';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
+import { roleGuard } from './guards/role.guard';
 
 export const routes: Routes = [
   {
@@ -62,8 +63,10 @@ export const routes: Routes = [
     component: SubjectForm
   },
   {
-    path: 'grades',
-    component: GradeEntryComponent
+    path: 'lecturer/grades',
+    component: GradeEntryComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
   },
   { 
     path: 'forgot-password', 

@@ -38,8 +38,6 @@ export class GradeEntryComponent implements OnInit {
   
   notification = { show: false, message: '', type: 'success' as 'success' | 'error' };
 
-  private readonly lecturerId = 2;
-
   constructor(
     private gradeEntryService: GradeEntryService,
     private cdr: ChangeDetectorRef
@@ -49,10 +47,46 @@ export class GradeEntryComponent implements OnInit {
     this.loadCourseClasses();
   }
 
+  // Hàm giải mã token lấy userId
+  private getUserIdFromToken(): number | null {
+    const token = localStorage.getItem('token');
+    if (!token) return null;
+    
+    try {
+      const payload = token.split('.')[1];
+      const base64 = payload.replace(/-/g, '+').replace(/_/g, '/');
+      const decodedPayload = decodeURIComponent(
+        window.atob(base64).split('').map(function(c) {
+          return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join('')
+      );
+      const tokenData = JSON.parse(decodedPayload);
+      
+      // Lấy userId từ các trường có thể có
+      const userId = tokenData.sub || tokenData.nameid || tokenData.UserId || tokenData['http://schemas.xmlsoap.org/ws/2005/05/identity/claims/nameidentifier'];
+      return userId ? parseInt(userId) : null;
+    } catch (e) {
+      console.error('Lỗi giải mã token:', e);
+      return null;
+    }
+  }
+
   loadCourseClasses(): void {
     this.isLoading = true;
     this.cdr.detectChanges();
-    this.gradeEntryService.getCourseClassesByLecturer(this.lecturerId).subscribe({
+    
+    const lecturerId = this.getUserIdFromToken();
+    
+    if (!lecturerId) {
+      console.error('Không tìm thấy lecturerId từ token');
+      this.isLoading = false;
+      this.showNotification('Không tìm thấy thông tin giảng viên', 'error');
+      return;
+    }
+    
+    console.log('LecturerId từ token:', lecturerId);
+    
+    this.gradeEntryService.getCourseClassesByLecturer(lecturerId).subscribe({
       next: (data) => {
         this.courseClasses = data;
         this.isLoading = false;
@@ -61,6 +95,7 @@ export class GradeEntryComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.isLoading = false;
+        this.showNotification('Lỗi tải danh sách lớp', 'error');
         this.cdr.detectChanges();
       }
     });
@@ -86,6 +121,7 @@ export class GradeEntryComponent implements OnInit {
       error: (err) => {
         console.error(err);
         this.isLoading = false;
+        this.showNotification('Lỗi tải danh sách sinh viên', 'error');
         this.cdr.detectChanges();
       }
     });
@@ -182,5 +218,57 @@ export class GradeEntryComponent implements OnInit {
 
   getTotalCount(): number {
     return this.filteredStudents.length;
+  }
+
+  loadFailStudents(): void {
+    if (!this.selectedClassId) {
+      this.showNotification('Vui lòng chọn lớp học phần', 'error');
+      return;
+    }
+    
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    
+    this.gradeEntryService.getFailStudents(this.selectedClassId).subscribe({
+      next: (data) => {
+        this.filteredStudents = data;
+        this.updatePagination();
+        this.isLoading = false;
+        this.showNotification(`Có ${data.length} sinh viên rớt`, 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+        this.showNotification('Lỗi tải danh sách sinh viên rớt', 'error');
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  viewTranscript(): void {
+    if (!this.selectedClassId) {
+      this.showNotification('Vui lòng chọn lớp học phần', 'error');
+      return;
+    }
+    
+    this.isLoading = true;
+    this.cdr.detectChanges();
+    
+    this.gradeEntryService.getTranscript(this.selectedClassId).subscribe({
+      next: (data) => {
+        this.filteredStudents = data.students;
+        this.updatePagination();
+        this.isLoading = false;
+        this.showNotification(`Đã tải bảng điểm lớp ${data.courseClass.classCode}`, 'success');
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error(err);
+        this.isLoading = false;
+        this.showNotification('Lỗi tải bảng điểm', 'error');
+        this.cdr.detectChanges();
+      }
+    });
   }
 }
