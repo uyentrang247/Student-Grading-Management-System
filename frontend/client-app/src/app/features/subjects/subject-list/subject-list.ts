@@ -59,8 +59,16 @@ export class SubjectList implements OnInit {
           this.loadSubjects();
         },
         error: (error) => {
-          alert('Xóa môn học thất bại');
           console.error(error);
+
+          const errorMessage =
+            typeof error.error === 'string'
+              ? error.error
+              : error.error?.message
+                || error.error?.title
+                || 'Xóa môn học thất bại';
+
+          alert(errorMessage);
         }
       });
   }
