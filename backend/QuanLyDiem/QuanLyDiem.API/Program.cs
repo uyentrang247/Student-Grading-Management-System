@@ -1,26 +1,33 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Models;
 using QuanLyDiem.API.Data;
-using QuanLyDiem.API.Helpers; // 1. SỬA LỖI: Thêm dòng này để nhận PasswordHasher và JwtHelper
+using QuanLyDiem.API.Helpers;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using QuanLyDiem.API.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 
-// Giữ nguyên cấu hình SQLite của nhóm bạn
+// Cấu hình SQLite
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite(
         builder.Configuration.GetConnectionString("DefaultConnection")
     )
 );
 
+// Đăng ký Services
+builder.Services.AddScoped<StudentService>();
+builder.Services.AddSingleton<PasswordHasher>();
+builder.Services.AddScoped<JwtHelper>();
+builder.Services.AddScoped<AuthService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-// 2. CẤU HÌNH JWT AUTHENTICATION: Giúp Backend sinh và hiểu được mã Token thật
+// Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
     {
@@ -41,24 +48,20 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AllowAngular",
         policy =>
         {
-            policy.AllowAnyOrigin()
+            policy.WithOrigins("http://localhost:4200")
                   .AllowAnyHeader()
                   .AllowAnyMethod();
         });
 });
 
-builder.Services.AddSingleton<PasswordHasher>();
-builder.Services.AddScoped<JwtHelper>();
-builder.Services.AddScoped<AuthService>();
 var app = builder.Build();
 
 app.UseSwagger();
 app.UseSwaggerUI();
 
-// 3. SỬA THỨ TỰ MIDDLEWARE: CORS phải đứng trước, sau đó tới Auth
+// Thứ tự Middleware quan trọng
 app.UseCors("AllowAngular");
-
-app.UseAuthentication(); // Kích hoạt xác thực Token
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();

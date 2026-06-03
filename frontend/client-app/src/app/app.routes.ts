@@ -2,12 +2,15 @@ import { Routes } from '@angular/router';
 import { LoginComponent } from './features/auth/login/login';
 import { HomeComponent } from './features/home/home';
 import { StudentListComponent } from './features/student-management/student-list/student-list';
+import { StudentEditComponent } from './features/student-management/student-edit/student-edit';
+import { StudentCreateComponent } from './features/student-management/student-create/student-create';
 import { CourseClassList } from './features/course-classes/course-class-list/course-class-list';
 import { CourseClassForm } from './features/course-classes/course-class-form/course-class-form';
 import { SubjectList } from './features/subjects/subject-list/subject-list';
 import { SubjectForm } from './features/subjects/subject-form/subject-form';
 import { GradeEntryComponent } from './features/grade-management/grade-entry/grade-entry';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
+
 export const routes: Routes = [
   {
     path: '',
@@ -25,6 +28,14 @@ export const routes: Routes = [
   {
     path: 'student',
     component: StudentListComponent
+  },
+  {
+    path: 'student/edit/:id',
+    component: StudentEditComponent 
+  },
+  {
+    path: 'student/create',
+    component: StudentCreateComponent
   },
   {
     path: 'course-classes',

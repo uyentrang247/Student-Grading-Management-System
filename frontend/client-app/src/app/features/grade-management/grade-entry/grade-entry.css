@@ -22,103 +22,7 @@
   padding: 24px;
 }
 
-.form-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
-  margin-bottom: 8px;
-}
 
-.qnu-input {
-  border: 1px solid #d9e1ec;
-  border-radius: 8px;
-  min-height: 42px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-}
-
-.qnu-input:focus {
-  border-color: #172b4d;
-  box-shadow: 0 0 0 3px rgba(23, 43, 77, 0.1);
-  outline: none;
-}
-
-.grade-table {
-  font-size: 14px;
-  border-collapse: separate;
-  border-spacing: 0;
-}
-
-.grade-table thead th {
-  background: #f8fafc;
-  color: #475569;
-  font-size: 13px;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  padding: 14px 12px;
-  border-bottom: 2px solid #e2e8f0;
-}
-
-.grade-table tbody td {
-  padding: 12px;
-  color: #334155;
-  border-bottom: 1px solid #f1f5f9;
-  vertical-align: middle;
-}
-
-.grade-table tbody tr:hover {
-  background: #fafcff;
-}
-
-.score-input {
-  width: 100px;
-  margin: 0 auto;
-  text-align: center;
-  border-radius: 8px;
-  padding: 8px 8px;
-  font-size: 15px;
-  font-weight: 500;
-}
-
-.score-badge {
-  font-weight: 700;
-  font-size: 16px;
-  padding: 8px 16px;
-  border-radius: 8px;
-  display: inline-block;
-  min-width: 60px;
-  background-color: #eef2ff;
-  color: #1e3a8a;
-}
-
-.grade-table td {
-  font-size: 14px;
-}
-
-.grade-table td .fw-bold {
-  font-weight: 600;
-}
-
-.btn-save {
-  background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
-  color: white;
-  border: none;
-  border-radius: 10px;
-  padding: 10px 24px;
-  font-weight: 600;
-  transition: all 0.2s ease;
-}
-
-.btn-save:hover:not(:disabled) {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(23, 43, 77, 0.2);
-}
-
-.btn-save:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
 
 .toast {
   border-radius: 12px;
@@ -128,28 +32,5 @@
 
 @media (max-width: 768px) {
   .card-body { padding: 16px; }
-  .score-input { width: 80px; }
-  .score-badge { font-size: 14px; padding: 6px 12px; min-width: 50px; }
-  .grade-table thead th, .grade-table tbody td { padding: 8px; font-size: 12px; }
-}
 
-.grade-score {
-  display: inline-block;
-  font-size: 18px;
-  font-weight: 700;
-  padding: 6px 14px;
-  background-color: #eef2ff;
-  color: #1e3a8a;
-  border-radius: 10px;
-  min-width: 70px;
-  text-align: center;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-
-@media (max-width: 768px) {
-  .grade-score {
-    font-size: 15px;
-    padding: 4px 10px;
-    min-width: 55px;
-  }
 }
