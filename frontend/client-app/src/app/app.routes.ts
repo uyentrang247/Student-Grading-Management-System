@@ -26,13 +26,17 @@ export const routes: Routes = [
     path: 'home',
     component: HomeComponent
   },
-  {
+ {
     path: 'student',
-    component: StudentListComponent
+    component: StudentListComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Admin'] }
   },
   {
     path: 'student/edit/:id',
-    component: StudentEditComponent 
+    component: StudentEditComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Admin'] }
   },
   {
     path: 'student/create',
