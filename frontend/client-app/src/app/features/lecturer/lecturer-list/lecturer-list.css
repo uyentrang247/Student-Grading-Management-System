@@ -1,0 +1,18 @@
+.lecturer-list-container {
+  max-width: 900px; margin: 20px auto; padding: 30px;
+  background: #ffffff; border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+}
+.header-actions {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 25px; border-bottom: 2px solid #ff9800; padding-bottom: 10px;
+}
+.header-actions h2 { margin: 0; color: #162a52; font-weight: 700; }
+.btn-add {
+  background: #ff9800; color: white; border: none;
+  padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;
+}
+.btn-add:hover { background: #e68a00; }
+.table { width: 100%; border-collapse: collapse; }
+.table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
+.table th { background-color: #f8fafc; color: #4a5568; }
