@@ -33,10 +33,6 @@ h2 {
   margin-bottom: 20px;
 }
 
-.row .input-group {
-  margin-bottom: 0;
-}
-
 .input-group label {
   display: block;
   margin-bottom: 8px;
@@ -107,18 +103,4 @@ h2 {
 
 .btn-cancel:hover {
   background-color: #dfe3e8;
-}
-
-.btn-cancel:disabled {
-  background-color: #cbd5e0;
-  cursor: not-allowed;
-}
-
-.success-msg {
-  padding: 15px;
-  background: #e6fffa;
-  color: #2c7a7b;
-  border-radius: 6px;
-  margin-top: 20px;
-  text-align: center;
 }

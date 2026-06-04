@@ -18,20 +18,38 @@ export class LecturerListComponent implements OnInit {
     private cdr: ChangeDetectorRef
   ) {}
 
-  ngOnInit() {
+  ngOnInit(): void {
     this.loadLecturers();
   }
 
-  loadLecturers() {
+  loadLecturers(): void {
     this.lecturerService.getLecturers().subscribe({
-      next: (data) => {
-        console.log(data);
+      next: (data: any) => {
         this.lecturers = data;
         this.cdr.detectChanges();
       },
-      error: (err) => {
+      error: (err: any) => {
         console.error(err);
       }
     });
   }
+
+deleteLecturer(id: number): void {
+  if (confirm('Bạn có chắc chắn muốn xóa giảng viên này không?')) {
+    this.lecturerService.deleteLecturer(id).subscribe({
+      next: (res: any) => { 
+        // 🔥 Bồ thêm dòng này vào để hiện thông báo
+        // Nếu Backend trả về res có message thì hiện, không thì báo mặc định
+        alert(res?.message || 'Xóa giảng viên thành công!'); 
+        
+        this.loadLecturers(); // Load lại danh sách sau khi xóa
+      },
+      error: (err: any) => {
+        // Nếu xóa lỗi, nó sẽ nhảy vào đây
+        console.error(err);
+        alert('Có lỗi xảy ra khi xóa: ' + (err.error?.message || 'Vui lòng thử lại sau!'));
+      }
+    });
+  }
+}
 }

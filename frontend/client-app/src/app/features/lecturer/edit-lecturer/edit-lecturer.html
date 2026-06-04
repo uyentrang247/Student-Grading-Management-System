@@ -1,0 +1,42 @@
+<div *ngIf="isLoading" style="text-align: center; margin-top: 50px;">
+  <p>Đang tải dữ liệu...</p>
+</div>
+
+<div class="lecturer-form-container" *ngIf="!isLoading">
+  <h2>Sửa thông tin giảng viên</h2>
+
+  <div *ngIf="errorMessage" style="color: red; margin: 15px 0; padding: 10px; border: 1px solid red; text-align: center; font-weight: bold; background: #fff0f0;">
+    {{ errorMessage }}
+  </div>
+
+  <div class="row">
+    <div class="col-md-6">
+      <div class="input-group">
+        <label>Họ và Tên</label>
+        <input [(ngModel)]="lecturer.fullName" name="fullName" type="text" placeholder="Nhập họ tên...">
+      </div>
+    </div>
+    <div class="col-md-6">
+      <div class="input-group">
+        <label>Email</label>
+        <input [(ngModel)]="lecturer.email" name="email" type="email" placeholder="Nhập email...">
+      </div>
+    </div>
+  </div>
+
+  <div class="input-group" *ngIf="faculties.length > 0">
+    <label>Khoa trực thuộc</label>
+    <select [(ngModel)]="lecturer.facultyId" name="facultyId">
+      <option *ngFor="let f of faculties" [ngValue]="f.facultyId">
+        {{f.facultyName}}
+      </option>
+    </select>
+  </div>
+
+  <div class="form-actions">
+    <button (click)="onUpdate()" class="btn-submit" style="background-color: #1a365d; color: white; padding: 10px 20px; border: none; cursor: pointer;">
+      Lưu thay đổi
+    </button>
+    <button routerLink="/admin/lecturers" class="btn-cancel">Hủy</button>
+  </div>
+</div>

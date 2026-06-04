@@ -1,18 +1,121 @@
-.lecturer-list-container {
-  max-width: 900px; margin: 20px auto; padding: 30px;
-  background: #ffffff; border-radius: 12px;
-  box-shadow: 0 10px 25px rgba(0,0,0,0.05);
+.module-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 10px;
+  overflow: hidden;
+  margin: 20px auto;
+  box-shadow: 0 4px 6px rgba(50, 50, 93, 0.05);
 }
-.header-actions {
-  display: flex; justify-content: space-between; align-items: center;
-  margin-bottom: 25px; border-bottom: 2px solid #ff9800; padding-bottom: 10px;
+
+.qnu-card-header {
+  background: #172b4d;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border: none;
 }
-.header-actions h2 { margin: 0; color: #162a52; font-weight: 700; }
-.btn-add {
-  background: #ff9800; color: white; border: none;
-  padding: 10px 20px; border-radius: 6px; cursor: pointer; font-weight: bold;
+
+.form-title {
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: .3px;
+  margin: 0;
 }
-.btn-add:hover { background: #e68a00; }
-.table { width: 100%; border-collapse: collapse; }
-.table th, .table td { padding: 12px; text-align: left; border-bottom: 1px solid #e2e8f0; }
-.table th { background-color: #f8fafc; color: #4a5568; }
+
+.btn-add-qnu {
+  background: #ffffff;
+  color: #172b4d;
+  border: 1px solid #ffffff;
+  border-radius: 6px;
+  padding: 8px 16px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-add-qnu:hover {
+  background: #eef0f3;
+  color: #172b4d;
+}
+
+.card-body.p-0 {
+  padding: 0;
+}
+
+.qnu-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: #ffffff;
+}
+
+.qnu-table thead th {
+  background: #f4f6f9;
+  color: #495057;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 14px 20px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  border-bottom: 2px solid #e6ebf2;
+  text-align: left;
+}
+
+.qnu-table tbody td {
+  padding: 14px 20px;
+  font-size: 14px;
+  color: #525f7f;
+  border-bottom: 1px solid #e6ebf2;
+  vertical-align: middle;
+}
+
+.qnu-table tbody tr:hover {
+  background-color: #f8f9fe;
+}
+
+.btn-actions-cell {
+  display: flex;
+  gap: 8px;
+}
+
+.btn-qnu-edit {
+  background: #172b4d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-qnu-edit:hover {
+  background: #223b69;
+}
+
+.btn-qnu-delete {
+  background: #eef0f3;
+  color: #495057;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.btn-qnu-delete:hover {
+  background: #dfe3e8;
+  color: #f5365c;
+}
+
+.empty-message {
+  text-align: center;
+  color: #718096;
+  padding: 30px !important;
+  font-size: 14px;
+}
