@@ -35,10 +35,11 @@ namespace QuanLyDiem.API.Services
             // Tạo token từ JwtHelper
             var token = _jwtHelper.GenerateToken(user);
 
-            // Trả về object chứa đầy đủ token, role và fullName cho Angular
+           
             return new 
             { 
                 token, 
+                userId = user.UserId,
                 role = user.Role, 
                 fullName = user.FullName 
             };
