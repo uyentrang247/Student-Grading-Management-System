@@ -1,0 +1,123 @@
+/* Container bao bọc */
+.lecturer-form-container {
+  max-width: 700px;
+  margin: 20px auto;
+  padding: 40px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+  border: 1px solid #eef2f7;
+}
+
+/* Tiêu đề trang */
+h2 {
+  color: #162a52;
+  font-weight: 700;
+  margin-bottom: 30px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #ff9800; /* Điểm nhấn cam đồng bộ */
+  display: inline-block;
+}
+
+/* Các nhóm input */
+.input-group {
+  margin-bottom: 20px;
+}
+
+.input-group label {
+  display: block;
+  margin-bottom: 8px;
+  color: #4a5568;
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.input-group input, 
+.input-group select {
+  width: 100%;
+  padding: 12px 16px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  background-color: #f8fafc;
+  transition: all 0.3s ease;
+  font-size: 15px;
+}
+
+/* Hiệu ứng Focus */
+.input-group input:focus, 
+.input-group select:focus {
+  outline: none;
+  border-color: #162a52;
+  box-shadow: 0 0 0 3px rgba(22, 42, 82, 0.1);
+  background-color: #fff;
+}
+
+/* Nút Submit chuyên nghiệp */
+.btn-submit {
+  background-color: #162a52; /* Màu xanh Sidebar */
+  color: white;
+  padding: 14px 24px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.3s ease;
+  width: 100%;
+  margin-top: 10px;
+}
+
+.btn-submit:hover {
+  background-color: #0d1a33;
+}
+
+/* Thông báo */
+.success-msg {
+  padding: 15px;
+  background: #e6fffa;
+  color: #2c7a7b;
+  border-radius: 6px;
+  margin-top: 20px;
+  text-align: center;
+}
+/* Container bọc 2 nút bấm */
+.form-actions {
+  display: flex;
+  gap: 15px; /* Tạo khoảng cách giữa 2 nút */
+  margin-top: 25px;
+}
+
+/* Định dạng lại nút Submit cho co dãn theo flexbox */
+.btn-submit {
+  flex: 2; /* Chiếm 2 phần chiều rộng */
+  background-color: #ff9800;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+.btn-submit:disabled {
+  background-color: #cbd5e0;
+  cursor: not-allowed;
+}
+
+/* Nút Quay lại mới thêm */
+.btn-cancel {
+  flex: 1; /* Chiếm 1 phần chiều rộng */
+  background-color: #e2e8f0;
+  color: #4a5568;
+  padding: 14px;
+  border: 1px solid #cbd5e0;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  text-align: center;
+  transition: 0.3s;
+}
+
+.btn-cancel:hover {
+  background-color: #cbd5e0;
+  color: #2d3748;
+}

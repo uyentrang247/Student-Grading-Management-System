@@ -10,15 +10,15 @@ namespace QuanLyDiem.API.Models
 
         [Required(ErrorMessage = "Tên đăng nhập không được để trống.")]
         [StringLength(50, ErrorMessage = "Tài khoản không quá 50 ký tự.")]
-        public string Username { get; set; }
+        public string Username { get; set; } = string.Empty; // Đã thêm giá trị mặc định
 
         [Required(ErrorMessage = "Mật khẩu không được để trống.")]
         [MinLength(8, ErrorMessage = "Mật khẩu phải từ 8 ký tự trở lên.")]
-        public string Password { get; set; }
+        public string Password { get; set; } = string.Empty; // Đã thêm giá trị mặc định
 
         [Required(ErrorMessage = "Vui lòng nhập họ tên")]
         [MaxLength(100)]
-        public string FullName { get; set; }
+        public string FullName { get; set; } = string.Empty; // Đã thêm giá trị mặc định
 
         [Required(ErrorMessage = "Email không được để trống.")]
         [EmailAddress(ErrorMessage = "Địa chỉ Email không đúng định dạng.")]

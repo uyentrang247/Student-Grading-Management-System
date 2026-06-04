@@ -60,8 +60,16 @@ export class CourseClassList implements OnInit {
           this.loadCourseClasses();
         },
         error: (error) => {
-          alert('Xóa lớp học phần thất bại');
           console.error(error);
+
+          const errorMessage =
+            typeof error.error === 'string'
+              ? error.error
+              : error.error?.message
+                || error.error?.title
+                || 'Xóa lớp học phần thất bại';
+
+          alert(errorMessage);
         }
       });
   }
