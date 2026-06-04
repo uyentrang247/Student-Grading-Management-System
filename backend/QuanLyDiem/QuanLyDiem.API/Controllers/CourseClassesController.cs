@@ -99,6 +99,31 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest("Id không khớp");
             }
 
+            var currentCourseClass = await _context.CourseClasses
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CourseClassId == id);
+
+            if (currentCourseClass == null)
+            {
+                return NotFound();
+            }
+
+            bool isSubjectChanged = currentCourseClass.SubjectId != courseClass.SubjectId;
+
+            if (isSubjectChanged)
+            {
+                bool hasScoreData = await _context.Enrollments
+                    .AnyAsync(e =>
+                        e.CourseClassId == id &&
+                        (e.ProcessScore != null || e.FinalScore != null)
+                    );
+
+                if (hasScoreData)
+                {
+                    return BadRequest("Không cho phép đổi môn học vì lớp đã phát sinh dữ liệu điểm");
+                }
+            }
+
             var isCodeExists = await _context.CourseClasses
                 .AnyAsync(c =>
                     c.ClassCode == courseClass.ClassCode &&
