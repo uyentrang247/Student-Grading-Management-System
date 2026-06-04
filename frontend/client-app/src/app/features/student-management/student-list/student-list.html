@@ -1,8 +1,21 @@
 <div class="student-manager-wrapper">
-  <h3 class="page-title">QUẢN LÝ DANH SÁCH SINH VIÊN</h3>
+  <h3 class="page-title">DANH SÁCH SINH VIÊN</h3>
 
 <form (ngSubmit)="onSearch()" class="toolbar-container">
   <div class="search-filter-group">
+
+<select 
+  [(ngModel)]="selectedClassId" 
+  name="selectedClassId" 
+  (change)="onSearch()" 
+  class="form-input class-dropdown">
+  
+  <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
+  <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
+    {{ cls.className }}
+  </option>
+</select>
+
     <input 
       type="text" 
       [(ngModel)]="searchTerm" 
@@ -10,12 +23,7 @@
       class="form-input search-box"
     />
 
-    <select [(ngModel)]="selectedClassId" name="selectedClassId" class="form-input class-dropdown">
-      <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
-      <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
-        {{ cls.className }}
-      </option>
-    </select>
+  
 
     <button type="submit" class="btn btn-filter">
       <i class="fa fa-search"></i> Tìm kiếm
@@ -63,4 +71,28 @@
       </tbody>
     </table>
   </div>
+<div class="pagination-simple-container" *ngIf="totalPages > 1">
+    
+    <button 
+      type="button"
+      class="btn-arrow" 
+      [disabled]="currentPage === 1" 
+      (click)="goToPage(currentPage - 1)">
+      &lt;
+    </button>
+
+    <span class="pagination-text">
+      Trang {{ currentPage }} / {{ totalPages }}
+    </span>
+
+    <button 
+      type="button"
+      class="btn-arrow" 
+      [disabled]="currentPage === totalPages" 
+      (click)="goToPage(currentPage + 1)">
+      &gt;
+    </button>
+
+  </div>
+  
 </div>
