@@ -1,0 +1,35 @@
+<div class="lecturer-list-container">
+  <div class="header-actions">
+    <h2>Danh sách Giảng viên</h2>
+    <button class="btn-add" routerLink="/admin/lecturers/create">
+      + Thêm giảng viên mới
+    </button>
+  </div>
+
+<table class="table">
+  <thead>
+    <tr>
+      <th>Mã GV</th>
+      <th>Họ và Tên</th>
+      <th>Email</th>
+      <th>Khoa trực thuộc</th>
+    </tr>
+  </thead>
+  <tbody>
+    @for (gv of lecturers; track gv.username) {
+      <tr>
+        <td>{{ gv.username }}</td>
+        <td>{{ gv.fullName }}</td>
+        <td>{{ gv.email }}</td>
+        <td>{{ gv.facultyName }}</td>
+      </tr>
+    } @empty {
+      <tr>
+        <td colspan="4" style="text-align: center; color: #718096; padding: 20px;">
+          Danh sách giảng viên đang trống!
+        </td>
+      </tr>
+    }
+  </tbody>
+</table>
+</div>
