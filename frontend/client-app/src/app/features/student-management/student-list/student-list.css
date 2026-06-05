@@ -80,7 +80,7 @@
 
 /* Nút thêm mới giữ màu xanh lá nổi bật tương tự ảnh của bạn */
 .btn-add-new {
-  background-color: #28a745;
+  background-color:midnightblue;
   color: white;
   white-space: nowrap;
 }
@@ -144,8 +144,8 @@
 }
 
 .btn-edit {
-  background-color: #ffc107;
-  color: #212529;
+  background-color: #12284c;
+  color: #ced4da;
 }
 
 .btn-edit:hover { background-color: #e0a800; }
@@ -163,4 +163,55 @@
   color: #6c757d;
   font-style: italic;
   background-color: #fefefe;
+}
+.pagination-simple-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #eeeeee;
+}
+
+/* Định dạng chữ "Trang X / Y" ở chính giữa */
+.pagination-text {
+  font-size: 15px;
+  color: #555555;
+  font-weight: 500;
+  user-select: none; /* Không cho phép bôi đen text khi click nhanh */
+}
+
+/* Định dạng nút mũi tên hình vuông bo góc nhẹ */
+.btn-arrow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border: none;
+  background-color: #f0f2f5; /* Nền xám nhạt */
+  color: #000000;
+  font-weight: bold;
+  font-size: 14px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Hiệu ứng khi di chuột qua nút mũi tên */
+.btn-arrow:hover:not([disabled]) {
+  background-color: #e4e6e9; /* Nền xám tối hơn chút khi hover */
+}
+
+/* Hiệu ứng click (tạo cảm giác lún nút nhẹ) */
+.btn-arrow:active:not([disabled]) {
+  transform: scale(0.95);
+}
+
+/* Trạng thái nút bị vô hiệu hóa (Mờ đi khi ở trang đầu hoặc trang cuối) */
+.btn-arrow:disabled {
+  background-color: #f7f9fa;
+  color: #dddddd;
+  cursor: not-allowed;
 }
