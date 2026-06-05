@@ -119,3 +119,13 @@
   padding: 30px !important;
   font-size: 14px;
 }
+.qnu-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+}
+.search-box {
+  margin-right: auto;
+  margin-left: 20px;
+}

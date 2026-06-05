@@ -33,7 +33,14 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-
+[HttpGet("search")]
+public async Task<IActionResult> Search(string name)
+{
+    var result = await _context.Users
+        .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
+        .ToListAsync();
+    return Ok(result);
+}
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {

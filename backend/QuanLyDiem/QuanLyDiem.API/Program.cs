@@ -31,7 +31,9 @@ builder.Services.AddScoped<AuthService>();
 builder.Services.AddScoped<LecturerService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-
+// Đăng ký bộ nhớ tạm (Cache) để lưu mã OTP trong vài phút
+builder.Services.AddMemoryCache();
+builder.Services.AddTransient<IEmailService, EmailService>(); 
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

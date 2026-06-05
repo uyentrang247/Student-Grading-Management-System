@@ -1,6 +1,16 @@
 <div class="lecturer-list-container module-card">
   <div class="qnu-card-header">
     <h2 class="form-title">Danh sách Giảng viên</h2>
+    
+    <div class="search-box">
+      <input type="text" 
+             [(ngModel)]="searchTerm" 
+             (input)="onSearch()" 
+             placeholder="Tìm theo tên hoặc email..."
+             class="form-control"
+             style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+    </div>
+
     <button class="btn-add-qnu" routerLink="/admin/lecturers/create">
       + Thêm giảng viên mới
     </button>
@@ -18,7 +28,7 @@
         </tr>
       </thead>
       <tbody>
-        @for (gv of lecturers; track gv.userId) {
+        @for (gv of filteredLecturers; track gv.userId) {
           <tr>
             <td>{{ gv.username }}</td>
             <td>{{ gv.fullName }}</td>
@@ -34,7 +44,7 @@
         } @empty {
           <tr>
             <td colspan="5" class="empty-message">
-              Danh sách giảng viên đang trống!
+              Không tìm thấy giảng viên nào!
             </td>
           </tr>
         }

@@ -69,17 +69,26 @@ namespace QuanLyDiem.API.Services
         private async Task SendAccountEmail(string email, string username, string password)
         {
             var message = new MimeMessage();
-            message.From.Add(new MailboxAddress("Hệ thống QLĐ", "hethongtest1@gmail.com"));
+            message.From.Add(new MailboxAddress("Hệ thống Quản Lý Điểm QNU", "hethongtest1@gmail.com"));
             message.To.Add(new MailboxAddress("Giảng viên", email));
             message.Subject = "Thông tin tài khoản Giảng viên mới";
             
             message.Body = new TextPart("html") 
             {
-                Text = $@"<h3>Chào mừng Giảng viên mới!</h3>
-                          <p>Tài khoản của bạn đã được tạo. Vui lòng đăng nhập hệ thống:</p>
-                          <p><b>Username:</b> {username}</p>
-                          <p><b>Password:</b> {password}</p>
-                          <p><i>Vui lòng thay đổi mật khẩu ngay sau khi đăng nhập.</i></p>"
+Text = $@"
+<div style='font-family: ""Segoe UI"", Tahoma, Geneva, Verdana, sans-serif; max-width: 450px; margin: 0 auto; padding: 30px; border-radius: 20px; background-color: #ffffff; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border: 1px solid #e4ecf7;'>
+    <h3 style='color: #2d3748; font-size: 22px; margin-top: 0; margin-bottom: 12px; font-weight: 700;'>Chào mừng Giảng viên mới!</h3>
+    <p style='color: #718096; font-size: 15px; line-height: 1.6; margin-bottom: 20px;'>Tài khoản của thầy/cô đã được khởi tạo thành công. Vui lòng đăng nhập vào hệ thống quản lý bằng thông tin dưới đây:</p>
+    
+    <div style='background-color: #f8fafc; padding: 16px; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 20px;'>
+        <p style='margin: 0 0 8px 0; color: #4a5568; font-size: 15px;'><b>Tên đăng nhập:</b> <span style='color: #2d3748;'>{username}</span></p>
+        <p style='margin: 0; color: #4a5568; font-size: 15px;'><b>Mật khẩu:</b> <span style='color: #2d3748;'>{password}</span></p>
+    </div>
+    
+    <p style='color: #718096; font-size: 14px; font-style: italic; line-height: 1.5; margin: 0; padding-top: 12px; border-top: 1px dashed #e2e8f0;'>
+        * Vì lý do bảo mật, thầy/cô vui lòng sử dụng chức năng <b>""Quên mật khẩu""</b> tại trang đăng nhập để tiến hành thay đổi mật khẩu mới trong lần đầu truy cập.
+    </p>
+</div>"
             };
 
             using (var client = new SmtpClient())
