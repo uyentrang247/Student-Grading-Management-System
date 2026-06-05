@@ -14,7 +14,7 @@ import { forkJoin } from 'rxjs';
   styleUrls: ['./edit-lecturer.css']  
 })
 export class EditLecturerComponent implements OnInit {
-  lecturer: any = { userId: 0, fullName: '', email: '', facultyId: 0 };
+  lecturer: any = { userId: 0, fullName: '', email: '', facultyId: null };
   faculties: any[] = [];
   isLoading: boolean = true; 
   errorMessage: string = ''; 
@@ -35,7 +35,6 @@ export class EditLecturerComponent implements OnInit {
       facultiesData: this.lecturerService.getFaculties()
     }).subscribe({
       next: (result) => {
-        // Gán từng thuộc tính để đảm bảo dữ liệu binding chuẩn nhất
         this.lecturer.userId = result.lecturerData.userId;
         this.lecturer.fullName = result.lecturerData.fullName;
         this.lecturer.email = result.lecturerData.email;
@@ -54,7 +53,6 @@ export class EditLecturerComponent implements OnInit {
   }
 
   onUpdate(): void {
-    // CHẶN GỬI NẾU RỖNG: Kiểm tra dữ liệu trước khi gọi API
     if (!this.lecturer.fullName || this.lecturer.fullName.trim() === '') {
       this.errorMessage = 'Họ tên không được để trống!';
       return;
@@ -72,9 +70,18 @@ export class EditLecturerComponent implements OnInit {
         this.router.navigate(['/admin/lecturers']);
       },
       error: (err) => {
-        // HIỂN THỊ LỖI SERVER: Dùng NgZone để đảm bảo thông báo đỏ hiện lên
         this.zone.run(() => {
-          this.errorMessage = err.error?.message || err.error || 'Cập nhật thất bại.';
+          if (err.error && typeof err.error === 'object') {
+            if (err.error.errors) {
+              this.errorMessage = Object.values(err.error.errors).flat().join(', ');
+            } else if (err.error.message) {
+              this.errorMessage = err.error.message;
+            } else {
+              this.errorMessage = Object.values(err.error).flat().join(', ');
+            }
+          } else {
+            this.errorMessage = err.error || 'Cập nhật thất bại.';
+          }
           this.cdr.detectChanges();
         });
       }

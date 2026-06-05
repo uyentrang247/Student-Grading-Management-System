@@ -33,14 +33,16 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest(new { message = ex.Message });
             }
         }
-[HttpGet("search")]
-public async Task<IActionResult> Search(string name)
-{
-    var result = await _context.Users
-        .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
-        .ToListAsync();
-    return Ok(result);
-}
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string name)
+        {
+            var result = await _context.Users
+                .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
+                .ToListAsync();
+            return Ok(result);
+        }
+
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -81,37 +83,34 @@ public async Task<IActionResult> Search(string name)
             return Ok(lecturer);
         }
 
-        [Authorize(Roles = "Admin")]
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateLecturer(int id, [FromBody] UpdateLecturerDto dto)
-        {
-            // 1. Kiểm tra ràng buộc [Required] và [EmailAddress] trong DTO
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState); // Trả về thông báo lỗi chi tiết cho Angular
-            }
+       [Authorize(Roles = "Admin")]
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdateLecturer(int id, [FromBody] UpdateLecturerDto dto)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
 
-            var lecturer = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
+    var lecturer = await _context.Users
+        .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
 
-            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
+    if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
 
-            // 2. Kiểm tra trùng email
-            var emailExists = await _context.Users
-                .AnyAsync(u => u.Email == dto.Email && u.UserId != id);
+    var emailExists = await _context.Users
+        .AnyAsync(u => u.Email == dto.Email && u.UserId != id);
 
-            if (emailExists) return BadRequest(new { message = "Email đã được sử dụng bởi người khác." });
+    if (emailExists) return BadRequest(new { message = "Email đã được sử dụng bởi người khác." });
 
-            // 3. Cập nhật thông tin
-            lecturer.FullName = dto.FullName;
-            lecturer.Email = dto.Email;
-            lecturer.FacultyId = dto.FacultyId ?? lecturer.FacultyId;
+    lecturer.FullName = dto.FullName;
+    lecturer.Email = dto.Email;
+    lecturer.FacultyId = dto.FacultyId ?? lecturer.FacultyId;
 
-            _context.Users.Update(lecturer);
-            await _context.SaveChangesAsync();
+    _context.Users.Update(lecturer);
+    await _context.SaveChangesAsync();
 
-            return Ok(new { message = "Cập nhật thông tin giảng viên thành công." });
-        }
+    return Ok(new { message = "Cập nhật thông tin giảng viên thành công." });
+}
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
@@ -122,7 +121,6 @@ public async Task<IActionResult> Search(string name)
 
             if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
 
-            // 4. Kiểm tra xem giảng viên có đang dạy lớp nào không
             var isTeaching = await _context.Users
                 .AnyAsync(u => u.UserId == id && u.CourseClasses != null && u.CourseClasses.Any());
 
