@@ -29,7 +29,9 @@ export class AuthService {
       })
     );
   }
-
+verifyOtp(model: { email: string; otp: string }) {
+  return this.http.post(`${this.apiUrl}/verify-otp`, model);
+}
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');

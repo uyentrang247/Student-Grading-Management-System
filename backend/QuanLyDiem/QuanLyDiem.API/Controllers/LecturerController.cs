@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Data;
@@ -24,7 +25,6 @@ namespace QuanLyDiem.API.Controllers
         {
             try
             {
-                // Gọi Service và lấy thông báo kết quả (thành công hoặc lỗi mail)
                 string resultMessage = await _lecturerService.CreateLecturerAsync(model);
                 return Ok(new { message = resultMessage });
             }
@@ -32,6 +32,15 @@ namespace QuanLyDiem.API.Controllers
             {
                 return BadRequest(new { message = ex.Message });
             }
+        }
+
+        [HttpGet("search")]
+        public async Task<IActionResult> Search(string name)
+        {
+            var result = await _context.Users
+                .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
+                .ToListAsync();
+            return Ok(result);
         }
 
         [HttpGet]
@@ -42,6 +51,7 @@ namespace QuanLyDiem.API.Controllers
                 .Include(u => u.Faculty)
                 .Select(u => new
                 {
+                    u.UserId,
                     u.Username,
                     u.FullName,
                     u.Email,
@@ -51,6 +61,75 @@ namespace QuanLyDiem.API.Controllers
                 .ToListAsync();
 
             return Ok(lecturers);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<IActionResult> GetById(int id)
+        {
+            var lecturer = await _context.Users
+                .Where(u => u.UserId == id && u.Role == "Lecturer")
+                .Select(u => new
+                {
+                    u.UserId,
+                    u.Username,
+                    u.FullName,
+                    u.Email,
+                    u.FacultyId
+                })
+                .FirstOrDefaultAsync();
+
+            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
+
+            return Ok(lecturer);
+        }
+
+       [Authorize(Roles = "Admin")]
+[HttpPut("{id}")]
+public async Task<IActionResult> UpdateLecturer(int id, [FromBody] UpdateLecturerDto dto)
+{
+    if (!ModelState.IsValid)
+    {
+        return BadRequest(ModelState);
+    }
+
+    var lecturer = await _context.Users
+        .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
+
+    if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
+
+    var emailExists = await _context.Users
+        .AnyAsync(u => u.Email == dto.Email && u.UserId != id);
+
+    if (emailExists) return BadRequest(new { message = "Email đã được sử dụng bởi người khác." });
+
+    lecturer.FullName = dto.FullName;
+    lecturer.Email = dto.Email;
+    lecturer.FacultyId = dto.FacultyId ?? lecturer.FacultyId;
+
+    _context.Users.Update(lecturer);
+    await _context.SaveChangesAsync();
+
+    return Ok(new { message = "Cập nhật thông tin giảng viên thành công." });
+}
+
+        [Authorize(Roles = "Admin")]
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteLecturer(int id)
+        {
+            var lecturer = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
+
+            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
+
+            var isTeaching = await _context.Users
+                .AnyAsync(u => u.UserId == id && u.CourseClasses != null && u.CourseClasses.Any());
+
+            if (isTeaching) return BadRequest(new { message = "Không thể xóa giảng viên đang phụ trách lớp học phần." });
+
+            _context.Users.Remove(lecturer);
+            await _context.SaveChangesAsync();
+
+            return Ok(new { message = "Xóa tài khoản giảng viên thành công." });
         }
     }
 }

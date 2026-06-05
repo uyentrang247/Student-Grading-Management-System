@@ -1,35 +1,54 @@
-<div class="lecturer-list-container">
-  <div class="header-actions">
-    <h2>Danh sách Giảng viên</h2>
-    <button class="btn-add" routerLink="/admin/lecturers/create">
+<div class="lecturer-list-container module-card">
+  <div class="qnu-card-header">
+    <h2 class="form-title">Danh sách Giảng viên</h2>
+    
+    <div class="search-box">
+      <input type="text" 
+             [(ngModel)]="searchTerm" 
+             (input)="onSearch()" 
+             placeholder="Tìm theo tên hoặc email..."
+             class="form-control"
+             style="padding: 8px; border-radius: 5px; border: 1px solid #ccc; width: 250px;">
+    </div>
+
+    <button class="btn-add-qnu" routerLink="/admin/lecturers/create">
       + Thêm giảng viên mới
     </button>
   </div>
 
-<table class="table">
-  <thead>
-    <tr>
-      <th>Mã GV</th>
-      <th>Họ và Tên</th>
-      <th>Email</th>
-      <th>Khoa trực thuộc</th>
-    </tr>
-  </thead>
-  <tbody>
-    @for (gv of lecturers; track gv.username) {
-      <tr>
-        <td>{{ gv.username }}</td>
-        <td>{{ gv.fullName }}</td>
-        <td>{{ gv.email }}</td>
-        <td>{{ gv.facultyName }}</td>
-      </tr>
-    } @empty {
-      <tr>
-        <td colspan="4" style="text-align: center; color: #718096; padding: 20px;">
-          Danh sách giảng viên đang trống!
-        </td>
-      </tr>
-    }
-  </tbody>
-</table>
+  <div class="card-body p-0">
+    <table class="qnu-table">
+      <thead>
+        <tr>
+          <th>Mã GV</th>
+          <th>Họ và Tên</th>
+          <th>Email</th>
+          <th>Khoa trực thuộc</th>
+          <th>Hành động</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (gv of filteredLecturers; track gv.userId) {
+          <tr>
+            <td>{{ gv.username }}</td>
+            <td>{{ gv.fullName }}</td>
+            <td>{{ gv.email }}</td>
+            <td>{{ gv.facultyName }}</td>
+            <td>
+              <div class="btn-actions-cell">
+                <button class="btn-qnu-edit" [routerLink]="['/admin/lecturers/edit', gv.userId]">Sửa</button>
+                <button class="btn-qnu-delete" (click)="deleteLecturer(gv.userId)">Xóa</button>
+              </div>
+            </td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="5" class="empty-message">
+              Không tìm thấy giảng viên nào!
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
 </div>
