@@ -35,11 +35,26 @@ namespace QuanLyDiem.API.Controllers
         public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto model)
         {
             var result = await _googleAuthService.GoogleLoginAsync(model.IdToken);
+
             if (result == null)
             {
                 return Unauthorized(new { message = "Đăng nhập Google thất bại!" });
             }
-            return Ok(result);
+
+            dynamic dynamicResult = result;
+
+            if (dynamicResult.success == false)
+            {
+                return Unauthorized(new { message = (string)dynamicResult.message });
+            }
+
+            return Ok(new
+            {
+                token = (string)dynamicResult.token,
+                userId = (int)dynamicResult.userId,
+                role = (string)dynamicResult.role,
+                fullName = (string)dynamicResult.fullName
+            });
         }
 
         [HttpPost("forgot-password")]
@@ -54,7 +69,7 @@ namespace QuanLyDiem.API.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new { message = $"Lỗi gửi mail từ Google: {ex.Message}" });
+                return StatusCode(500, new { message = $"Lỗi gửi mail: {ex.Message}" });
             }
         }
 
