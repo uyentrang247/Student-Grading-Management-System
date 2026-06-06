@@ -1,6 +1,6 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-
+import { StudentGrade } from '../../../models/student-grade'; 
 @Component({
   selector: 'app-grade-list',
   standalone: true,
@@ -9,10 +9,10 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./grade-list.css']
 })
 export class GradeListComponent {
-  @Input() students: any[] = [];
+  @Input() students: StudentGrade[] = [];
   @Input() currentPage: number = 1;
   @Input() pageSize: number = 10;
-  @Output() edit = new EventEmitter<any>();
+  @Output() edit = new EventEmitter<StudentGrade>();
 
   constructor(private cdr: ChangeDetectorRef) {}
 

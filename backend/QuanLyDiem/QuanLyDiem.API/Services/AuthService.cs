@@ -15,10 +15,10 @@ namespace QuanLyDiem.API.Services
         private readonly IEmailService _emailService;
 
         public AuthService(
-            AppDbContext context, 
-            PasswordHasher passwordHasher, 
-            JwtHelper jwtHelper, 
-            IMemoryCache cache, 
+            AppDbContext context,
+            PasswordHasher passwordHasher,
+            JwtHelper jwtHelper,
+            IMemoryCache cache,
             IEmailService emailService)
         {
             _context = context;
@@ -42,36 +42,36 @@ namespace QuanLyDiem.API.Services
 
             var token = _jwtHelper.GenerateToken(user);
 
-            return new 
-            { 
-                token, 
+            return new
+            {
+                token,
                 userId = user.UserId,
-                role = user.Role, 
-                fullName = user.FullName 
+                role = user.Role,
+                fullName = user.FullName
             };
         }
 
-public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto model)
-{
-    var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
-    if (user == null) return false;
+        public async Task<bool> ForgotPasswordAsync(ForgotPasswordDto model)
+        {
+            var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == model.Email);
+            if (user == null) return false;
 
-    var otp = new Random().Next(100000, 999999).ToString();
-    _cache.Set($"OTP_{model.Email}", otp, TimeSpan.FromMinutes(5));
+            var otp = new Random().Next(100000, 999999).ToString();
+            _cache.Set($"OTP_{model.Email}", otp, TimeSpan.FromMinutes(5));
 
-    try
-    {
-        string emailBody = $"<h3>Yêu cầu đặt lại mật khẩu</h3><p>Mã OTP của bạn là: <b style='color:#172b4d; font-size:20px;'>{otp}</b></p><p>Mã này có hiệu lực trong vòng 5 phút.</p>";
-        await _emailService.SendEmailAsync(model.Email, "Mã OTP Đặt Lại Mật Khẩu", emailBody);
-        return true;
-    }
-    catch (Exception ex)
-    {
-        throw new Exception(ex.Message);
-    }
-}
+            try
+            {
+                string emailBody = $"<h3>Yêu cầu đặt lại mật khẩu</h3><p>Mã OTP của bạn là: <b style='color:#172b4d; font-size:20px;'>{otp}</b></p><p>Mã này có hiệu lực trong vòng 5 phút.</p>";
+                await _emailService.SendEmailAsync(model.Email, "Mã OTP Đặt Lại Mật Khẩu", emailBody);
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw new Exception(ex.Message);
+            }
+        }
 
-public async Task<bool> ResetPasswordAsync(ResetPasswordDto model)
+        public async Task<bool> ResetPasswordAsync(ResetPasswordDto model)
         {
             if (!_cache.TryGetValue($"OTP_{model.Email}", out string? savedOtp) || savedOtp != model.Otp)
             {

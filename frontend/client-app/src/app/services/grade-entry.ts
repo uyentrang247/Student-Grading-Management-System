@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { StudentGrade } from '../models/student-grade';
+
 
 export interface CourseClassForGrade {
   courseClassId: number;
@@ -9,18 +11,6 @@ export interface CourseClassForGrade {
   lecturerName: string;
   semester: string;
   academicYear: string;
-}
-
-export interface StudentGrade {
-  enrollmentId: number;
-  studentId: number;
-  studentCode: string;
-  fullName: string;
-  homeroomClass: string;
-  courseClassId: number;
-  classCode: string;
-  processScore: number | null;
-  finalScore: number | null;
 }
 
 export interface SaveGradeDto {
@@ -72,23 +62,41 @@ export class GradeEntryService {
 
   constructor(private http: HttpClient) {}
 
-  getCourseClassesByLecturer(lecturerId: number): Observable<CourseClassForGrade[]> {
-    return this.http.get<CourseClassForGrade[]>(`${this.apiUrl}/lecturer/${lecturerId}/course-classes`);
+  private getHeaders(): HttpHeaders {
+    const token = localStorage.getItem('token');
+    return new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json'
+    });
+  }
+
+  getMyCourseClasses(): Observable<CourseClassForGrade[]> {
+    return this.http.get<CourseClassForGrade[]>(`${this.apiUrl}/my-course-classes`, {
+      headers: this.getHeaders()
+    });
   }
 
   getStudentsByClass(courseClassId: number): Observable<StudentGrade[]> {
-    return this.http.get<StudentGrade[]>(`${this.apiUrl}/class/${courseClassId}/students`);
+    return this.http.get<StudentGrade[]>(`${this.apiUrl}/class/${courseClassId}/students`, {
+      headers: this.getHeaders()
+    });
   }
 
   saveGradesBulk(grades: SaveGradeDto[]): Observable<{ message: string }> {
-    return this.http.put<{ message: string }>(`${this.apiUrl}/save-bulk`, grades);
+    return this.http.put<{ message: string }>(`${this.apiUrl}/save-bulk`, grades, {
+      headers: this.getHeaders()
+    });
   }
 
   getFailStudents(courseClassId: number): Observable<FailStudent[]> {
-    return this.http.get<FailStudent[]>(`${this.apiUrl}/class/${courseClassId}/fail-students`);
+    return this.http.get<FailStudent[]>(`${this.apiUrl}/class/${courseClassId}/fail-students`, {
+      headers: this.getHeaders()
+    });
   }
 
   getTranscript(courseClassId: number): Observable<TranscriptResponse> {
-    return this.http.get<TranscriptResponse>(`${this.apiUrl}/class/${courseClassId}/transcript`);
+    return this.http.get<TranscriptResponse>(`${this.apiUrl}/class/${courseClassId}/transcript`, {
+      headers: this.getHeaders()
+    });
   }
 }
