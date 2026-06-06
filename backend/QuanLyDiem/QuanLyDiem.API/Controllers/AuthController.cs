@@ -11,11 +11,13 @@ namespace QuanLyDiem.API.Controllers
     {
         private readonly AuthService _authService;
         private readonly IMemoryCache _cache;
+        private readonly GoogleAuthService _googleAuthService;
 
-        public AuthController(AuthService authService, IMemoryCache cache)
+        public AuthController(AuthService authService, IMemoryCache cache, GoogleAuthService googleAuthService)
         {
             _authService = authService;
             _cache = cache;
+            _googleAuthService = googleAuthService;
         }
 
         [HttpPost("login")]
@@ -29,14 +31,25 @@ namespace QuanLyDiem.API.Controllers
             return Ok(result);
         }
 
+        [HttpPost("google-login")]
+        public async Task<IActionResult> GoogleLogin([FromBody] GoogleLoginDto model)
+        {
+            var result = await _googleAuthService.GoogleLoginAsync(model.IdToken);
+            if (result == null)
+            {
+                return Unauthorized(new { message = "Đăng nhập Google thất bại!" });
+            }
+            return Ok(result);
+        }
+
         [HttpPost("forgot-password")]
         public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDto model)
         {
             try
             {
                 var isSuccess = await _authService.ForgotPasswordAsync(model);
-                if (!isSuccess) return NotFound(new { message = "Email không tồn tại!" }); 
-                
+                if (!isSuccess) return NotFound(new { message = "Email không tồn tại!" });
+
                 return Ok(new { message = "Mã OTP đã được gửi đến email của bạn." });
             }
             catch (Exception ex)
@@ -55,32 +68,32 @@ namespace QuanLyDiem.API.Controllers
         }
 
         [HttpPost("verify-otp")]
-public IActionResult VerifyOtp([FromBody] VerifyOtpDto model)
-{
-    if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Otp))
-    {
-        return BadRequest(new { message = "Dữ liệu không hợp lệ!" });
-    }
+        public IActionResult VerifyOtp([FromBody] VerifyOtpDto model)
+        {
+            if (string.IsNullOrEmpty(model.Email) || string.IsNullOrEmpty(model.Otp))
+            {
+                return BadRequest(new { message = "Dữ liệu không hợp lệ!" });
+            }
 
-    var emailKey = model.Email.Trim().ToLower();
-    var cachedOtpObj = _cache.Get($"OTP_{emailKey}");
+            var emailKey = model.Email.Trim().ToLower();
+            var cachedOtpObj = _cache.Get($"OTP_{emailKey}");
 
-    if (cachedOtpObj == null)
-    {
-        cachedOtpObj = _cache.Get($"OTP_{model.Email.Trim()}");
-    }
+            if (cachedOtpObj == null)
+            {
+                cachedOtpObj = _cache.Get($"OTP_{model.Email.Trim()}");
+            }
 
-    if (cachedOtpObj == null)
-    {
-        return BadRequest(new { message = "Mã OTP không tồn tại hoặc đã hết hạn!" });
-    }
+            if (cachedOtpObj == null)
+            {
+                return BadRequest(new { message = "Mã OTP không tồn tại hoặc đã hết hạn!" });
+            }
 
-    if (cachedOtpObj.ToString() != model.Otp.Trim())
-    {
-        return BadRequest(new { message = "Mã OTP không chính xác!" });
-    }
+            if (cachedOtpObj.ToString() != model.Otp.Trim())
+            {
+                return BadRequest(new { message = "Mã OTP không chính xác!" });
+            }
 
-    return Ok(new { message = "Xác thực OTP thành công." });
-}
+            return Ok(new { message = "Xác thực OTP thành công." });
+        }
     }
 }
