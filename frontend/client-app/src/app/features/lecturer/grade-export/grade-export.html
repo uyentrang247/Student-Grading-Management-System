@@ -1,0 +1,69 @@
+<div class="export-container">
+  <div class="export-header">
+    <h2><i class="fas fa-file-excel me-2"></i>XUẤT BẢNG ĐIỂM</h2>
+  </div>
+
+  <div class="class-selector">
+    <label>Chọn lớp học phần:</label>
+    <select [(ngModel)]="selectedClassId" (change)="onClassChange()" class="form-control">
+      <option [ngValue]="0">-- Chọn lớp --</option>
+      <option *ngFor="let c of courseClasses" [ngValue]="c.courseClassId">
+        {{ c.classCode }} - {{ c.subjectName }}
+      </option>
+    </select>
+  </div>
+
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p>Đang tải bảng điểm...</p>
+  </div>
+
+  <div *ngIf="!isLoading && transcript" class="transcript-preview">
+    <div class="class-info">
+      <h3>{{ transcript.courseClass.classCode }} - {{ transcript.courseClass.subjectName }}</h3>
+      <p>Giảng viên: {{ transcript.courseClass.lecturerName }} | Học kỳ: {{ transcript.courseClass.semester }} - {{ transcript.courseClass.academicYear }}</p>
+    </div>
+
+    <table class="grade-table">
+      <thead>
+        <tr>
+          <th>STT</th>
+          <th>Mã SV</th>
+          <th>Họ tên</th>
+          <th>Điểm QT</th>
+          <th>Điểm CK</th>
+          <th>Điểm TB</th>
+          <th>Điểm chữ</th>
+          <th>Thang điểm 4</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let s of transcript.students; let i = index">
+          <td>{{ i + 1 }}</td>
+          <td>{{ s.studentCode }}</td>
+          <td>{{ s.fullName }}</td>
+          <td>{{ s.processScore ?? '—' }}</td>
+          <td>{{ s.finalScore ?? '—' }}</td>
+          <td><strong>{{ s.averageScore ?? '—' }}</strong></td>
+          <td>
+            <span [class]="'grade-badge ' + getGradeClass(s.gradeLetter)">
+              {{ s.gradeLetter }}
+            </span>
+          </td>
+          <td>{{ s.gradeScale4 ?? '—' }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="export-btn-wrapper">
+      <button class="btn-export" (click)="exportToExcel()">
+        <i class="fas fa-download me-2"></i> Xuất file Excel
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!isLoading && !transcript && selectedClassId === 0 && courseClasses.length > 0" class="empty-state">
+    <i class="fas fa-table fa-3x mb-3"></i>
+    <p>Vui lòng chọn lớp để xem bảng điểm</p>
+  </div>
+</div>

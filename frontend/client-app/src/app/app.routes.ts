@@ -16,37 +16,73 @@ import { roleGuard } from './guards/role.guard';
 import { EditLecturerComponent } from './features/lecturer/edit-lecturer/edit-lecturer'; 
 import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
-import { ProfileComponent } from './features/profile/profile/profile';
+
+// ========== IMPORT CÁC COMPONENT MỚI ==========
+import { ClassReportComponent } from './features/lecturer/class-report/class-report';
+import { GradeExportComponent } from './features/lecturer/grade-export/grade-export';
+import { StatisticsComponent } from './features/admin/statistics/statistics';
 
 export const routes: Routes = [
+  // === AUTH & COMMON ===
   { path: '', redirectTo: 'login', pathMatch: 'full' },
   { path: 'login', component: LoginComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'profile', component: ProfileComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
-  { path: 'admin/lecturers/edit/:id', component: EditLecturerComponent },
   { path: 'forgot-password/verify-otp', component: VerifyOtpComponent },
   { path: 'forgot-password/reset-password', component: ResetPasswordComponent },
-// --- QUẢN LÝ ĐÀO TẠO (Admin) ---
+
+  // === QUẢN LÝ GIẢNG VIÊN (ADMIN) ===
   { path: 'admin/lecturers/create', component: CreateLecturerComponent },
   { path: 'admin/lecturers', component: LecturerListComponent },
-  { path: 'admin/students', component: StudentListComponent },
-  { path: 'subjects', component: SubjectList },
-  { path: 'course-classes', component: CourseClassList },
+  { path: 'admin/lecturers/edit/:id', component: EditLecturerComponent },
 
-  // --- CHI TIẾT CÁC QUẢN LÝ ---
+  // === QUẢN LÝ SINH VIÊN (ADMIN) ===
+  { path: 'admin/students', component: StudentListComponent },
   { path: 'student/create', component: StudentCreateComponent },
   { path: 'student/edit/:id', component: StudentEditComponent },
+
+  // === QUẢN LÝ MÔN HỌC (ADMIN) ===
+  { path: 'subjects', component: SubjectList },
   { path: 'subjects/create', component: SubjectForm },
   { path: 'subjects/edit/:id', component: SubjectForm },
+
+  // === QUẢN LÝ LỚP HỌC PHẦN (ADMIN) ===
+  { path: 'course-classes', component: CourseClassList },
   { path: 'course-classes/create', component: CourseClassForm },
   { path: 'course-classes/edit/:id', component: CourseClassForm },
 
-  // --- NGHIỆP VỤ GIẢNG DẠY ---
+  // === NGHIỆP VỤ GIẢNG DẠY (LECTURER) ===
   { 
     path: 'lecturer/grades', 
     component: GradeEntryComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
+  },
+  
+  // === XUẤT BẢNG ĐIỂM (LECTURER) - ĐÃ FIX ===
+  { 
+    path: 'lecturer/export', 
+    component: GradeExportComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] },
+    runGuardsAndResolvers: 'always'  // ✅ THÊM DÒNG NÀY
+  },
+
+  // === BÁO CÁO LỚP PHỤ TRÁCH (LECTURER) - ĐÃ FIX ===
+  { 
+    path: 'lecturer/reports', 
+    component: ClassReportComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] },
+    runGuardsAndResolvers: 'always'  // ✅ THÊM DÒNG NÀY
+  },
+
+  // === BÁO CÁO THỐNG KÊ (ADMIN) - ĐÃ FIX ===
+  { 
+    path: 'admin/reports', 
+    component: StatisticsComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Admin'] },
+    runGuardsAndResolvers: 'always'  // ✅ THÊM DÒNG NÀY
   }
 ];

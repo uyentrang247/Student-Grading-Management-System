@@ -1,0 +1,141 @@
+<div class="statistics-container">
+  
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <div class="spinner"></div>
+    <p>Đang tải dữ liệu...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="errorMessage && !isLoading" class="error-container">
+    <p>{{ errorMessage }}</p>
+  </div>
+
+  <!-- Content -->
+  <div *ngIf="!isLoading && statistics">
+    
+    <!-- Chart Card -->
+    <div class="chart-card">
+      <div class="chart-header">
+        <h3>Phân bố điểm toàn trường</h3>
+      </div>
+      <div class="chart-body">
+        <div class="chart-wrapper">
+          <div class="chart-bars">
+            <div *ngFor="let value of chartData.values; let i = index" class="bar-item">
+              <div class="bar-container">
+                <div class="bar" [style.height]="getBarHeight(value)">
+                  <span *ngIf="value > 0" class="bar-value">
+                    {{ value }}
+                  </span>
+                </div>
+              </div>
+              <div class="bar-label">{{ chartData.labels[i] }}</div>
+            </div>
+          </div>
+          <div class="chart-total">
+            Tổng số sinh viên: {{ statistics.overview.totalStudents }}
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-box">
+        <div class="stat-label">Tổng số sinh viên</div>
+        <div class="stat-value">{{ statistics.overview.totalStudents }}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Tổng số giảng viên</div>
+        <div class="stat-value">{{ statistics.overview.totalLecturers }}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Tổng số môn học</div>
+        <div class="stat-value">{{ statistics.overview.totalSubjects }}</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Tỷ lệ đậu</div>
+        <div class="stat-value">{{ statistics.overview.overallPassRate }}%</div>
+      </div>
+      <div class="stat-box">
+        <div class="stat-label">Điểm trung bình</div>
+        <div class="stat-value">{{ statistics.overview.averageScoreAll }}</div>
+      </div>
+    </div>
+
+    <!-- Faculty Table -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Thống kê theo khoa</h3>
+      </div>
+      <div class="table-body">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ten khoa</th>
+                <th>So SV</th>
+                <th>So GV</th>
+                <th>So lop HP</th>
+                <th>Ty le dau</th>
+                <th>Diem TB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let f of statistics.facultyStatistics">
+                <td>{{ f.facultyName }}</td>
+                <td>{{ f.studentCount }}</td>
+                <td>{{ f.lecturerCount }}</td>
+                <td>{{ f.courseClassCount }}</td>
+                <td>{{ f.passRate }}%</td>
+                <td>{{ f.averageScore }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Top Fail Subjects -->
+    <div class="table-card">
+      <div class="table-header">
+        <h3>Top môn học có tỷ lệ rớt cao nhất</h3>
+      </div>
+      <div class="table-body">
+        <div class="table-responsive">
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>Ma mon</th>
+                <th>Ten mon hoc</th>
+                <th>TC</th>
+                <th>So SV</th>
+                <th>Ty le rot</th>
+                <th>Diem TB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let s of statistics.topFailSubjects">
+                <td>{{ s.subjectCode }}</td>
+                <td>{{ s.subjectName }}</td>
+                <td>{{ s.credits }}</td>
+                <td>{{ s.totalStudents }}</td>
+                <td class="fail-rate">{{ s.failRate }}%</td>
+                <td>{{ s.averageScore }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- Export Button -->
+    <div class="export-section">
+      <button class="export-btn" (click)="exportToExcel()">
+        Xuất báo cáo Excel
+      </button>
+    </div>
+
+  </div>
+</div>

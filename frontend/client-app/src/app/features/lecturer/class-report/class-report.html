@@ -1,0 +1,103 @@
+<div class="report-container">
+  <div class="report-header">
+    <h2><i class="fas fa-chart-bar me-2"></i>BÁO CÁO LỚP PHỤ TRÁCH</h2>
+  </div>
+
+  <!-- Dropdown chọn lớp -->
+  <div class="class-selector">
+    <label>Chọn lớp học phần:</label>
+    <select [(ngModel)]="selectedClassId" (change)="onClassChange()" class="form-control">
+      <option [ngValue]="0">-- Chọn lớp --</option>
+      <option *ngFor="let c of courseClasses" [ngValue]="c.courseClassId">
+        {{ c.classCode }} - {{ c.subjectName }} ({{ c.semester }} - {{ c.academicYear }})
+      </option>
+    </select>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-2">Đang tải dữ liệu...</p>
+  </div>
+
+  <!-- Báo cáo -->
+  <div *ngIf="!isLoading && report" class="report-content">
+    <!-- Header lớp -->
+    <div class="class-header">
+      <h3>{{ report.classCode }} - {{ report.subjectName }}</h3>
+      <p>Giảng viên: {{ report.lecturerName }} | Học kỳ: {{ report.semester }} - {{ report.academicYear }}</p>
+    </div>
+
+    <!-- 4 thẻ KPI -->
+    <div class="kpi-grid">
+      <div class="kpi-card pass">
+        <div class="kpi-value">{{ report.passRate }}%</div>
+        <div class="kpi-label">Đậu</div>
+        <div class="kpi-sub">{{ report.passCount }}/{{ report.totalStudents}} SV</div>
+      </div>
+      <div class="kpi-card fail">
+        <div class="kpi-value">{{ report.failRate }}%</div>
+        <div class="kpi-label">Rớt</div>
+        <div class="kpi-sub">{{ report.failCount }}/{{ report.totalStudents}} SV</div>
+      </div>
+      <div class="kpi-card avg">
+        <div class="kpi-value">{{ report.averageScore }}</div>
+        <div class="kpi-label">Điểm TB</div>
+      </div>
+      <div class="kpi-card highest">
+        <div class="kpi-value">{{ report.highestScore }}</div>
+        <div class="kpi-label">Cao nhất</div>
+      </div>
+    </div>
+
+    <!-- Biểu đồ cột -->
+    <div class="chart-section">
+      <h4>Biểu đồ phân bố điểm</h4>
+      <div class="bar-chart">
+        <div *ngFor="let label of chartData.labels; let i = index" class="bar-item">
+          <div class="bar-label">{{ label }}</div>
+          <div class="bar-container">
+            <div class="bar" [style.height]="getBarHeight(chartData.values[i])">
+              <span class="bar-value">{{ chartData.values[i] }}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bảng điểm chữ -->
+    <div class="grade-letter-section">
+      <h4>Chi tiết xếp loại</h4>
+      <table class="grade-table">
+        <thead>
+          <tr><th>Xếp loại</th><th>Khoảng điểm</th><th>Số lượng</th><th>Tỷ lệ</th></tr>
+        </thead>
+        <tbody>
+          <tr><td class="grade-a">A</td><td>{{ report.gradeLetterDistribution.a.range }}</td><td>{{ report.gradeLetterDistribution.a.count }}</td><td>{{ report.gradeLetterDistribution.a.percentage }}%</td></tr>
+          <tr><td class="grade-b">B</td><td>{{ report.gradeLetterDistribution.b.range }}</td><td>{{ report.gradeLetterDistribution.b.count }}</td><td>{{ report.gradeLetterDistribution.b.percentage }}%</td></tr>
+          <tr><td class="grade-c">C</td><td>{{ report.gradeLetterDistribution.c.range }}</td><td>{{ report.gradeLetterDistribution.c.count }}</td><td>{{ report.gradeLetterDistribution.c.percentage }}%</td></tr>
+          <tr><td class="grade-d">D</td><td>{{ report.gradeLetterDistribution.d.range }}</td><td>{{ report.gradeLetterDistribution.d.count }}</td><td>{{ report.gradeLetterDistribution.d.percentage }}%</td></tr>
+          <tr><td class="grade-f">F</td><td>{{ report.gradeLetterDistribution.f.range }}</td><td>{{ report.gradeLetterDistribution.f.count }}</td><td>{{ report.gradeLetterDistribution.f.percentage }}%</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Nút xuất Excel -->
+    <div class="export-section">
+      <button class="btn-export" (click)="exportToExcel()">
+        <i class="fas fa-file-excel me-2"></i> Xuất Excel
+      </button>
+    </div>
+  </div>
+
+  <!-- Không có dữ liệu -->
+  <div *ngIf="!isLoading && !report && selectedClassId === 0 && courseClasses.length > 0" class="empty-state">
+    <i class="fas fa-chart-line fa-3x mb-3"></i>
+    <p>Vui lòng chọn lớp để xem báo cáo</p>
+  </div>
+
+  <div *ngIf="!isLoading && courseClasses.length === 0" class="empty-state">
+    <i class="fas fa-folder-open fa-3x mb-3"></i>
+    <p>Bạn chưa được phân công giảng dạy lớp nào</p>
+  </div>
+</div>
