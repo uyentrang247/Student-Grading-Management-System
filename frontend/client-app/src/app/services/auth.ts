@@ -20,6 +20,7 @@ export class AuthService {
         if (response && response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('userRole', response.role);
+          localStorage.setItem('userId', response.userId?.toString() || '');
           
           const name = response.fullName || response.name || response.hoTen || response.username;
           if (name) {
@@ -36,6 +37,7 @@ export class AuthService {
         if (response && response.token) {
           localStorage.setItem('token', response.token);
           localStorage.setItem('userRole', response.role);
+          localStorage.setItem('userId', response.userId?.toString() || '');
           if (response.fullName) {
             localStorage.setItem('fullName', response.fullName);
           }
@@ -51,6 +53,7 @@ export class AuthService {
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
+    localStorage.removeItem('userId');
     localStorage.removeItem('fullName');
   }
 
@@ -72,6 +75,11 @@ export class AuthService {
 
   getUserName(): string {
     return localStorage.getItem('fullName') || 'Người dùng';
+  }
+
+  getUserId(): number | null {
+    const userId = localStorage.getItem('userId');
+    return userId ? parseInt(userId) : null;
   }
 
   getRoleDisplayName(): string {
