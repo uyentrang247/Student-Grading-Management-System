@@ -1,0 +1,143 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <div class="avatar">
+        <i class="fas fa-user-circle fa-4x"></i>
+      </div>
+      <h2>Hồ sơ cá nhân</h2>
+      <p *ngIf="profile">{{ getRoleDisplayName() }}</p>
+    </div>
+
+    <div *ngIf="profile" class="profile-body">
+      <div *ngIf="successMessage" class="alert alert-success">
+        <i class="fas fa-check-circle me-2"></i> {{ successMessage }}
+      </div>
+      <div *ngIf="errorMessage" class="alert alert-danger">
+        <i class="fas fa-exclamation-circle me-2"></i> {{ errorMessage }}
+      </div>
+
+      <div *ngIf="!isEditing" class="info-section">
+        <div class="info-row">
+          <label>Tên đăng nhập:</label>
+          <span>{{ profile.username }}</span>
+        </div>
+        <div class="info-row">
+          <label>Họ và tên:</label>
+          <span>{{ profile.fullName }}</span>
+        </div>
+        <div class="info-row">
+          <label>Email:</label>
+          <span>{{ profile.email }}</span>
+        </div>
+        
+        <div class="info-row" *ngIf="profile.role !== 'Admin'">
+          <label>Khoa:</label>
+          <span>{{ profile.facultyName || 'Chưa có' }}</span>
+        </div>
+        
+        <div class="info-row">
+          <label>Vai trò:</label>
+          <span class="role-badge" [class.admin]="profile.role === 'Admin'">{{ getRoleDisplayName() }}</span>
+        </div>
+        
+        <div class="action-buttons">
+          <button class="btn-edit" (click)="toggleEdit()">
+            <i class="fas fa-edit me-2"></i>Chỉnh sửa
+          </button>
+          <button class="btn-change-password" (click)="openChangePassword()">
+            <i class="fas fa-key me-2"></i>Đổi mật khẩu
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="isEditing" class="edit-section">
+        <div class="form-group">
+          <label>Họ và tên <span class="required">*</span></label>
+          <input type="text" [(ngModel)]="editForm.fullName" class="form-control" placeholder="Nhập họ và tên">
+        </div>
+        <div class="form-group">
+          <label>Email <span class="required">*</span></label>
+          <input type="email" [(ngModel)]="editForm.email" class="form-control" placeholder="Nhập email (vd: ten@domain.com)">
+        </div>
+        <div class="form-actions">
+          <button class="btn-save" (click)="saveProfile()">Lưu thay đổi</button>
+          <button class="btn-cancel" (click)="toggleEdit()">Hủy</button>
+        </div>
+      </div>
+    </div>
+
+    <div *ngIf="!profile && isLoading" class="loading text-center py-5">
+      <div class="spinner-border text-primary" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+      <p class="mt-2 text-muted">Đang tải thông tin...</p>
+    </div>
+
+    <div *ngIf="!profile && !isLoading && errorMessage" class="text-center py-5 text-danger">
+      {{ errorMessage }}
+    </div>
+  </div>
+
+  <!-- Modal đổi mật khẩu -->
+  <div class="modal-overlay" *ngIf="isChangingPassword" (click)="closeChangePassword()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3><i class="fas fa-key me-2"></i>Đổi mật khẩu</h3>
+        <button class="modal-close" (click)="closeChangePassword()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group password-group">
+          <label>Mật khẩu cũ <span class="required">*</span></label>
+          <div class="password-input-wrapper">
+            <input [type]="showPassword.current ? 'text' : 'password'" 
+                   [(ngModel)]="passwordForm.currentPassword" 
+                   class="form-control" placeholder="Nhập mật khẩu cũ"
+                   [class.is-invalid]="passwordError.currentPassword">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility('current')">
+              <i class="fas" [class.fa-eye]="showPassword.current" [class.fa-eye-slash]="!showPassword.current"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="passwordError.currentPassword">
+            {{ passwordError.currentPassword }}
+          </div>
+        </div>
+
+        <div class="form-group password-group">
+          <label>Mật khẩu mới <span class="required">*</span></label>
+          <div class="password-input-wrapper">
+            <input [type]="showPassword.new ? 'text' : 'password'" 
+                   [(ngModel)]="passwordForm.newPassword" 
+                   class="form-control" placeholder="Tối thiểu 6 ký tự"
+                   [class.is-invalid]="passwordError.newPassword">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility('new')">
+              <i class="fas" [class.fa-eye]="showPassword.new" [class.fa-eye-slash]="!showPassword.new"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="passwordError.newPassword">
+            {{ passwordError.newPassword }}
+          </div>
+        </div>
+
+        <div class="form-group password-group">
+          <label>Xác nhận mật khẩu mới <span class="required">*</span></label>
+          <div class="password-input-wrapper">
+            <input [type]="showPassword.confirm ? 'text' : 'password'" 
+                   [(ngModel)]="passwordForm.confirmPassword" 
+                   class="form-control" placeholder="Nhập lại mật khẩu mới"
+                   [class.is-invalid]="passwordError.confirmPassword">
+            <button type="button" class="password-toggle" (click)="togglePasswordVisibility('confirm')">
+              <i class="fas" [class.fa-eye]="showPassword.confirm" [class.fa-eye-slash]="!showPassword.confirm"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback" *ngIf="passwordError.confirmPassword">
+            {{ passwordError.confirmPassword }}
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn-cancel" (click)="closeChangePassword()">Hủy</button>
+        <button class="btn-save" (click)="changePassword()">Lưu</button>
+      </div>
+    </div>
+  </div>
+</div>
