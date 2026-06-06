@@ -16,7 +16,7 @@ import { roleGuard } from './guards/role.guard';
 import { EditLecturerComponent } from './features/lecturer/edit-lecturer/edit-lecturer'; 
 import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
-import { ProfileComponent } from './features/profile/profile';
+import { ProfileComponent } from './features/profile/profile/profile';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
