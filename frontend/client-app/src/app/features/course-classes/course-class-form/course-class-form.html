@@ -45,12 +45,11 @@
 
           <option [ngValue]="0">-- Chọn môn học --</option>
 
-          <option [ngValue]="1">Lập trình trên Desktop</option>
-          <option [ngValue]="2">Lập trình ứng dụng Web</option>
-          <option [ngValue]="3">Lập trình cơ bản</option>
-          <option [ngValue]="4">Công nghệ Web</option>
-          <option [ngValue]="5">Lập trình hướng đối tượng</option>
-          <option [ngValue]="6">Kiểm thử và đảm bảo chất lượng phần mềm</option>
+          <option
+            *ngFor="let subject of subjects"
+            [ngValue]="subject.subjectId">
+            {{ subject.subjectName }}
+          </option>
 
         </select>
 
@@ -77,10 +76,11 @@
             -- Chọn giảng viên --
           </option>
 
-          <option [ngValue]="2">Vũ Sơn Lâm</option>
-          <option [ngValue]="3">Nguyễn Thị Loan</option>
-          <option [ngValue]="4">Nguyễn Thanh Bình</option>
-          <option [ngValue]="5">Đinh Thị Mỹ Cảnh</option>
+          <option
+            *ngFor="let lecturer of lecturers"
+            [ngValue]="lecturer.userId">
+            {{ lecturer.fullName }}
+          </option>
 
         </select>
 
@@ -103,16 +103,10 @@
             -- Chọn học kỳ --
           </option>
 
-          <option [ngValue]="1">
-            HK1 - 2026-2027
-          </option>
-
-          <option [ngValue]="2">
-            HK2 - 2026-2027
-          </option>
-
-          <option [ngValue]="3">
-            HK3 - 2026-2027
+          <option
+            *ngFor="let semester of semesters"
+            [ngValue]="semester.semesterId">
+            {{ semester.term }} - {{ semester.academicYear }}
           </option>
 
         </select>

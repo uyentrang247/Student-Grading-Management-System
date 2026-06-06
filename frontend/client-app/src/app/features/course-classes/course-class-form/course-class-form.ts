@@ -2,9 +2,11 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
+import { HttpClient } from '@angular/common/http';
 
 import { CourseClass } from '../../../models/course-class';
 import { CourseClassService } from '../../../services/course-class';
+import { SubjectService } from '../../../services/subject';
 
 @Component({
   selector: 'app-course-class-form',
@@ -17,11 +19,15 @@ export class CourseClassForm implements OnInit {
 
   isEditMode = false;
 
+  subjects: any[] = [];
+  semesters: any[] = [];
+  lecturers: any[] = [];
+
   courseClass: CourseClass = {
     id: 0,
     classCode: '',
     subjectId: 0,
-    semesterId: 1,
+    semesterId: 0,
     lecturerId: 0,
     maxStudents: 40
   };
@@ -30,10 +36,14 @@ export class CourseClassForm implements OnInit {
     private router: Router,
     private route: ActivatedRoute,
     private courseClassService: CourseClassService,
+    private subjectService: SubjectService,
+    private http: HttpClient,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
+    this.loadDropdownData();
+
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     if (id) {
@@ -45,7 +55,7 @@ export class CourseClassForm implements OnInit {
             id: Number(data.id ?? data.courseClassId ?? id),
             classCode: data.classCode ?? '',
             subjectId: Number(data.subjectId ?? 0),
-            semesterId: Number(data.semesterId ?? 1),
+            semesterId: Number(data.semesterId ?? 0),
             lecturerId: data.lecturerId !== undefined && data.lecturerId !== null
               ? Number(data.lecturerId)
               : 0,
@@ -61,6 +71,38 @@ export class CourseClassForm implements OnInit {
         }
       });
     }
+  }
+
+  loadDropdownData(): void {
+    this.subjectService.getSubjects().subscribe({
+      next: (data) => {
+        this.subjects = data;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Lỗi tải danh sách môn học:', error);
+      }
+    });
+
+    this.http.get<any[]>('http://localhost:5059/api/Semesters').subscribe({
+      next: (data) => {
+        this.semesters = data;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Lỗi tải danh sách học kỳ:', error);
+      }
+    });
+
+    this.http.get<any[]>('http://localhost:5059/api/Users/lecturers').subscribe({
+      next: (data) => {
+        this.lecturers = data;
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        console.error('Lỗi tải danh sách giảng viên:', error);
+      }
+    });
   }
 
   saveCourseClass(): void {
