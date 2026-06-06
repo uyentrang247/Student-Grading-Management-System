@@ -28,7 +28,10 @@ builder.Services.AddScoped<StudentService>();
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AuthService>();
-
+builder.Services.AddScoped<LecturerService>();
+builder.Services.AddScoped<GoogleAuthService>(); 
+builder.Services.AddMemoryCache();             
+builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
