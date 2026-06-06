@@ -35,6 +35,9 @@ builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Thêm sau các dòng AddScoped khác "Vinh"
+builder.Services.AddScoped<ReportService>();
+
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>
