@@ -29,9 +29,25 @@ export class AuthService {
       })
     );
   }
-verifyOtp(model: { email: string; otp: string }) {
-  return this.http.post(`${this.apiUrl}/verify-otp`, model);
-}
+
+  googleLogin(idToken: string): Observable<any> {
+    return this.http.post(`${this.apiUrl}/google-login`, { idToken }).pipe(
+      tap((response: any) => {
+        if (response && response.token) {
+          localStorage.setItem('token', response.token);
+          localStorage.setItem('userRole', response.role);
+          if (response.fullName) {
+            localStorage.setItem('fullName', response.fullName);
+          }
+        }
+      })
+    );
+  }
+
+  verifyOtp(model: { email: string; otp: string }) {
+    return this.http.post(`${this.apiUrl}/verify-otp`, model);
+  }
+
   logout(): void {
     localStorage.removeItem('token');
     localStorage.removeItem('userRole');
