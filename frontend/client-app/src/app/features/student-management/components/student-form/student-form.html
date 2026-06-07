@@ -1,0 +1,195 @@
+<div class="student-edit-wrapper">
+  <h3 class="page-title">{{ title }}</h3>
+
+  <form 
+    [formGroup]="studentForm" 
+    (ngSubmit)="submitForm.emit()" 
+    class="edit-form-container">
+
+    <div class="form-group">
+      <label class="form-label">
+        Mã Sinh Viên <span class="required">*</span>
+      </label>
+
+      <input 
+        type="text" 
+        formControlName="studentCode" 
+        class="form-control" 
+        placeholder="Nhập mã sinh viên gồm 10 chữ số..." />
+
+      <div 
+        class="error-msg" 
+        *ngIf="!!(studentForm.get('studentCode')?.touched 
+        && studentForm.get('studentCode')?.invalid)">
+
+        <small *ngIf="!!studentForm.get('studentCode')?.errors?.['required']">
+          Mã sinh viên không được để trống.
+        </small>
+
+        <small *ngIf="!!studentForm.get('studentCode')?.errors?.['pattern']">
+          Mã sinh viên phải bao gồm chính xác 10 chữ số.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-row">
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Họ và lót <span class="required">*</span>
+        </label>
+
+        <input 
+          type="text" 
+          formControlName="lastName" 
+          class="form-control" 
+          placeholder="Ví dụ: Nguyễn Văn..." />
+
+        <div 
+          class="error-msg" 
+          *ngIf="!!(studentForm.get('lastName')?.touched 
+          && studentForm.get('lastName')?.invalid)">
+
+          <small>Họ và lót không được để trống.</small>
+        </div>
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Tên sinh viên <span class="required">*</span>
+        </label>
+
+        <input 
+          type="text" 
+          formControlName="firstName" 
+          class="form-control" 
+          placeholder="Ví dụ: Anh, Bảo..." />
+
+        <div 
+          class="error-msg" 
+          *ngIf="!!(studentForm.get('firstName')?.touched 
+          && studentForm.get('firstName')?.invalid)">
+
+          <small>Tên sinh viên không được để trống.</small>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-row">
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Giới tính <span class="required">*</span>
+        </label>
+
+        <select formControlName="gender" class="form-control">
+          <option value="">-- Chọn giới tính --</option>
+          <option value="Nam">Nam</option>
+          <option value="Nữ">Nữ</option>
+        </select>
+
+        <div 
+          class="error-msg" 
+          *ngIf="!!(studentForm.get('gender')?.touched 
+          && studentForm.get('gender')?.invalid)">
+
+          <small>Vui lòng chọn giới tính.</small>
+        </div>
+      </div>
+
+      <div class="form-group col-6">
+        <label class="form-label">
+          Ngày sinh <span class="required">*</span>
+        </label>
+
+        <input 
+          type="date" 
+          formControlName="dateOfBirth" 
+          class="form-control" />
+
+        <div 
+          class="error-msg" 
+          *ngIf="!!(studentForm.get('dateOfBirth')?.touched 
+          && studentForm.get('dateOfBirth')?.invalid)">
+
+          <small>Vui lòng chọn ngày sinh.</small>
+        </div>
+      </div>
+
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Lớp sinh hoạt <span class="required">*</span>
+      </label>
+
+      <select formControlName="homeroomClassId" class="form-control">
+
+        <option value="">
+          -- Chọn lớp sinh hoạt của sinh viên --
+        </option>
+
+        <option 
+          *ngFor="let cls of homeroomClasses" 
+          [ngValue]="cls.homeroomClassId">
+
+          {{ cls.className }}
+        </option>
+      </select>
+
+      <div 
+        class="error-msg" 
+        *ngIf="!!(studentForm.get('homeroomClassId')?.touched 
+        && studentForm.get('homeroomClassId')?.invalid)">
+
+        <small>Vui lòng chọn lớp sinh hoạt.</small>
+      </div>
+    </div>
+
+    <div class="form-group">
+
+      <label class="form-label">
+        Địa chỉ Email <span class="required">*</span>
+      </label>
+
+      <input 
+        type="email" 
+        formControlName="email" 
+        class="form-control" 
+        placeholder="username@st.qnu.edu.vn" />
+
+      <div 
+        class="error-msg" 
+        *ngIf="!!(studentForm.get('email')?.touched 
+        && studentForm.get('email')?.invalid)">
+
+        <small *ngIf="!!studentForm.get('email')?.errors?.['required']">
+          Email không được để trống.
+        </small>
+
+        <small *ngIf="!!studentForm.get('email')?.errors?.['email']">
+          Email không đúng định dạng quy định.
+        </small>
+      </div>
+    </div>
+
+    <div class="form-actions-group">
+
+      <button type="submit" class="btn btn-save">
+        {{ buttonText }}
+      </button>
+
+      <button 
+        type="button" 
+        class="btn btn-cancel" 
+        (click)="cancel.emit()">
+
+        Hủy bỏ
+      </button>
+
+    </div>
+
+  </form>
+</div>

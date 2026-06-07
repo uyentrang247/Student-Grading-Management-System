@@ -15,17 +15,18 @@ import { ChangeDetectorRef } from '@angular/core';
   standalone: true, 
 })
 export class StudentListComponent implements OnInit {
-  allStudents: StudentResponse[] = []; // Bộ lưu trữ toàn bộ dữ liệu để cắt mảng
-  students: StudentResponse[] = [];    // Mảng chứa dữ liệu thực tế hiển thị trên một trang
+  // CẬP NHẬT: Chỉ cần một mảng chứa dữ liệu của trang hiện tại mang về từ API
+  students: StudentResponse[] = [];    
   homeroomClasses: HomeroomClassResponse[] = []; 
 
   searchTerm: string = '';
   selectedClassId?: number;
 
-  // --- CÁC BIẾN PHÂN TRANG FRONTEND ĐÃ ĐƯỢC RÚT GỌN ---
+  // --- CÁC BIẾN QUẢN LÝ PHÂN TRANG TỪ SERVER ---
   currentPage: number = 1;   // Trang hiện tại
   pageSize: number = 10;     // Số sinh viên trên một trang
-  totalPages: number = 1;    // Tổng số trang
+  totalPages: number = 1;    // Tổng số trang (sẽ tính từ totalRecords)
+  totalRecords: number = 0;  // Tổng số bản ghi thỏa mãn bộ lọc
 
   constructor(
     private studentService: StudentService, 
@@ -37,7 +38,7 @@ export class StudentListComponent implements OnInit {
     this.loadStudents();       
   }
 
-  // 1. Tải danh sách lớp vào dropdown
+  // 1. Tải danh sách lớp vào dropdown lọc
   loadHomeroomClasses(): void {
     this.studentService.getHomeroomClasses().subscribe({
       next: (data) => {
@@ -50,13 +51,25 @@ export class StudentListComponent implements OnInit {
     });
   }
 
-  // 2. Gọi API lấy danh sách sinh viên
+  // 2. Gọi API lấy danh sách sinh viên kết hợp lọc và phân trang từ DB
   loadStudents(): void {
-    this.studentService.getStudents(this.selectedClassId, this.searchTerm)
+    // CẬP NHẬT: Truyền thêm currentPage và pageSize vào Service
+    this.studentService.getStudents(this.selectedClassId, this.searchTerm, this.currentPage, this.pageSize)
       .subscribe({
-        next: (data) => {
-          this.allStudents = data; 
-          this.paginateStudents(); // Thực hiện phân trang thủ công
+        next: (result) => {
+          // Gán mảng dữ liệu trang hiện tại
+          this.students = result.data; 
+          this.totalRecords = result.totalRecords;
+          
+          // Tính toán tổng số trang dựa trên tổng số bản ghi từ Database trả về
+          this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
+
+          // Nếu trang hiện tại lớn hơn tổng số trang (ví dụ sau khi lọc bớt dữ liệu), đưa về trang 1 và tải lại
+          if (this.currentPage > this.totalPages) {
+            this.currentPage = 1;
+            this.loadStudents();
+          }
+
           this.cdr.detectChanges();
         },
         error: (err) => {
@@ -65,49 +78,37 @@ export class StudentListComponent implements OnInit {
       });
   }
 
-  // 3. Hàm tính toán và thực hiện cắt mảng theo trang
-  paginateStudents(): void {
-    // Tính tổng số trang dựa trên độ dài dữ liệu thực tế thu được
-    this.totalPages = Math.ceil(this.allStudents.length / this.pageSize) || 1;
-    
-    // Nếu trang hiện tại vượt quá tổng số trang, tự động đưa về trang 1
-    if (this.currentPage > this.totalPages) {
-      this.currentPage = 1;
-    }
-
-    // --- ĐÃ BỎ TOÀN BỘ THUẬT TOÁN DẤU BA CHẤM VÀ PAGESARRAY DƯ THỪA ---
-
-    // Cắt mảng lấy đúng vị trí dữ liệu của trang hiện tại
-    const startIndex = (this.currentPage - 1) * this.pageSize;
-    const endIndex = startIndex + this.pageSize;
-    this.students = this.allStudents.slice(startIndex, endIndex);
-  }
-
-  // 4. Kích hoạt khi bấm nút tìm kiếm hoặc đổi lớp
+  // 3. Kích hoạt khi bấm nút tìm kiếm hoặc thay đổi Dropdown lớp
   onSearch(): void {
-    this.currentPage = 1;
+    this.currentPage = 1; // Khởi động lại về trang đầu tiên khi có bộ lọc mới
     this.loadStudents();
   }
 
-  // 5. Hàm xử lý chuyển trang bằng nút bấm tiến/lùi
+  // 4. Hàm xử lý chuyển trang khi bấm nút Tiến / Lùi / Số trang
   goToPage(page: number): void {
     if (page >= 1 && page <= this.totalPages && page !== this.currentPage) {
       this.currentPage = page;
-      this.paginateStudents();  // Chuyển trang mượt mà bằng cách cắt lại dữ liệu
-      this.cdr.detectChanges(); // Ép render giao diện mới
+      this.loadStudents();  // CẬP NHẬT: Phải gọi lại API để lấy dữ liệu của trang mới
     }
   }
 
-  // 6. Xử lý xóa sinh viên
+  // 5. Xử lý xóa sinh viên
   onDelete(id: number): void {
     if (confirm('Bạn có chắc chắn muốn xóa sinh viên này không?')) {
       this.studentService.deleteStudent(id).subscribe({
-        next: (responseMessage) => {
-          alert(responseMessage); 
-          this.loadStudents();    
+        next: (res) => {
+          // CẬP NHẬT: Nhận res.message từ Object JSON
+          alert(res.message); 
+          this.loadStudents(); // Tải lại trang hiện tại sau khi xóa thành công    
         },
         error: (err) => {
           console.error('Lỗi khi thực hiện xóa:', err);
+          // Kiểm tra nếu Backend trả về Object lỗi có message công khai
+          if (err.error?.message) {
+            alert(err.error.message);
+          } else {
+            alert('Xóa sinh viên thất bại!');
+          }
         }
       });
     }
