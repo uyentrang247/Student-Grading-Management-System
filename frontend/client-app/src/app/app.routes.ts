@@ -58,5 +58,7 @@ export const routes: Routes = [
     path: 'lecturer/fail-students', component: FailStudentsListComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
-  }
+  },
+  { path: 'lecturer/classes', component: ClassListComponent},
+  { path: 'lecturer/classes/:id',   component: ClassDetailComponent},
 ];
