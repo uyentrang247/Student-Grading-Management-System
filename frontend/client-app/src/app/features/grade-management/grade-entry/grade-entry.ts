@@ -16,7 +16,7 @@ import { AuthService } from '../../../services/auth';
     GradeListComponent,
     GradeFilterComponent,
     GradePaginationComponent,
-    GradeEditModalComponent
+    GradeEditModalComponent,
   ],
   templateUrl: './grade-entry.html',
   styleUrls: ['./grade-entry.css']
@@ -157,23 +157,4 @@ export class GradeEntryComponent implements OnInit {
     return this.filteredStudents.length;
   }
 
-  loadFailStudents(): void {
-    if (!this.selectedClassId) {
-      this.showNotification('Vui lòng chọn lớp học phần', 'error');
-      return;
-    }
-    this.isLoading = true;
-    this.gradeEntryService.getFailStudents(this.selectedClassId).subscribe({
-      next: (data: any[]) => {
-        this.filteredStudents = data;
-        this.updatePagination();
-        this.isLoading = false;
-        this.showNotification(`Có ${data.length} sinh viên rớt`, 'success');
-      },
-      error: () => {
-        this.isLoading = false;
-        this.showNotification('Lỗi tải danh sách sinh viên rớt', 'error');
-      }
-    });
-  }
 }
