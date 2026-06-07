@@ -17,6 +17,7 @@ import { EditLecturerComponent } from './features/lecturer/edit-lecturer/edit-le
 import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
 import { ProfileComponent } from './features/profile/profile/profile';
+import { FailStudentsListComponent } from './features/grade-management/fail-students-list/fail-students-list';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -46,6 +47,13 @@ export const routes: Routes = [
   { 
     path: 'lecturer/grades', 
     component: GradeEntryComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
+  },
+  
+   // --- DANH SÁCH SINH VIÊN RỚT ---
+  { 
+    path: 'lecturer/fail-students', component: FailStudentsListComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   }
