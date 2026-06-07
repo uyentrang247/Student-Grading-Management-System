@@ -25,6 +25,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Đăng ký Services
 builder.Services.AddScoped<StudentService>();
+builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AuthService>();
