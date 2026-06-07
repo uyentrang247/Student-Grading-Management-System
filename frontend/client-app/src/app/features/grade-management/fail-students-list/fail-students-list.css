@@ -1,0 +1,54 @@
+.fail-students-container {
+  padding: 24px;
+}
+
+.module-card {
+  background: #ffffff;
+  border: 1px solid #e6ebf2;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.qnu-card-header {
+  background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
+  padding: 16px 24px;
+  border: none;
+}
+
+.header-title {
+  color: #ffffff;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  margin: 0;
+}
+
+.card-body {
+  padding: 24px;
+}
+
+.form-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  margin-bottom: 8px;
+}
+
+.form-select {
+  border: 1px solid #d9e1ec;
+  border-radius: 8px;
+  padding: 10px 12px;
+  font-size: 14px;
+}
+
+.table {
+  font-size: 14px;
+}
+
+.table-danger {
+  background-color: #f8d7da !important;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
