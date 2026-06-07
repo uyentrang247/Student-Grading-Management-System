@@ -60,3 +60,18 @@
 /* Hiệu ứng đặc biệt cho nút Đăng xuất/Đăng nhập */
 .custom-logout:hover { background-color: rgba(220, 53, 69, 0.15) !important; color: #ff6b6b !important; }
 .custom-login:hover { background-color: rgba(40, 167, 69, 0.15) !important; color: #51cf66 !important; }
+
+/* Fix menu item không bị xuống dòng */
+.list-group-item {
+  white-space: nowrap !important;
+}
+
+.list-group-item span {
+  white-space: nowrap !important;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.menu-icon {
+  flex-shrink: 0 !important;
+}
