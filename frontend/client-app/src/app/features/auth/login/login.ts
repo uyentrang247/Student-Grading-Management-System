@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
@@ -13,7 +13,7 @@ declare const google: any;
   templateUrl: './login.html',
   styleUrls: ['./login.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, AfterViewInit {
   loginForm!: FormGroup;
   showPassword = false;
   errorMessage = '';
@@ -21,7 +21,8 @@ export class LoginComponent implements OnInit {
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
@@ -29,36 +30,59 @@ export class LoginComponent implements OnInit {
       UsernameOrEmail: ['', Validators.required],
       Password: ['', [Validators.required, Validators.minLength(6)]]
     });
-
-    this.initGoogle();
   }
 
-  initGoogle(): void {
-    if (typeof google !== 'undefined' && google.accounts) {
-      google.accounts.id.initialize({
-        client_id: '679144999056-4ap178auubdlvdj2a11a6kdrovoljueh.apps.googleusercontent.com',
-        callback: (response: any) => this.handleGoogleLogin(response),
-        auto_select: false
-      });
-    }
+  ngAfterViewInit(): void {
+    this.renderGoogleButton();
   }
 
-  loginWithGoogle(): void {
-    if (typeof google !== 'undefined' && google.accounts) {
-      google.accounts.id.prompt();
-    } else {
-      this.errorMessage = 'Google Sign-In chưa được tải, vui lòng thử lại';
-    }
+  renderGoogleButton(): void {
+    const checkInterval = setInterval(() => {
+      if (typeof google !== 'undefined' && google.accounts) {
+        clearInterval(checkInterval);
+        
+        const container = document.getElementById('google-btn-container');
+        if (!container) return;
+
+        // Xóa nội dung cũ
+        container.innerHTML = '';
+
+        // Khởi tạo Google Sign-In
+        google.accounts.id.initialize({
+          client_id: '679144999056-4ap178auubdlvdj2a11a6kdrovoljueh.apps.googleusercontent.com',
+          callback: (response: any) => this.handleGoogleLogin(response),
+          auto_select: false,
+          cancel_on_tap_outside: true
+        });
+
+        // Render button Google
+        google.accounts.id.renderButton(container, {
+          type: 'standard',
+          theme: 'outline',
+          size: 'large',
+          text: 'signin_with',
+          shape: 'rectangular',
+          width: '100%',
+          locale: 'vi'
+        });
+
+        this.cdr.detectChanges();
+      }
+    }, 100);
+
+    setTimeout(() => clearInterval(checkInterval), 5000);
   }
 
   handleGoogleLogin(response: any): void {
     const idToken = response.credential;
+    
     this.authService.googleLogin(idToken).subscribe({
       next: () => {
         this.router.navigate(['/home']);
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Đăng nhập Google thất bại';
+        this.cdr.detectChanges();
       }
     });
   }
@@ -79,8 +103,6 @@ export class LoginComponent implements OnInit {
       next: (res: any) => {
         if (res && res.token) {
           localStorage.setItem('token', res.token);
-          localStorage.setItem('userRole', res.role);
-          localStorage.setItem('userId', res.userId?.toString() || '');
           
           try {
             const payload = res.token.split('.')[1];
@@ -115,6 +137,7 @@ export class LoginComponent implements OnInit {
       },
       error: (err) => {
         this.errorMessage = err.error?.message || 'Tên đăng nhập hoặc mật khẩu không đúng';
+        this.cdr.detectChanges();
       }
     });
   }
