@@ -35,6 +35,8 @@ builder.Services.AddMemoryCache();
 builder.Services.AddTransient<IEmailService, EmailService>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddScoped<GradeEntryService>();
+builder.Services.AddScoped<ReportService>();
 
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
