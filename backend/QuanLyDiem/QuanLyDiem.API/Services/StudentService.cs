@@ -2,7 +2,9 @@
 using QuanLyDiem.API.Models;
 using QuanLyDiem.API.DTOs.Student;
 using QuanLyDiem.API.Data;
-using static Microsoft.Extensions.Logging.EventSource.LoggingEventSource;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 
 namespace QuanLyDiem.API.Services
 {
@@ -10,33 +12,41 @@ namespace QuanLyDiem.API.Services
     {
         private readonly AppDbContext _context;
 
-        // Tiêm DbContext vào Service để làm việc với SQLite
         public StudentService(AppDbContext context)
         {
             _context = context;
         }
 
-        // Logic Lọc và Tìm kiếm sinh viên
-        public async Task<IEnumerable<StudentResponseDTO>> GetStudentsAsync(int? homeroomClassId, string? searchTerm)
+        /// <summary>
+        /// Lấy danh sách sinh viên kết hợp lọc, tìm kiếm và phân trang cho Angular Datatable/Paginator
+        /// </summary>
+        public async Task<(IEnumerable<StudentResponseDTO> Data, int TotalRecords)> GetStudentsAsync(
+            int? homeroomClassId, string? searchTerm, int pageNumber, int pageSize)
         {
-            var query = _context.Students.AsQueryable();
+            var query = _context.Students.Include(s => s.HomeroomClass).AsQueryable();
 
-            if (homeroomClassId.HasValue)
+            // 1. Lọc theo lớp
+            if (homeroomClassId.HasValue && homeroomClassId.Value > 0)
             {
                 query = query.Where(s => s.HomeroomClassId == homeroomClassId.Value);
             }
 
-            if (!string.IsNullOrEmpty(searchTerm))
+            // 2. Tìm kiếm theo từ khóa
+            if (!string.IsNullOrWhiteSpace(searchTerm))
             {
-                searchTerm = searchTerm.ToLower().Trim();
-                query = query.Where(s => s.StudentCode.ToLower().Contains(searchTerm)
-                                       || s.FirstName.ToLower().Contains(searchTerm)
-                                         || s.LastName.ToLower().Contains(searchTerm)
-                                      || (s.LastName.ToLower() + " " + s.FirstName.ToLower()).Contains(searchTerm));
+                var keyword = searchTerm.ToLower().Trim();
+                query = query.Where(s => s.StudentCode.ToLower().Contains(keyword)
+                                      || s.FirstName.ToLower().Contains(keyword)
+                                      || s.LastName.ToLower().Contains(keyword)
+                                      || (s.LastName.ToLower() + " " + s.FirstName.ToLower()).Contains(keyword));
             }
 
-
-            return await query.Select(s => new StudentResponseDTO
+            int totalRecords = await query.CountAsync();
+            var data = await query
+                .OrderBy(s => s.StudentCode)
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .Select(s => new StudentResponseDTO
                 {
                     StudentId = s.StudentId,
                     StudentCode = s.StudentCode,
@@ -47,12 +57,14 @@ namespace QuanLyDiem.API.Services
                     HomeroomClassId = s.HomeroomClassId,
                     HomeroomClassName = s.HomeroomClass != null ? s.HomeroomClass.ClassName : "",
                     Email = s.Email
-                }).ToListAsync();
-            }
-        
+                })
+                .ToListAsync();
+
+            return (data, totalRecords);
+        }
+
         public async Task<object> GetClassesLookupAsync()
         {
-            // Bốc thẳng Id và Tên lớp từ bảng HomeroomClasses ra, không cần qua DTO nào hết
             return await _context.HomeroomClasses
                 .Select(c => new {
                     homeroomClassId = c.HomeroomClassId,
@@ -60,29 +72,39 @@ namespace QuanLyDiem.API.Services
                 })
                 .ToListAsync();
         }
-        // Logic Lấy chi tiết 1 sinh viên
+
+
         public async Task<StudentResponseDTO?> GetStudentByIdAsync(int id)
         {
-            var student = await _context.Students.FindAsync(id);
-            if (student == null) return null;
-
-            return new StudentResponseDTO
-            {
-                StudentId = student.StudentId,
-                StudentCode = student.StudentCode,
-                LastName = student.LastName,
-                FirstName = student.FirstName,
-                Gender = student.Gender,
-                DateOfBirth = student.DateOfBirth,
-                HomeroomClassId = student.HomeroomClassId,
-                HomeroomClassName = student.HomeroomClass != null ? student.HomeroomClass.ClassName : "",
-                Email = student.Email
-            };
+            // Thay vì FindAsync, dùng FirstOrDefaultAsync kèm Include để nạp dữ liệu quan hệ
+            return await _context.Students
+                .Include(s => s.HomeroomClass)
+                .Where(s => s.StudentId == id)
+                .Select(s => new StudentResponseDTO
+                {
+                    StudentId = s.StudentId,
+                    StudentCode = s.StudentCode,
+                    LastName = s.LastName,
+                    FirstName = s.FirstName,
+                    Gender = s.Gender,
+                    DateOfBirth = s.DateOfBirth,
+                    HomeroomClassId = s.HomeroomClassId,
+                    HomeroomClassName = s.HomeroomClass != null ? s.HomeroomClass.ClassName : "",
+                    Email = s.Email
+                })
+                .FirstOrDefaultAsync();
         }
 
-        // Logic Thêm sinh viên
-        public async Task CreateStudentAsync(StudentCreateUpdateDTO dto)
+
+        public async Task<bool> CreateStudentAsync(StudentCreateUpdateDTO dto)
         {
+            //  Kiểm tra trùng mã sinh viên
+            var exists = await _context.Students.AnyAsync(s => s.StudentCode == dto.StudentCode);
+            if (exists)
+            {
+                return false; 
+            }
+
             var student = new Student
             {
                 StudentCode = dto.StudentCode,
@@ -90,33 +112,43 @@ namespace QuanLyDiem.API.Services
                 FirstName = dto.FirstName,
                 Gender = dto.Gender,
                 DateOfBirth = dto.DateOfBirth,
-                HomeroomClassId = dto.HomeroomClassId.Value,
+                HomeroomClassId = dto.HomeroomClassId ?? 0, // Đảm bảo an toàn null
                 Email = dto.Email
             };
 
             _context.Students.Add(student);
             await _context.SaveChangesAsync();
+            return true;
         }
 
-        // Logic Cập nhật thông tin
+
         public async Task<bool> UpdateStudentAsync(int id, StudentCreateUpdateDTO dto)
         {
             var student = await _context.Students.FindAsync(id);
             if (student == null) return false;
 
+            // Khôi phục logic: Kiểm tra trùng mã sinh viên với người khác
+            var codeExists = await _context.Students
+                .AnyAsync(s => s.StudentCode == dto.StudentCode && s.StudentId != id);
+            if (codeExists)
+            {
+                return false; 
+            }
+
+            // Gán dữ liệu mới
             student.StudentCode = dto.StudentCode;
             student.LastName = dto.LastName;
             student.FirstName = dto.FirstName;
             student.Gender = dto.Gender;
             student.DateOfBirth = dto.DateOfBirth;
-            student.HomeroomClassId = dto.HomeroomClassId.Value;
+            student.HomeroomClassId = dto.HomeroomClassId ?? student.HomeroomClassId;
             student.Email = dto.Email;
 
             await _context.SaveChangesAsync();
             return true;
         }
 
-        // Logic Xóa sinh viên
+
         public async Task<bool> DeleteStudentAsync(int id)
         {
             var student = await _context.Students.FindAsync(id);

@@ -1,0 +1,186 @@
+/* --- Tổng thể Container --- */
+.container {
+  padding: 24px;
+  background-color: #f8f9fa;
+  min-height: 80vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* --- Khối tiêu đề (Header Section) --- */
+.header-section {
+  margin-bottom: 24px;
+}
+
+.title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon-layer {
+  font-size: 20px;
+}
+
+.header-section h2 {
+  color: #102a43; /* Màu xanh đen chủ đạo QNU */
+  font-size: 24px;
+  font-weight: 700;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.title-underline {
+  width: 120px;
+  height: 4px;
+  background: linear-gradient(90deg, #ff9800, #ff5722); /* Màu cam/vàng đặc trưng QNU */
+  margin-top: 8px;
+  border-radius: 2px;
+}
+
+/* --- Thanh công cụ & Bộ lọc (Toolbar) --- */
+.toolbar-section {
+  background-color: #ffffff;
+  padding: 16px 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.filter-box {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f1f3f5;
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: 1px solid #e4e7eb;
+  transition: all 0.3s ease;
+}
+
+.filter-box:focus-within {
+  border-color: #ff9800;
+  box-shadow: 0 0 0 3px rgba(255, 152, 0, 0.15);
+}
+
+.filter-icon {
+  font-size: 16px;
+}
+
+.semester-select {
+  border: none;
+  background: transparent;
+  color: #334e68;
+  font-size: 14px;
+  font-weight: 600;
+  outline: none;
+  cursor: pointer;
+  min-width: 260px;
+}
+
+/* --- Bảng hiển thị QNU Table --- */
+.table-responsive {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  overflow: hidden;
+}
+
+.qnu-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14px;
+}
+
+.qnu-table th {
+  background-color: #102a43; /* Màu xanh đen chủ đạo vững chãi */
+  color: #ffffff;
+  font-weight: 600;
+  padding: 16px 20px;
+  letter-spacing: 0.3px;
+}
+
+.qnu-table td {
+  padding: 16px 20px;
+  color: #334e68;
+  border-bottom: 1px solid #eceff1;
+  vertical-align: middle;
+}
+
+.qnu-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.qnu-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+/* --- Các thành phần bổ trợ trong Table --- */
+.font-bold {
+  font-weight: 700;
+}
+
+.class-code {
+  color: #102a43;
+  font-size: 15px;
+}
+
+.badge-credits {
+  background-color: #f0f4f8;
+  color: #102a43;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 700;
+  border: 1px solid #d9e2ec;
+}
+
+.no-data {
+  color: #627d98 !important;
+  font-style: italic;
+  padding: 32px !important;
+}
+
+/* --- Nút bấm hành động (Button) --- */
+.btn-action {
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.2s ease-in-out;
+}
+
+.btn-students {
+  background-color: #102a43; /* Màu xanh đen */
+  color: #ffffff;
+  border: 1px solid #102a43;
+}
+
+.btn-students:hover {
+  background-color: #1867b0; /* Sáng lên một chút khi hover */
+  border-color: #1867b0;
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(24, 103, 176, 0.2);
+}
+
+/* --- Tiện ích căn lề --- */
+.text-center { text-align: center; }
+.text-right { text-align: right; }
+
+/* --- Cấu trúc Responsive --- */
+@media (max-width: 768px) {
+  .qnu-table th, .qnu-table td {
+    padding: 12px 14px;
+  }
+  .semester-select {
+    min-width: 100%;
+  }
+}

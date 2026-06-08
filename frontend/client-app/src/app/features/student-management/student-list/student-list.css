@@ -215,3 +215,22 @@
   color: #dddddd;
   cursor: not-allowed;
 }
+/* Thêm vào cuối file student-list.css nếu muốn hàng phân trang đẹp hơn */
+.pagination-simple-container {
+  display: flex;
+  justify-content: space-between; /* Đẩy tổng số sang trái, nút bấm sang phải */
+  align-items: center;
+  margin-top: 15px;
+  padding: 10px 5px;
+}
+
+.total-records-text {
+  font-size: 14px;
+  color: #555;
+}
+
+.pagination-buttons {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Tạo khoảng cách giữa nút bấm và chữ */
+}
