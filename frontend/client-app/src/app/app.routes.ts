@@ -20,6 +20,7 @@ import { ProfileComponent } from './features/profile/profile/profile';
 import { FailStudentsListComponent } from './features/grade-management/fail-students-list/fail-students-list';
 import { ClassListComponent } from './features/student-management/class-list/class-list';
 import { ClassDetailComponent } from './features/student-management/class-detail/class-detail';
+import { ExportGradeComponent } from './features/report/export-grade/export-grade';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -53,12 +54,33 @@ export const routes: Routes = [
     data: { roles: ['Lecturer'] }
   },
   
-   // --- DANH SÁCH SINH VIÊN RỚT ---
+  // --- DANH SÁCH SINH VIÊN RỚT ---
   { 
-    path: 'lecturer/fail-students', component: FailStudentsListComponent,
+    path: 'lecturer/fail-students', 
+    component: FailStudentsListComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   },
-  { path: 'lecturer/classes', component: ClassListComponent},
-  { path: 'lecturer/classes/:id',   component: ClassDetailComponent},
+  
+  // --- XEM LỚP PHỤ TRÁCH ---
+  { 
+    path: 'lecturer/classes', 
+    component: ClassListComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
+  },
+  { 
+    path: 'lecturer/classes/:id', 
+    component: ClassDetailComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
+  },
+  
+  // --- XUẤT BẢNG ĐIỂM (BÁO CÁO) ---
+  { 
+    path: 'lecturer/export-grade', 
+    component: ExportGradeComponent,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
+  },
 ];
