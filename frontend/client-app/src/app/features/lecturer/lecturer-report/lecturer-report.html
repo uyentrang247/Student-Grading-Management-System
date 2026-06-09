@@ -1,0 +1,143 @@
+<div class="report-container">
+  <div class="module-card">
+    <div class="qnu-card-header">
+      <h2 class="header-title">THỐNG KÊ LỚP PHỤ TRÁCH</h2>
+      <p class="header-subtitle">Xem thống kê chi tiết điểm số của các lớp bạn đang giảng dạy</p>
+    </div>
+    
+    <div class="card-body">
+      <!-- Filter chọn lớp -->
+      <div class="filter-group">
+        <label>Chọn lớp học phần:</label>
+        <select class="form-control" [(ngModel)]="selectedClassId" (change)="loadReport()">
+          <option [ngValue]="null">-- Chọn lớp --</option>
+          <option *ngFor="let class of myClasses" [ngValue]="class.courseClassId">
+            {{ class.classCode }} - {{ class.subjectName }} ({{ class.credits }} tín chỉ)
+          </option>
+        </select>
+      </div>
+
+      <!-- Loading -->
+      <div *ngIf="loading" class="loading-state">
+        <div class="spinner"></div>
+        <span>Đang tải dữ liệu báo cáo...</span>
+      </div>
+
+      <!-- Error -->
+      <div *ngIf="error" class="error-state">
+        <p>{{ error }}</p>
+        <button class="btn-retry" (click)="loadReport()">Thử lại</button>
+      </div>
+
+      <!-- Nội dung báo cáo -->
+      <div *ngIf="report && !loading" class="report-content">
+        
+        <!-- Tiêu đề lớp -->
+        <div class="report-title">
+          <h3>THỐNG KÊ LỚP: {{ report.classCode }} - {{ report.subjectName }}</h3>
+        </div>
+
+        <!-- 4 ô thống kê nhanh -->
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-value">{{ report.passRate }}%</div>
+            <div class="stat-label">ĐẬU</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ report.failRate }}%</div>
+            <div class="stat-label">RỚT</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ report.averageScore }}</div>
+            <div class="stat-label">ĐIỂM TB</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-value">{{ report.highestScore }}</div>
+            <div class="stat-label">CAO NHẤT</div>
+          </div>
+        </div>
+
+        <!-- Biểu đồ phân bố điểm (dạng thanh ngang - dễ đọc) -->
+        <div class="chart-card">
+          <h4>BIỂU ĐỒ PHÂN BỐ ĐIỂM</h4>
+          <table class="chart-table">
+            <tbody>
+              <tr *ngFor="let range of report.scoreRanges">
+                <td class="chart-range">{{ range.range }}</td>
+                <td class="chart-bar-cell">
+                  <div class="chart-bar-wrapper">
+                    <div class="chart-bar-fill" [style.width.%]="range.percentage">
+                      <span class="chart-bar-value" *ngIf="range.percentage > 10">{{ range.percentage }}%</span>
+                    </div>
+                  </div>
+                </td>
+                <td class="chart-count">{{ range.count }} sinh viên</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Bảng chi tiết theo thang chữ -->
+        <div class="table-card">
+          <h4>CHI TIẾT PHÂN BỐ ĐIỂM THEO THANG CHỮ</h4>
+          <table class="data-table">
+            <thead>
+              <tr>
+                <th>THANG ĐIỂM</th>
+                <th>KHOẢNG ĐIỂM</th>
+                <th>SỐ SINH VIÊN</th>
+                <th>TỶ LỆ</th>
+                <th>BIỂU ĐỒ</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let grade of report.gradeDistribution">
+                <td>
+                  <span class="grade-badge" [style.backgroundColor]="grade.color">
+                    {{ grade.grade }}
+                  </span>
+                 </td>
+                <td>{{ grade.range }}</td>
+                <td>{{ grade.count }} sinh viên</td>
+                <td>{{ grade.percentage }}%</td>
+                <td class="progress-cell">
+                  <div class="progress-wrapper">
+                    <div class="progress-bar-bg">
+                      <div class="progress-fill" [style.width.%]="grade.percentage" [style.backgroundColor]="grade.color"></div>
+                    </div>
+                    <span class="progress-percent">{{ grade.percentage }}%</span>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Thông tin tổng hợp -->
+        <div class="summary-card">
+          <div class="summary-item">
+            <span class="summary-label">Tổng số sinh viên</span>
+            <span class="summary-value">{{ report.totalStudents }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Điểm trung bình lớp</span>
+            <span class="summary-value">{{ report.averageScore }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Điểm cao nhất</span>
+            <span class="summary-value">{{ report.highestScore }}</span>
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">Điểm thấp nhất</span>
+            <span class="summary-value">{{ report.lowestScore }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Empty state -->
+      <div *ngIf="!report && !loading && selectedClassId" class="empty-state">
+        <p>Chưa có dữ liệu điểm cho lớp này</p>
+      </div>
+    </div>
+  </div>
+</div>
