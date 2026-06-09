@@ -21,6 +21,8 @@ import { FailStudentsListComponent } from './features/grade-management/fail-stud
 import { ClassListComponent } from './features/student-management/class-list/class-list';
 import { ClassDetailComponent } from './features/student-management/class-detail/class-detail';
 import { ExportGradeComponent } from './features/report/export-grade/export-grade';
+import { LecturerReport } from './features/lecturer/lecturer-report/lecturer-report';
+import { AdminStatistics } from './features/admin/admin-statistics/admin-statistics';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -31,7 +33,8 @@ export const routes: Routes = [
   { path: 'admin/lecturers/edit/:id', component: EditLecturerComponent },
   { path: 'forgot-password/verify-otp', component: VerifyOtpComponent },
   { path: 'forgot-password/reset-password', component: ResetPasswordComponent },
-// --- QUẢN LÝ ĐÀO TẠO (Admin) ---
+
+  // --- QUẢN LÝ ĐÀO TẠO (Admin) ---
   { path: 'admin/lecturers/create', component: CreateLecturerComponent },
   { path: 'admin/lecturers', component: LecturerListComponent },
   { path: 'admin/students', component: StudentListComponent },
@@ -82,5 +85,23 @@ export const routes: Routes = [
     component: ExportGradeComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
+  },
+
+  // ==================== BÁO CÁO MỚI ====================
+  
+  // Báo cáo giảng viên - Xem thống kê lớp phụ trách
+  { 
+    path: 'lecturer/reports', 
+    component: LecturerReport,
+    canActivate: [roleGuard],
+    data: { roles: ['Lecturer'] }
+  },
+
+  // Báo cáo admin - Thống kê hệ thống
+  { 
+    path: 'admin/reports', 
+    component: AdminStatistics,
+    canActivate: [roleGuard],
+    data: { roles: ['Admin'] }
   },
 ];
