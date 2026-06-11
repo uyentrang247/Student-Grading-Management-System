@@ -1,44 +1,52 @@
-export interface CourseClass {
-  courseClassId: number;
-  classCode: string;
-  subjectName: string;
-  credits: number;
-  semester: string;
-  academicYear: string;
-}
-
-export interface GradeDistribution {
-  grade: string;
-  range: string;
-  count: number;
-  percentage: number;
-  color: string;
-}
-
-export interface ScoreRange {
-  range: string;
-  count: number;
-  percentage: number;
-}
-
-export interface ClassReport {
-  courseClassId: number;
-  classCode: string;
-  subjectName: string;
-  credits: number;
-  semester: string;
-  academicYear: string;
+// Dashboard overview
+export interface DashboardOverview {
+  totalClasses: number;
   totalStudents: number;
-  passRate: number;
-  failRate: number;
-  averageScore: number;
-  highestScore: number;
-  lowestScore: number;
-  gradeDistribution: GradeDistribution[];
-  scoreRanges: ScoreRange[];
+  totalSubjects: number;
+  completedClasses: number;
+  incompleteClasses: number;
+  completedRate: number;
+  totalGradesEntered: number;
+  totalGradesExpected: number;
+  gradesCompletionRate: number;
 }
 
-export interface ApiResponse<T> {
+// Teaching load by subject
+export interface SubjectTeachingLoad {
+  subjectName: string;
+  classCount: number;
+  studentCount: number;
+}
+
+// Class progress
+export interface ClassProgress {
+  courseClassId: number;
+  classCode: string;
+  subjectName: string;
+  totalStudents: number;
+  gradesEntered: number;
+  gradesMissing: number;
+  progressPercent: number;
+  status: 'completed' | 'incomplete' | 'not_started';
+}
+
+// Warning
+export interface Warning {
+  type: 'missing_grades' | 'incomplete_class' | 'deadline_approaching';
+  message: string;
+  count: number;
+}
+
+// Lecturer Dashboard Data
+export interface LecturerDashboardData {
+  overview: DashboardOverview;
+  teachingLoad: SubjectTeachingLoad[];
+  classProgress: ClassProgress[];
+  warnings: Warning[];
+}
+
+// Api Response wrapper
+export interface ApiResponse<T = any> {
   success: boolean;
   data: T;
   message?: string;
