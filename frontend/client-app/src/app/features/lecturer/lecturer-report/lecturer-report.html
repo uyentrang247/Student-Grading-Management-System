@@ -1,142 +1,159 @@
-<div class="report-container">
+<div class="statistics-container">
   <div class="module-card">
     <div class="qnu-card-header">
-      <h2 class="header-title">THỐNG KÊ LỚP PHỤ TRÁCH</h2>
-      <p class="header-subtitle">Xem thống kê chi tiết điểm số của các lớp bạn đang giảng dạy</p>
+      <div class="header-left">
+        <h2 class="header-title">BẢNG ĐIỀU KHIỂN GIẢNG VIÊN</h2>
+        <p class="header-subtitle">Tổng quan công việc giảng dạy và tiến độ nhập điểm</p>
+      </div>
     </div>
     
     <div class="card-body">
-      <!-- Filter chọn lớp -->
-      <div class="filter-group">
-        <label>Chọn lớp học phần:</label>
-        <select class="form-control" [(ngModel)]="selectedClassId" (change)="loadReport()">
-          <option [ngValue]="null">-- Chọn lớp --</option>
-          <option *ngFor="let class of myClasses" [ngValue]="class.courseClassId">
-            {{ class.classCode }} - {{ class.subjectName }} ({{ class.credits }} tín chỉ)
-          </option>
-        </select>
-      </div>
-
-      <!-- Loading -->
-      <div *ngIf="loading" class="loading-state">
+      <!-- Loading (chỉ hiện lần đầu) -->
+      <div *ngIf="loading && !dashboard" class="loading-state">
         <div class="spinner"></div>
-        <span>Đang tải dữ liệu báo cáo...</span>
+        <span>Đang tải dữ liệu...</span>
       </div>
 
       <!-- Error -->
-      <div *ngIf="error" class="error-state">
+      <div *ngIf="error && !dashboard" class="error-state">
         <p>{{ error }}</p>
-        <button class="btn-retry" (click)="loadReport()">Thử lại</button>
       </div>
 
-      <!-- Nội dung báo cáo -->
-      <div *ngIf="report && !loading" class="report-content">
+      <!-- Dashboard Content -->
+      <div *ngIf="dashboard" class="dashboard-content">
         
-        <!-- Tiêu đề lớp -->
-        <div class="report-title">
-          <h3>THỐNG KÊ LỚP: {{ report.classCode }} - {{ report.subjectName }}</h3>
-        </div>
-
-        <!-- 4 ô thống kê nhanh -->
-        <div class="stats-cards">
-          <div class="stat-card">
-            <div class="stat-value">{{ report.passRate }}%</div>
-            <div class="stat-label">ĐẬU</div>
+        <!-- Hàng 1: Thống kê nhanh - 4 thẻ -->
+        <div class="quick-stats">
+          <div class="quick-stat-card">
+            <div class="quick-stat-value">{{ dashboard.overview.totalClasses }}</div>
+            <div class="quick-stat-label">TỔNG LỚP PHỤ TRÁCH</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ report.failRate }}%</div>
-            <div class="stat-label">RỚT</div>
+          <div class="quick-stat-card">
+            <div class="quick-stat-value">{{ dashboard.overview.totalStudents | number }}</div>
+            <div class="quick-stat-label">TỔNG SINH VIÊN</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ report.averageScore }}</div>
-            <div class="stat-label">ĐIỂM TB</div>
+          <div class="quick-stat-card">
+            <div class="quick-stat-value">{{ dashboard.overview.totalSubjects }}</div>
+            <div class="quick-stat-label">TỔNG MÔN GIẢNG DẠY</div>
           </div>
-          <div class="stat-card">
-            <div class="stat-value">{{ report.highestScore }}</div>
-            <div class="stat-label">CAO NHẤT</div>
+          <div class="quick-stat-card">
+            <div class="quick-stat-value">{{ dashboard.overview.gradesCompletionRate }}%</div>
+            <div class="quick-stat-label">TỶ LỆ HOÀN THÀNH NHẬP ĐIỂM</div>
+            <div class="quick-stat-sub">{{ dashboard.overview.totalGradesEntered }}/{{ dashboard.overview.totalGradesExpected }}</div>
           </div>
         </div>
 
-        <!-- Biểu đồ phân bố điểm (dạng thanh ngang - dễ đọc) -->
-        <div class="chart-card">
-          <h4>BIỂU ĐỒ PHÂN BỐ ĐIỂM</h4>
-          <table class="chart-table">
-            <tbody>
-              <tr *ngFor="let range of report.scoreRanges">
-                <td class="chart-range">{{ range.range }}</td>
-                <td class="chart-bar-cell">
-                  <div class="chart-bar-wrapper">
-                    <div class="chart-bar-fill" [style.width.%]="range.percentage">
-                      <span class="chart-bar-value" *ngIf="range.percentage > 10">{{ range.percentage }}%</span>
+        <!-- Hàng 2: Biểu đồ khối lượng giảng dạy theo môn -->
+        <div class="chart-section">
+          <div class="section-header">
+            <h3>KHỐI LƯỢNG GIẢNG DẠY THEO MÔN</h3>
+            <span class="section-desc">Số lớp và số sinh viên theo từng môn học</span>
+          </div>
+          <div class="teaching-load-list">
+            <div *ngFor="let subject of dashboard.teachingLoad" class="teaching-load-item">
+              <div class="teaching-load-info">
+                <div class="teaching-load-name">{{ subject.subjectName }}</div>
+                <div class="teaching-load-stats">
+                  <span class="class-count">{{ subject.classCount }} lớp</span>
+                  <span class="student-count">{{ subject.studentCount }} sinh viên</span>
+                </div>
+              </div>
+              <div class="teaching-load-progress">
+                <div class="progress-bar-bg">
+                  <div class="progress-fill" [style.width.%]="getMaxClassPercentage(subject.classCount)"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 3: Khu vực cảnh báo -->
+        <div class="warning-section" *ngIf="dashboard.warnings.length > 0">
+          <div class="section-header warning-header">
+            <h3>⚠ CẢNH BÁO CẦN XỬ LÝ</h3>
+          </div>
+          <div class="warning-list">
+            <div *ngFor="let warning of dashboard.warnings" class="warning-item" [class]="warning.type">
+              <div class="warning-icon">⚠</div>
+              <div class="warning-content">
+                <div class="warning-message">{{ warning.message }}</div>
+                <div class="warning-count">{{ warning.count }} trường hợp</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Hàng 4: Bảng tiến độ nhập điểm theo lớp -->
+        <div class="section-card">
+          <div class="section-header">
+            <h3>TIẾN ĐỘ NHẬP ĐIỂM THEO LỚP</h3>
+            <span class="section-desc">Theo dõi tiến độ nhập điểm của từng lớp</span>
+          </div>
+          <div class="table-responsive">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>LỚP</th>
+                  <th>MÔN HỌC</th>
+                  <th>SĨ SỐ</th>
+                  <th>ĐÃ NHẬP</th>
+                  <th>CÒN THIẾU</th>
+                  <th>TIẾN ĐỘ</th>
+                  <th>TRẠNG THÁI</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let classItem of dashboard.classProgress">
+                  <td><strong>{{ classItem.classCode }}</strong></td>
+                  <td>{{ classItem.subjectName }}</td>
+                  <td>{{ classItem.totalStudents }}</td>
+                  <td>{{ classItem.gradesEntered }}</td>
+                  <td [class.highlight]="classItem.gradesMissing > 0">{{ classItem.gradesMissing }}</td>
+                  <td class="progress-cell">
+                    <div class="progress-wrapper">
+                      <div class="progress-bar-bg">
+                        <div class="progress-fill" [style.width.%]="classItem.progressPercent" 
+                             [style.background]="getProgressColor(classItem.progressPercent)"></div>
+                      </div>
+                      <span class="progress-percent">{{ classItem.progressPercent }}%</span>
                     </div>
+                  </td>
+                  <td>
+                    <span class="status-badge" [class]="classItem.status">
+                      {{ getStatusText(classItem.status) }}
+                    </span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Hàng 5: Danh sách lớp chưa hoàn thành -->
+        <div class="section-card" *ngIf="getIncompleteClasses().length > 0">
+          <div class="section-header">
+            <h3>⚠ CÁC LỚP CHƯA HOÀN THÀNH NHẬP ĐIỂM</h3>
+            <span class="section-desc">Cần nhập điểm ngay để hoàn thành công việc</span>
+          </div>
+          <div class="incomplete-class-list">
+            <div *ngFor="let classItem of getIncompleteClasses()" class="incomplete-class-item">
+              <div class="incomplete-class-info">
+                <div class="incomplete-class-name">{{ classItem.classCode }}</div>
+                <div class="incomplete-class-subject">{{ classItem.subjectName }}</div>
+              </div>
+              <div class="incomplete-class-progress">
+                <div class="missing-count">Còn {{ classItem.gradesMissing }}/{{ classItem.totalStudents }} sinh viên</div>
+                <div class="progress-wrapper small">
+                  <div class="progress-bar-bg">
+                    <div class="progress-fill" [style.width.%]="classItem.progressPercent" 
+                         [style.background]="getProgressColor(classItem.progressPercent)"></div>
                   </div>
-                </td>
-                <td class="chart-count">{{ range.count }} sinh viên</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Bảng chi tiết theo thang chữ -->
-        <div class="table-card">
-          <h4>CHI TIẾT PHÂN BỐ ĐIỂM THEO THANG CHỮ</h4>
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>THANG ĐIỂM</th>
-                <th>KHOẢNG ĐIỂM</th>
-                <th>SỐ SINH VIÊN</th>
-                <th>TỶ LỆ</th>
-                <th>BIỂU ĐỒ</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr *ngFor="let grade of report.gradeDistribution">
-                <td>
-                  <span class="grade-badge" [style.backgroundColor]="grade.color">
-                    {{ grade.grade }}
-                  </span>
-                 </td>
-                <td>{{ grade.range }}</td>
-                <td>{{ grade.count }} sinh viên</td>
-                <td>{{ grade.percentage }}%</td>
-                <td class="progress-cell">
-                  <div class="progress-wrapper">
-                    <div class="progress-bar-bg">
-                      <div class="progress-fill" [style.width.%]="grade.percentage" [style.backgroundColor]="grade.color"></div>
-                    </div>
-                    <span class="progress-percent">{{ grade.percentage }}%</span>
-                  </div>
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-
-        <!-- Thông tin tổng hợp -->
-        <div class="summary-card">
-          <div class="summary-item">
-            <span class="summary-label">Tổng số sinh viên</span>
-            <span class="summary-value">{{ report.totalStudents }}</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">Điểm trung bình lớp</span>
-            <span class="summary-value">{{ report.averageScore }}</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">Điểm cao nhất</span>
-            <span class="summary-value">{{ report.highestScore }}</span>
-          </div>
-          <div class="summary-item">
-            <span class="summary-label">Điểm thấp nhất</span>
-            <span class="summary-value">{{ report.lowestScore }}</span>
+                  <span class="progress-percent">{{ classItem.progressPercent }}%</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-
-      <!-- Empty state -->
-      <div *ngIf="!report && !loading && selectedClassId" class="empty-state">
-        <p>Chưa có dữ liệu điểm cho lớp này</p>
       </div>
     </div>
   </div>
