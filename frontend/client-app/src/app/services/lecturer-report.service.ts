@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { CourseClass, ClassReport, ApiResponse } from '../models/lecturer-report.model';
+import { LecturerDashboardData } from '../models/lecturer-report.model';
 
 @Injectable({
   providedIn: 'root'
@@ -19,15 +19,22 @@ export class LecturerReportService {
     });
   }
 
-  getMyClasses(): Observable<ApiResponse<CourseClass[]>> {
-    return this.http.get<ApiResponse<CourseClass[]>>(
+  getDashboard(): Observable<{ success: boolean; data: LecturerDashboardData; message?: string }> {
+    return this.http.get<{ success: boolean; data: LecturerDashboardData; message?: string }>(
+      `${this.apiUrl}/dashboard`,
+      { headers: this.getHeaders() }
+    );
+  }
+
+  getMyClasses(): Observable<{ success: boolean; data: any[]; message?: string }> {
+    return this.http.get<{ success: boolean; data: any[]; message?: string }>(
       `${this.apiUrl}/my-classes`,
       { headers: this.getHeaders() }
     );
   }
 
-  getClassReport(courseClassId: number): Observable<ApiResponse<ClassReport>> {
-    return this.http.get<ApiResponse<ClassReport>>(
+  getClassReport(courseClassId: number): Observable<{ success: boolean; data: any; message?: string }> {
+    return this.http.get<{ success: boolean; data: any; message?: string }>(
       `${this.apiUrl}/class/${courseClassId}/detailed-report`,
       { headers: this.getHeaders() }
     );
