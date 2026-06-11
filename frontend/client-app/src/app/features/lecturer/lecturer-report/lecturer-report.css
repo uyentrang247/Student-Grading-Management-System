@@ -1,4 +1,4 @@
-.report-container {
+.statistics-container {
   background: #f5f7fb;
   min-height: calc(100vh - 60px);
   padding: 0;
@@ -16,6 +16,13 @@
   background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
   padding: 16px 24px;
   border: none;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-left {
+  flex: 1;
 }
 
 .header-title {
@@ -32,42 +39,31 @@
   margin: 4px 0 0 0;
 }
 
+.btn-refresh {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  padding: 8px 16px;
+  color: white;
+  font-size: 13px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-refresh:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.btn-refresh:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
 .card-body {
   padding: 24px;
 }
 
-/* Filter group */
-.filter-group {
-  margin-bottom: 24px;
-}
-
-.filter-group label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 600;
-  color: #172b4d;
-  font-size: 14px;
-}
-
-.form-control {
-  width: 100%;
-  max-width: 500px;
-  padding: 10px 12px;
-  border: 1px solid #e6ebf2;
-  border-radius: 8px;
-  font-size: 14px;
-  transition: all 0.2s ease;
-  background: #ffffff;
-  color: #172b4d;
-}
-
-.form-control:focus {
-  outline: none;
-  border-color: #172b4d;
-  box-shadow: 0 0 0 2px rgba(23, 43, 77, 0.1);
-}
-
-/* Loading state */
+/* Loading & Error */
 .loading-state {
   display: flex;
   align-items: center;
@@ -93,12 +89,11 @@
   to { transform: rotate(360deg); }
 }
 
-/* Error state */
 .error-state {
   background: #fee;
   border: 1px solid #fcc;
   border-radius: 12px;
-  padding: 20px;
+  padding: 40px;
   text-align: center;
   color: #dc3545;
 }
@@ -121,60 +116,60 @@
   transform: translateY(-1px);
 }
 
-/* Report title */
-.report-title {
-  background: linear-gradient(135deg, #172b4d 0%, #0d1a33 100%);
-  color: white;
-  padding: 16px 24px;
-  border-radius: 12px;
-  margin-bottom: 24px;
-}
-
-.report-title h3 {
-  margin: 0;
-  font-size: 16px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
-}
-
-/* Stats cards */
-.stats-cards {
+/* Quick Stats - Hàng 1 */
+.quick-stats {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 16px;
   margin-bottom: 24px;
 }
 
-.stat-card {
+@media (max-width: 768px) {
+  .card-body {
+    padding: 16px;
+  }
+  .quick-stats {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+.quick-stat-card {
   background: white;
   border-radius: 12px;
   padding: 20px;
   text-align: center;
   border: 1px solid #e6ebf2;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: all 0.2s ease;
 }
 
-.stat-card:hover {
+.quick-stat-card:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
 }
 
-.stat-value {
+.quick-stat-value {
   font-size: 32px;
   font-weight: 700;
-  margin-bottom: 8px;
   color: #172b4d;
+  line-height: 1.2;
 }
 
-.stat-label {
+.quick-stat-label {
   font-size: 12px;
-  color: #525f7f;
+  color: #8fa6d3;
+  margin-top: 8px;
   font-weight: 600;
   letter-spacing: 0.5px;
 }
 
-/* Chart card - BIỂU ĐỒ CỘT NGANG (dễ đọc hơn) */
-.chart-card {
+.quick-stat-sub {
+  font-size: 11px;
+  color: #28a745;
+  margin-top: 4px;
+}
+
+/* Chart Section - Hàng 2 */
+.chart-section {
   background: white;
   border-radius: 12px;
   padding: 20px;
@@ -182,89 +177,155 @@
   border: 1px solid #e6ebf2;
 }
 
-.chart-card h4 {
-  margin: 0 0 20px 0;
+.section-header {
+  margin-bottom: 20px;
+  padding-bottom: 12px;
+  border-bottom: 2px solid #e6ebf2;
+}
+
+.section-header h3 {
+  margin: 0 0 4px 0;
   color: #172b4d;
-  font-size: 14px;
+  font-size: 15px;
   font-weight: 700;
-  letter-spacing: 0.3px;
 }
 
-.chart-table {
-  width: 100%;
-  border-collapse: collapse;
+.section-desc {
+  font-size: 12px;
+  color: #8fa6d3;
 }
 
-.chart-table td {
-  padding: 8px;
-  vertical-align: middle;
+.teaching-load-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
 }
 
-.chart-range {
-  width: 80px;
-  font-weight: 600;
-  color: #172b4d;
-  font-size: 13px;
-}
-
-.chart-bar-cell {
-  width: 60%;
-}
-
-.chart-bar-wrapper {
-  background: #e9ecef;
-  border-radius: 20px;
-  height: 30px;
-  overflow: hidden;
-  position: relative;
-}
-
-.chart-bar-fill {
-  height: 100%;
-  background: #172b4d;
-  border-radius: 20px;
+.teaching-load-item {
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  padding-right: 10px;
-  transition: width 0.3s ease;
+  gap: 16px;
+  flex-wrap: wrap;
 }
 
-.chart-bar-value {
-  color: white;
-  font-size: 12px;
+.teaching-load-info {
+  flex: 1;
+  min-width: 180px;
+}
+
+.teaching-load-name {
   font-weight: 600;
+  color: #172b4d;
+  font-size: 14px;
 }
 
-.chart-count {
-  width: 100px;
-  color: #525f7f;
-  font-size: 13px;
-  padding-left: 12px;
+.teaching-load-stats {
+  display: flex;
+  gap: 16px;
+  margin-top: 4px;
 }
 
-/* Table card - CHI TIẾT THANG CHỮ */
-.table-card {
+.class-count, .student-count {
+  font-size: 12px;
+  color: #8fa6d3;
+}
+
+.teaching-load-progress {
+  flex: 2;
+  min-width: 150px;
+}
+
+.progress-bar-bg {
+  background: #e9ecef;
+  border-radius: 20px;
+  height: 24px;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: 20px;
+  transition: width 0.3s ease;
+  background: #172b4d;
+}
+
+/* Warning Section - Hàng 3 */
+.warning-section {
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 12px;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+
+.warning-header {
+  border-bottom-color: #ffeaa7;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+}
+
+.warning-list {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.warning-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: white;
+  border-radius: 10px;
+  padding: 12px 20px;
+  flex: 1;
+  min-width: 200px;
+  border-left: 4px solid;
+}
+
+.warning-item.missing_grades {
+  border-left-color: #dc3545;
+}
+
+.warning-item.incomplete_class {
+  border-left-color: #ffc107;
+}
+
+.warning-icon {
+  font-size: 20px;
+}
+
+.warning-content {
+  flex: 1;
+}
+
+.warning-message {
+  font-weight: 600;
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.warning-count {
+  font-size: 12px;
+  color: #8fa6d3;
+  margin-top: 4px;
+}
+
+/* Section Card - Hàng 4,5 */
+.section-card {
   background: white;
   border-radius: 12px;
   padding: 20px;
   margin-bottom: 24px;
   border: 1px solid #e6ebf2;
-  overflow-x: auto;
 }
 
-.table-card h4 {
-  margin: 0 0 20px 0;
-  color: #172b4d;
-  font-size: 14px;
-  font-weight: 700;
-  letter-spacing: 0.3px;
+.table-responsive {
+  overflow-x: auto;
 }
 
 .data-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 500px;
 }
 
 .data-table th,
@@ -279,28 +340,21 @@
   font-weight: 600;
   color: #172b4d;
   font-size: 13px;
-  letter-spacing: 0.3px;
 }
 
 .data-table td {
   font-size: 14px;
   color: #525f7f;
+  vertical-align: middle;
 }
 
-.grade-badge {
-  display: inline-block;
-  padding: 4px 12px;
-  border-radius: 6px;
-  font-weight: 700;
-  font-size: 13px;
-  color: white;
-  min-width: 50px;
-  text-align: center;
+.highlight {
+  color: #dc3545;
+  font-weight: 600;
 }
 
-/* Progress bar in table */
 .progress-cell {
-  width: 200px;
+  width: 180px;
 }
 
 .progress-wrapper {
@@ -309,11 +363,15 @@
   gap: 10px;
 }
 
+.progress-wrapper.small .progress-bar-bg {
+  height: 6px;
+}
+
 .progress-bar-bg {
   flex: 1;
   background: #e9ecef;
   border-radius: 20px;
-  height: 20px;
+  height: 8px;
   overflow: hidden;
 }
 
@@ -328,113 +386,106 @@
   font-weight: 600;
   color: #172b4d;
   min-width: 45px;
-  text-align: right;
 }
 
-/* Summary card */
-.summary-card {
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
+.status-badge {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.status-badge.completed {
+  background: #d4edda;
+  color: #28a745;
+}
+
+.status-badge.incomplete {
+  background: #fff3cd;
+  color: #ffc107;
+}
+
+.status-badge.not_started {
+  background: #f8d7da;
+  color: #dc3545;
+}
+
+/* Incomplete Class List - Hàng 5 */
+.incomplete-class-list {
   display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.incomplete-class-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 10px;
   flex-wrap: wrap;
-  gap: 24px;
-  border: 1px solid #e6ebf2;
+  gap: 12px;
 }
 
-.summary-item {
+.incomplete-class-info {
   flex: 1;
-  min-width: 150px;
 }
 
-.summary-label {
-  display: block;
+.incomplete-class-name {
+  font-weight: 600;
+  color: #172b4d;
+  font-size: 14px;
+}
+
+.incomplete-class-subject {
   font-size: 12px;
   color: #8fa6d3;
-  margin-bottom: 4px;
+  margin-top: 4px;
+}
+
+.incomplete-class-progress {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  min-width: 250px;
+}
+
+.missing-count {
+  font-size: 13px;
+  color: #dc3545;
   font-weight: 500;
-}
-
-.summary-value {
-  display: block;
-  font-size: 20px;
-  font-weight: 700;
-  color: #172b4d;
-}
-
-/* Empty state */
-.empty-state {
-  background: white;
-  border-radius: 12px;
-  padding: 60px;
-  text-align: center;
-  color: #8fa6d3;
-  border: 1px solid #e6ebf2;
+  white-space: nowrap;
 }
 
 /* Responsive */
-@media (max-width: 992px) {
-  .stats-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .chart-range {
-    width: 70px;
-    font-size: 12px;
-  }
-  
-  .chart-count {
-    width: 80px;
-    font-size: 12px;
-  }
-}
-
 @media (max-width: 768px) {
-  .card-body {
-    padding: 16px;
+  .teaching-load-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .stats-cards {
-    gap: 12px;
+  .teaching-load-progress {
+    width: 100%;
   }
   
-  .stat-card {
-    padding: 12px;
+  .warning-list {
+    flex-direction: column;
   }
   
-  .stat-value {
-    font-size: 24px;
+  .incomplete-class-item {
+    flex-direction: column;
+    align-items: flex-start;
   }
   
-  .summary-item {
-    min-width: 120px;
+  .incomplete-class-progress {
+    width: 100%;
   }
   
-  .summary-value {
-    font-size: 16px;
-  }
-  
-  .chart-bar-wrapper {
-    height: 25px;
-  }
-  
-  .chart-bar-value {
-    font-size: 10px;
-  }
-}
-
-@media (max-width: 576px) {
-  .stats-cards {
-    grid-template-columns: repeat(2, 1fr);
-  }
-  
-  .chart-range {
-    width: 55px;
-    font-size: 11px;
-  }
-  
-  .chart-count {
-    width: 65px;
-    font-size: 11px;
+  .data-table th,
+  .data-table td {
+    padding: 8px;
+    font-size: 12px;
   }
 }
