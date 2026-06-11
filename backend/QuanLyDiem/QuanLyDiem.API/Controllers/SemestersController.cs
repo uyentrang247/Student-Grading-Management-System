@@ -5,6 +5,7 @@ using QuanLyDiem.API.Models;
 
 namespace QuanLyDiem.API.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SemestersController : ControllerBase
