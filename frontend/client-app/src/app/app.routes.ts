@@ -87,9 +87,7 @@ export const routes: Routes = [
     data: { roles: ['Lecturer'] }
   },
 
-  // ==================== BÁO CÁO MỚI ====================
-  
-  // Báo cáo giảng viên - Xem thống kê lớp phụ trách
+  // --- BÁO CÁO GIẢNG VIÊN ---
   { 
     path: 'lecturer/reports', 
     component: LecturerReport,
@@ -97,7 +95,7 @@ export const routes: Routes = [
     data: { roles: ['Lecturer'] }
   },
 
-  // Báo cáo admin - Thống kê hệ thống
+  // --- BÁO CÁO ADMIN ---
   { 
     path: 'admin/reports', 
     component: AdminStatistics,
