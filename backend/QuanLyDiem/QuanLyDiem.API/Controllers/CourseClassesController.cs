@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Data;
 using QuanLyDiem.API.Models;
+using Microsoft.AspNetCore.Authorization;
+
 
 namespace QuanLyDiem.API.Controllers
 {
