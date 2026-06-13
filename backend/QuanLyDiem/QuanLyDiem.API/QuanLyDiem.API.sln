@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.13.35825.156 d17.13
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "QuanLyDiem.API", "QuanLyDiem.API.csproj", "{DF1B8DA1-B805-B92F-0867-1A15D969C37D}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{DF1B8DA1-B805-B92F-0867-1A15D969C37D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DF1B8DA1-B805-B92F-0867-1A15D969C37D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DF1B8DA1-B805-B92F-0867-1A15D969C37D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DF1B8DA1-B805-B92F-0867-1A15D969C37D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {FD66C97D-D84F-4B3D-A002-6988E62C77AC}
+	EndGlobalSection
+EndGlobal
