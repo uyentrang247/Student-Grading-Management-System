@@ -1,31 +1,36 @@
 <div class="student-manager-wrapper">
-  <h3 class="page-title">QUẢN LÝ DANH SÁCH SINH VIÊN</h3>
+  <h3 class="page-title">DANH SÁCH SINH VIÊN</h3>
 
-<form (ngSubmit)="onSearch()" class="toolbar-container">
-  <div class="search-filter-group">
-    <input 
-      type="text" 
-      [(ngModel)]="searchTerm" 
-      name="searchTerm" placeholder="Nhập tên hoặc mã sinh viên cần tìm..." 
-      class="form-input search-box"
-    />
+  <form (ngSubmit)="onSearch()" class="toolbar-container">
+    <div class="search-filter-group">
+      <select 
+        [(ngModel)]="selectedClassId" 
+        name="selectedClassId" 
+        (change)="onSearch()" 
+        class="form-input class-dropdown">
+        <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
+        <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
+          {{ cls.className }}
+        </option>
+      </select>
 
-    <select [(ngModel)]="selectedClassId" name="selectedClassId" class="form-input class-dropdown">
-      <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
-      <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
-        {{ cls.className }}
-      </option>
-    </select>
+      <input 
+        type="text" 
+        [(ngModel)]="searchTerm" 
+        name="searchTerm" 
+        placeholder="Nhập tên hoặc mã sinh viên cần tìm..." 
+        class="form-input search-box"
+      />
 
-    <button type="submit" class="btn btn-filter">
-      <i class="fa fa-search"></i> Tìm kiếm
-    </button>
-  </div>
+      <button type="submit" class="btn btn-filter">
+        <i class="fa fa-search"></i> Tìm kiếm
+      </button>
+    </div>
 
-<a routerLink="/student/create" class="btn btn-add-new">
-  <i class="fa fa-plus"></i> Thêm Sinh Viên
-</a>
-</form>
+    <a routerLink="/student/create" class="btn btn-add-new">
+      <i class="fa fa-plus"></i> Thêm Sinh Viên
+    </a>
+  </form>
 
   <div class="table-container">
     <table class="data-table">
@@ -52,9 +57,9 @@
           <td>{{ student.email }}</td>
           <td style="text-align: center;">
             <a [routerLink]="['/student/edit', student.studentId]" class="btn-action btn-edit" title="Sửa thông tin">
-                Sửa
-              </a>
-              <button class="btn-action btn-delete" (click)="onDelete(student.studentId)" title="Xóa sinh viên">Xóa</button>
+              Sửa
+            </a>
+            <button class="btn-action btn-delete" (click)="onDelete(student.studentId)" title="Xóa sinh viên">Xóa</button>
           </td>
         </tr>
         <tr *ngIf="students.length === 0">
@@ -63,4 +68,33 @@
       </tbody>
     </table>
   </div>
+
+  <div class="pagination-simple-container" *ngIf="totalRecords > 0">
+    <span class="total-records-text">
+      Tổng số: <strong>{{ totalRecords }}</strong> sinh viên
+    </span>
+
+    <div class="pagination-buttons" *ngIf="totalPages > 1">
+      <button 
+        type="button"
+        class="btn-arrow" 
+        [disabled]="currentPage === 1" 
+        (click)="goToPage(currentPage - 1)">
+        &lt;
+      </button>
+
+      <span class="pagination-text">
+        Trang {{ currentPage }} / {{ totalPages }}
+      </span>
+
+      <button 
+        type="button"
+        class="btn-arrow" 
+        [disabled]="currentPage === totalPages" 
+        (click)="goToPage(currentPage + 1)">
+        &gt;
+      </button>
+    </div>
+  </div>
+  
 </div>

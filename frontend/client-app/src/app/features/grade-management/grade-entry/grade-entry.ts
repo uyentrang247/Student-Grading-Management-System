@@ -1,10 +1,12 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { GradeEntryService, CourseClassForGrade } from '../../../services/grade-entry';
+import { StudentGrade } from '../../../models/student-grade';
 import { GradeListComponent } from '../grade-list/grade-list';
 import { GradeFilterComponent } from '../grade-filter/grade-filter';
 import { GradePaginationComponent } from '../grade-pagination/grade-pagination';
 import { GradeEditModalComponent } from '../grade-edit-modal/grade-edit-modal';
+import { AuthService } from '../../../services/auth';
 
 @Component({
   selector: 'app-grade-entry',
@@ -14,7 +16,7 @@ import { GradeEditModalComponent } from '../grade-edit-modal/grade-edit-modal';
     GradeListComponent,
     GradeFilterComponent,
     GradePaginationComponent,
-    GradeEditModalComponent
+    GradeEditModalComponent,
   ],
   templateUrl: './grade-entry.html',
   styleUrls: ['./grade-entry.css']
@@ -22,26 +24,21 @@ import { GradeEditModalComponent } from '../grade-edit-modal/grade-edit-modal';
 export class GradeEntryComponent implements OnInit {
   courseClasses: CourseClassForGrade[] = [];
   selectedClassId: number = 0;
-  
-  students: any[] = [];
-  filteredStudents: any[] = [];
+  students: StudentGrade[] = [];
+  filteredStudents: StudentGrade[] = [];
   currentPage: number = 1;
   pageSize: number = 10;
   totalPages: number = 1;
-  
   showEditPopup: boolean = false;
-  selectedStudent: any = null;
-
+  selectedStudent: StudentGrade | null = null;
   isLoading: boolean = false;
   searchKeyword: string = '';
   showFailOnly: boolean = false;
-  
   notification = { show: false, message: '', type: 'success' as 'success' | 'error' };
-
-  private readonly lecturerId = 2;
 
   constructor(
     private gradeEntryService: GradeEntryService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 
@@ -51,80 +48,63 @@ export class GradeEntryComponent implements OnInit {
 
   loadCourseClasses(): void {
     this.isLoading = true;
-    this.cdr.detectChanges();
-    this.gradeEntryService.getCourseClassesByLecturer(this.lecturerId).subscribe({
-      next: (data) => {
+    this.gradeEntryService.getMyCourseClasses().subscribe({
+      next: (data: CourseClassForGrade[]) => {
         this.courseClasses = data;
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.isLoading = false;
-        this.cdr.detectChanges();
+        this.showNotification('Lỗi tải danh sách lớp', 'error');
       }
     });
   }
 
   onClassChange(classId: number): void {
     this.selectedClassId = classId;
-    if (!this.selectedClassId) return;
-    
+    if (!classId) return;
     this.isLoading = true;
     this.searchKeyword = '';
     this.showFailOnly = false;
-    this.cdr.detectChanges();
     
-    this.gradeEntryService.getStudentsByClass(this.selectedClassId).subscribe({
-      next: (data) => {
+    this.gradeEntryService.getStudentsByClass(classId).subscribe({
+      next: (data: StudentGrade[]) => {
         this.students = data;
         this.filteredStudents = data;
         this.updatePagination();
         this.isLoading = false;
         this.cdr.detectChanges();
       },
-      error: (err) => {
-        console.error(err);
+      error: () => {
         this.isLoading = false;
-        this.cdr.detectChanges();
+        this.showNotification('Lỗi tải danh sách sinh viên', 'error');
       }
     });
   }
 
-  onFilterChange(event: { filtered: any[], keyword: string, showFailOnly: boolean }): void {
+  onFilterChange(event: { filtered: StudentGrade[], keyword: string, failOnly: boolean }): void {
     this.filteredStudents = event.filtered;
     this.searchKeyword = event.keyword;
-    this.showFailOnly = event.showFailOnly;
+    this.showFailOnly = event.failOnly;
     this.updatePagination();
-    this.cdr.detectChanges();
-  }
-
-  onResetFilter(): void {
-    this.filteredStudents = this.students;
-    this.searchKeyword = '';
-    this.showFailOnly = false;
-    this.updatePagination();
-    this.cdr.detectChanges();
   }
 
   onPageChange(page: number): void {
     this.currentPage = page;
-    this.cdr.detectChanges();
   }
 
-  onEditStudent(student: any): void {
+  onEditStudent(student: StudentGrade): void {
     this.selectedStudent = student;
     this.showEditPopup = true;
-    this.cdr.detectChanges();
   }
 
   closeEditPopup(): void {
     this.showEditPopup = false;
     this.selectedStudent = null;
-    this.cdr.detectChanges();
   }
 
-  onSaveSuccess(updatedStudent: any): void {
+  onSaveSuccess(updatedStudent: StudentGrade): void {
     const index = this.students.findIndex(s => s.enrollmentId === updatedStudent.enrollmentId);
     if (index !== -1) {
       this.students[index] = { ...this.students[index], ...updatedStudent };
@@ -132,12 +112,10 @@ export class GradeEntryComponent implements OnInit {
     }
     this.closeEditPopup();
     this.showNotification('Lưu điểm thành công!', 'success');
-    this.cdr.detectChanges();
   }
 
   applyCurrentFilters(): void {
     let filtered = [...this.students];
-    
     const keyword = this.searchKeyword.trim().toLowerCase();
     if (keyword) {
       filtered = filtered.filter(s =>
@@ -145,7 +123,6 @@ export class GradeEntryComponent implements OnInit {
         s.fullName.toLowerCase().includes(keyword)
       );
     }
-    
     if (this.showFailOnly) {
       filtered = filtered.filter(s => {
         const avg = s.processScore !== null && s.finalScore !== null
@@ -154,22 +131,19 @@ export class GradeEntryComponent implements OnInit {
         return avg !== null && avg < 4.0;
       });
     }
-    
     this.filteredStudents = filtered;
     this.updatePagination();
-    this.cdr.detectChanges();
   }
 
   updatePagination(): void {
     this.totalPages = Math.ceil(this.filteredStudents.length / this.pageSize);
     this.currentPage = 1;
-    this.cdr.detectChanges();
   }
 
   showNotification(message: string, type: 'success' | 'error'): void {
     this.notification = { show: true, message, type };
     this.cdr.detectChanges();
-    setTimeout(() => { 
+    setTimeout(() => {
       this.notification.show = false;
       this.cdr.detectChanges();
     }, 3000);
@@ -177,10 +151,10 @@ export class GradeEntryComponent implements OnInit {
 
   closeNotification(): void {
     this.notification.show = false;
-    this.cdr.detectChanges();
   }
 
   getTotalCount(): number {
     return this.filteredStudents.length;
   }
+
 }

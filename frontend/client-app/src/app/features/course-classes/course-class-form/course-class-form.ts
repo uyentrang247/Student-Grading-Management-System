@@ -2,11 +2,13 @@ import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
 
 import { CourseClass } from '../../../models/course-class';
 import { CourseClassService } from '../../../services/course-class';
 import { SubjectService } from '../../../services/subject';
+import { Subject } from '../../../models/subject';
+import { LecturerService } from '../../../services/lecturer.service';
+import { SemesterService } from '../../../services/semester';
 
 @Component({
   selector: 'app-course-class-form',
@@ -16,12 +18,11 @@ import { SubjectService } from '../../../services/subject';
   styleUrls: ['./course-class-form.css']
 })
 export class CourseClassForm implements OnInit {
-
   isEditMode = false;
 
-  subjects: any[] = [];
-  semesters: any[] = [];
+  subjects: Subject[] = [];
   lecturers: any[] = [];
+  semesters: any[] = [];
 
   courseClass: CourseClass = {
     id: 0,
@@ -37,70 +38,91 @@ export class CourseClassForm implements OnInit {
     private route: ActivatedRoute,
     private courseClassService: CourseClassService,
     private subjectService: SubjectService,
-    private http: HttpClient,
+    private lecturerService: LecturerService,
+    private semesterService: SemesterService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    this.loadDropdownData();
+    this.loadSubjects();
+    this.loadLecturers();
+    this.loadSemesters();
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
     if (id) {
       this.isEditMode = true;
-
-      this.courseClassService.getCourseClassById(id).subscribe({
-        next: (data: any) => {
-          this.courseClass = {
-            id: Number(data.id ?? data.courseClassId ?? id),
-            classCode: data.classCode ?? '',
-            subjectId: Number(data.subjectId ?? 0),
-            semesterId: Number(data.semesterId ?? 0),
-            lecturerId: data.lecturerId !== undefined && data.lecturerId !== null
-              ? Number(data.lecturerId)
-              : 0,
-            maxStudents: Number(data.maxStudents ?? 40)
-          };
-
-          this.cdr.detectChanges();
-        },
-        error: (error) => {
-          alert('Không tìm thấy lớp học phần');
-          console.error(error);
-          this.router.navigate(['/course-classes']);
-        }
-      });
+      this.loadCourseClass(id);
     }
   }
 
-  loadDropdownData(): void {
+  loadSubjects(): void {
     this.subjectService.getSubjects().subscribe({
       next: (data) => {
         this.subjects = data;
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Lỗi tải danh sách môn học:', error);
+        console.error('Lỗi tải môn học:', error);
+        alert('Không thể tải danh sách môn học');
       }
     });
+  }
 
-    this.http.get<any[]>('http://localhost:5059/api/Semesters').subscribe({
-      next: (data) => {
-        this.semesters = data;
+  loadLecturers(): void {
+    this.lecturerService.getLecturers().subscribe({
+      next: (data: any) => {
+        this.lecturers = data.map((lecturer: any) => ({
+          id: lecturer.userId,
+          name: lecturer.fullName
+        }));
+
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Lỗi tải danh sách học kỳ:', error);
+        console.error('Lỗi tải giảng viên:', error);
+        alert('Không thể tải danh sách giảng viên');
       }
     });
+  }
 
-    this.http.get<any[]>('http://localhost:5059/api/Users/lecturers').subscribe({
-      next: (data) => {
-        this.lecturers = data;
+  loadSemesters(): void {
+    this.semesterService.getSemesters().subscribe({
+      next: (data: any) => {
+        this.semesters = data.map((semester: any) => ({
+          id: semester.semesterId,
+          name: `${semester.term} - ${semester.academicYear}`
+        }));
+
         this.cdr.detectChanges();
       },
       error: (error) => {
-        console.error('Lỗi tải danh sách giảng viên:', error);
+        console.error('Lỗi tải học kỳ:', error);
+        alert('Không thể tải danh sách học kỳ');
+      }
+    });
+  }
+
+  loadCourseClass(id: number): void {
+    this.courseClassService.getCourseClassById(id).subscribe({
+      next: (data: any) => {
+        this.courseClass = {
+          id: Number(data.id ?? data.courseClassId ?? id),
+          classCode: data.classCode ?? '',
+          subjectId: Number(data.subjectId ?? 0),
+          semesterId: Number(data.semesterId ?? 0),
+          lecturerId: data.lecturerId !== undefined && data.lecturerId !== null
+            ? Number(data.lecturerId)
+            : 0,
+          maxStudents: Number(data.maxStudents ?? 40)
+        };
+
+        this.cdr.detectChanges();
+      },
+      error: (error) => {
+        alert('Không tìm thấy lớp học phần');
+        console.error(error);
+        this.router.navigate(['/course-classes']);
       }
     });
   }
