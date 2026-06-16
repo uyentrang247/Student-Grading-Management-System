@@ -16,7 +16,7 @@ export interface StudentCreateUpdate {
   studentCode: string;
   lastName: string;
   firstName: string;
-  gender: boolean;
+  gender: string;
   dateOfBirth: string;
   homeroomClassId: number | null;
   email: string;
@@ -25,4 +25,8 @@ export interface StudentCreateUpdate {
 export interface ClassLookup {
   homeroomClassId: number;
   className: string;
+}
+export interface PaginatedStudentResult {
+  totalRecords: number;
+  data: StudentResponse[];
 }

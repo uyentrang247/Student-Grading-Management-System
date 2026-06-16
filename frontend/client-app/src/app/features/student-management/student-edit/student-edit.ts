@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StudentService } from '../../../services/student'; 
-import { StudentResponse } from '../../../models/student';
-import { HomeroomClassResponse } from '../../../models/homeroomclass';
+import { StudentResponse, ClassLookup} from '../../../models/student';
 import { StudentFormComponent } from '../components/student-form/student-form';
 
 @Component({
@@ -17,7 +16,7 @@ import { StudentFormComponent } from '../components/student-form/student-form';
 export class StudentEditComponent implements OnInit {
   studentForm!: FormGroup;
   studentId!: number;
-  homeroomClasses: HomeroomClassResponse[] = [];
+  homeroomClasses: ClassLookup[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -40,7 +39,7 @@ export class StudentEditComponent implements OnInit {
 
     this.loadHomeroomClasses();
 
-    // Lấy ID và load dữ liệu cũ
+    // Lấy ID ep sang number và load dữ liệu cũ
     this.studentId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.studentId) {
       this.loadStudentDetail();
@@ -57,6 +56,7 @@ export class StudentEditComponent implements OnInit {
   loadStudentDetail(): void {
     this.studentService.getStudentById(this.studentId).subscribe({
       next: (student) => {
+        //Cắt bỏ phần giờ giấc dư thừa từ Server trả về để đổ vào form, vì input type="date" chỉ nhận yyyy-MM-dd
         const formattedDate = student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '';
 
         this.studentForm.patchValue({

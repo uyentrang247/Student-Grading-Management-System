@@ -25,7 +25,6 @@ namespace QuanLyDiem.API.Services
         {
             var query = _context.Students.Include(s => s.HomeroomClass).AsQueryable();
 
-            // 1. Lọc theo lớp
             if (homeroomClassId.HasValue && homeroomClassId.Value > 0)
             {
                 query = query.Where(s => s.HomeroomClassId == homeroomClassId.Value);
@@ -63,12 +62,13 @@ namespace QuanLyDiem.API.Services
             return (data, totalRecords);
         }
 
-        public async Task<object> GetClassesLookupAsync()
+        public async Task<List<ClassLookupDTO>> GetClassesLookupAsync()
         {
             return await _context.HomeroomClasses
-                .Select(c => new {
-                    homeroomClassId = c.HomeroomClassId,
-                    className = c.ClassName
+                .Select(c => new ClassLookupDTO
+                {
+                    HomeroomClassId = c.HomeroomClassId,
+                    ClassName = c.ClassName
                 })
                 .ToListAsync();
         }

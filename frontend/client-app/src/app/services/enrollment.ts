@@ -79,8 +79,6 @@ export class EnrollmentService {
     formData.append('courseClassId', courseClassId.toString());
     formData.append('excelFile', file, file.name); // Tên 'excelFile' bắt buộc phải khớp với biến IFormFile ở Backend .NET
 
-    // LƯU Ý: KHÔNG tự đặt 'Content-Type' trong HttpHeaders khi gửi FormData,
-    // để trình duyệt tự động tính toán boundary cho tệp tin Excel truyền đi.
     return this.http.post<ExcelImportResult>(`${`${this.apiUrl}/import-excel`}`, formData, {
       headers: this.getAuthHeaders()
     });
