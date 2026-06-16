@@ -1,0 +1,18 @@
+<div class="edit-section">
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+  
+  <div class="form-group">
+    <label>Họ và tên <span class="required">*</span></label>
+    <input type="text" [(ngModel)]="editForm.fullName" class="form-control" placeholder="Nhập họ và tên">
+  </div>
+  <div class="form-group">
+    <label>Email <span class="required">*</span></label>
+    <input type="email" [(ngModel)]="editForm.email" class="form-control" placeholder="Nhập email">
+  </div>
+  <div class="form-actions">
+    <button class="btn-save" (click)="onSave()">Lưu thay đổi</button>
+    <button class="btn-cancel" (click)="onCancel()">Hủy</button>
+  </div>
+</div>

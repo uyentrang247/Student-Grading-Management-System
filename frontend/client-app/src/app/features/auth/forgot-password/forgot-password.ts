@@ -1,50 +1,38 @@
-import { Component, ChangeDetectorRef } from '@angular/core'; // Gộp lại cho gọn
+import { Component } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
+import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { AuthService } from '../../../services/auth';
-import { RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-forgot-password',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule],
+  imports: [CommonModule, FormsModule],
   templateUrl: './forgot-password.html',
   styleUrls: ['./forgot-password.css']
 })
 export class ForgotPasswordComponent {
   email: string = '';
-  message: string = '';
-  tempPass: string = '';
-  errorMessage: string = '';
   isLoading: boolean = false;
 
-  // Đã thêm dấu phẩy giữa các tham số
-  constructor(
-    private authService: AuthService, 
-    private cdr: ChangeDetectorRef 
-  ) {}
+  constructor(private http: HttpClient, private router: Router) {}
 
-  onSubmit() {
-    if (!this.email) return;
+  requestOtp() {
+    if (!this.email) {
+      alert("Vui lòng nhập email!");
+      return;
+    }
+
     this.isLoading = true;
-    this.message = '';
-    this.errorMessage = '';
-    this.tempPass = '';
-
-    this.authService.forgotPassword(this.email).subscribe({
-      next: (res) => {
-        this.isLoading = false;
-        this.message = res.message;
-        this.tempPass = res.temporaryPassword;
-        
-        // Gọi hàm này để ép Angular cập nhật lại giao diện ngay khi nhận dữ liệu
-        this.cdr.detectChanges(); 
+    
+    this.http.post('http://localhost:5059/api/auth/forgot-password', { email: this.email }).subscribe({
+      next: (res: any) => {
+        alert(res.message);
+        this.router.navigate(['/forgot-password/verify-otp'], { queryParams: { email: this.email } });
       },
       error: (err) => {
+        alert(err.error?.message || 'Có lỗi xảy ra.');
         this.isLoading = false;
-        this.errorMessage = err.error?.message || 'Có lỗi xảy ra!';
-        // Cập nhật lại giao diện khi có lỗi
-        this.cdr.detectChanges(); 
       }
     });
   }

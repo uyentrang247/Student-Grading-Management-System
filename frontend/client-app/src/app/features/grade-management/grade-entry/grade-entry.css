@@ -34,3 +34,27 @@
   .card-body { padding: 16px; }
 
 }
+
+/* Nút Xem sinh viên rớt - thiết kế như nút bình thường */
+.btn-fail {
+  background-color: #dc3545;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-fail:hover {
+  background-color: #c82333;
+  transform: translateY(-1px);
+}
+
+.btn-fail i {
+  font-size: 14px;
+}

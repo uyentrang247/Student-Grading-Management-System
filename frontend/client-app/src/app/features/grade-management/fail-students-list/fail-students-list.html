@@ -1,0 +1,71 @@
+<div class="fail-students-container">
+  <div class="card module-card shadow-sm">
+    <div class="card-header qnu-card-header">
+      <h5 class="header-title mb-0">DANH SÁCH HỌC LẠI</h5>
+    </div>
+
+    <div class="card-body">
+      
+      <div class="row mb-4">
+        <div class="col-md-6">
+          <label class="form-label fw-semibold">Chọn lớp học phần</label>
+          <select class="form-select" [(ngModel)]="selectedClassId" (change)="onClassChange()">
+            <option value="0">-- Chọn lớp học phần --</option>
+            <option *ngFor="let class of courseClasses" [value]="class.courseClassId">
+              {{ class.classCode }} - {{ class.subjectName }}
+            </option>
+          </select>
+        </div>
+      </div>
+
+      <div *ngIf="isLoading" class="text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-2 text-muted">Đang tải dữ liệu...</p>
+      </div>
+
+      <div *ngIf="!isLoading && !selectedClassId && courseClasses.length > 0" class="text-center py-5">
+        <p class="text-muted">Vui lòng chọn lớp học phần để xem danh sách</p>
+      </div>
+
+      <div *ngIf="!isLoading && selectedClassId && failStudents.length === 0" class="text-center py-5">
+        <p class="text-success fw-bold">Tuyệt vời!</p>
+        <p class="text-muted">Lớp {{ selectedClassName }} không có sinh viên nào học lại</p>
+      </div>
+
+      <div *ngIf="!isLoading && selectedClassId && failStudents.length > 0">
+        <p class="mb-3">
+          Lớp <strong>{{ selectedClassName }}</strong> có 
+          <strong class="text-danger">{{ failStudents.length }}</strong> sinh viên học lại:
+        </p>
+        
+        <div class="table-responsive">
+          <table class="table table-bordered">
+            <thead class="table-danger">
+              <tr>
+                <th>#</th>
+                <th>MSSV</th>
+                <th>Họ tên</th>
+                <th>Điểm QT</th>
+                <th>Điểm CK</th>
+                <th>Điểm TB</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let student of failStudents; let i = index">
+                <td>{{ i + 1 }}</td>
+                <td>{{ student.studentCode }}</td>
+                <td>{{ student.fullName }}</td>
+                <td>{{ student.processScore !== null ? student.processScore : '---' }}</td>
+                <td>{{ student.finalScore !== null ? student.finalScore : '---' }}</td>
+                <td class="text-danger fw-bold">{{ student.averageScore }}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

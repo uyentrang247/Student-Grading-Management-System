@@ -2,9 +2,11 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Data;
 using QuanLyDiem.API.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace QuanLyDiem.API.Controllers
 {
+    [Authorize(Roles = "Admin")] 
     [Route("api/[controller]")]
     [ApiController]
     public class SubjectsController : ControllerBase

@@ -1,46 +1,24 @@
 <div class="card module-card shadow-sm">
-
   <div class="card-header qnu-card-header">
-
-    <h5 class="form-title mb-0">
-      THÔNG TIN LỚP HỌC PHẦN
-    </h5>
-
+    <h5 class="form-title mb-0">THÔNG TIN LỚP HỌC PHẦN</h5>
   </div>
 
   <div class="card-body">
-
     <div class="row">
-
       <div class="col-md-6 mb-3">
-
-        <label for="classCode" class="form-label">
-          Mã lớp học phần
-        </label>
-
+        <label class="form-label">Mã lớp học phần</label>
         <input
-          id="classCode"
-          name="classCode"
           type="text"
           class="form-control qnu-input"
           placeholder="VD: WEB101-01"
-          aria-label="Mã lớp học phần"
           [(ngModel)]="courseClass.classCode"
         />
-
       </div>
 
       <div class="col-md-6 mb-3">
-
-        <label for="subjectId" class="form-label">
-          Môn học
-        </label>
-
+        <label class="form-label">Môn học</label>
         <select
-          id="subjectId"
-          name="subjectId"
           class="form-select qnu-input"
-          aria-label="Chọn môn học"
           [(ngModel)]="courseClass.subjectId">
 
           <option [ngValue]="0">-- Chọn môn học --</option>
@@ -52,90 +30,58 @@
           </option>
 
         </select>
-
       </div>
-
     </div>
 
     <div class="row">
-
       <div class="col-md-6 mb-3">
-
-        <label for="lecturerId" class="form-label">
-          Giảng viên
-        </label>
-
+        <label class="form-label">Giảng viên</label>
         <select
-          id="lecturerId"
-          name="lecturerId"
           class="form-select qnu-input"
-          aria-label="Chọn giảng viên"
           [(ngModel)]="courseClass.lecturerId">
 
-          <option [ngValue]="0">
-            -- Chọn giảng viên --
-          </option>
+          <option [ngValue]="0">-- Chọn giảng viên --</option>
 
           <option
             *ngFor="let lecturer of lecturers"
-            [ngValue]="lecturer.userId">
-            {{ lecturer.fullName }}
+            [ngValue]="lecturer.id">
+            {{ lecturer.name }}
           </option>
 
         </select>
-
       </div>
 
       <div class="col-md-6 mb-3">
-
-        <label for="semesterId" class="form-label">
-          Học kỳ
-        </label>
-
+        <label class="form-label">Học kỳ</label>
         <select
-          id="semesterId"
-          name="semesterId"
           class="form-select qnu-input"
-          aria-label="Chọn học kỳ"
           [(ngModel)]="courseClass.semesterId">
 
-          <option [ngValue]="0">
-            -- Chọn học kỳ --
-          </option>
+          <option [ngValue]="0">-- Chọn học kỳ --</option>
 
           <option
             *ngFor="let semester of semesters"
-            [ngValue]="semester.semesterId">
-            {{ semester.term }} - {{ semester.academicYear }}
+            [ngValue]="semester.id">
+            {{ semester.name }}
           </option>
 
         </select>
-
       </div>
-
     </div>
 
     <div class="form-actions">
-
       <button
         type="button"
         class="btn-save"
         (click)="saveCourseClass()">
-
         Lưu lớp học phần
-
       </button>
 
       <a
         routerLink="/course-classes"
         class="btn-back text-decoration-none">
-
         Quay lại
-
       </a>
-
     </div>
-
   </div>
-
 </div>

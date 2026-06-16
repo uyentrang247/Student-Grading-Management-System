@@ -1,1 +1,21 @@
-<p>verify-otp works!</p>
+<div class="auth-container">
+  <div class="module-card auth-card">
+    <div class="qnu-card-header">
+      <h3 class="form-title">XÁC THỰC MÃ OTP</h3>
+    </div>
+    <div class="auth-card-body">
+      <p class="subtitle">Hệ thống đã gửi mã đến email:<br><strong class="email-highlight">{{email}}</strong></p>
+      
+      <div class="form-group">
+        <label>Mã xác thực (6 số)</label>
+        <input type="text" [(ngModel)]="otp" placeholder="••••••" maxlength="6" class="otp-input">
+      </div>
+
+      <button class="btn-qnu-primary" (click)="nextStep()">Xác Nhận Mã</button>
+
+      <div class="back-link">
+        <a href="/forgot-password">Quay lại nhập email</a>
+      </div>
+    </div>
+  </div>
+</div>

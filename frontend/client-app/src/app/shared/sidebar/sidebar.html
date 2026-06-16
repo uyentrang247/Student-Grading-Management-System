@@ -1,9 +1,9 @@
-<div class="d-flex flex-column qnu-sidebar" style="width: 250px; height: calc(100vh - 70px); position: fixed; top: 70px; left: 0; z-index: 99;">
+<div class="d-flex flex-column qnu-sidebar" style="width: 280px; height: calc(100vh - 70px); position: fixed; top: 70px; left: 0; z-index: 99;">
   <div class="flex-grow-1 overflow-auto pt-3 px-3 custom-scrollbar">
     
     <div class="sidebar-heading mt-2 mb-2 px-3">HỆ THỐNG</div>
     <div class="list-group list-group-flush mb-3">
-      <a routerLink="/" 
+      <a routerLink="/home" 
          routerLinkActive="custom-active" 
          [routerLinkActiveOptions]="{exact: true}" 
          class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
@@ -53,7 +53,11 @@
           <i class="fas fa-pen-to-square menu-icon me-3"></i>
           <span class="fw-medium">Nhập điểm</span>
         </a>
-        <a routerLink="/lecturer/export" routerLinkActive="custom-active" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+        <a routerLink="/lecturer/fail-students" routerLinkActive="custom-active" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
+          <i class="fas fa-exclamation-triangle menu-icon me-3"></i>
+          <span class="fw-medium">Danh sách học lại</span>
+        </a>
+        <a routerLink="/lecturer/export-grade" routerLinkActive="custom-active" class="list-group-item border-0 py-2.5 px-3 mb-1 rounded-3 custom-hover d-flex align-items-center">
           <i class="fas fa-file-excel menu-icon me-3"></i>
           <span class="fw-medium">Xuất bảng điểm</span>
         </a>
