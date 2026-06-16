@@ -3,10 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using QuanLyDiem.API.DTOs.Student;
 using QuanLyDiem.API.Services;
 using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 using System.Threading.Tasks;
 
 namespace QuanLyDiem.API.Controllers
 {
+    [Authorize(Roles = "Admin")]
     [Route("api/[controller]")]
     [ApiController]
     public class StudentsController : ControllerBase
@@ -21,10 +23,11 @@ namespace QuanLyDiem.API.Controllers
         // GET: api/Students?homeroomClassId=1&searchTerm=abc&pageNumber=1&pageSize=10
         [HttpGet]
         public async Task<IActionResult> GetStudents(
+            //đọc giá trị từ query string trên URL
             [FromQuery] int? homeroomClassId,
             [FromQuery] string? searchTerm,
-            [FromQuery] int pageNumber = 1,  // Mặc định là trang 1 nếu Angular không truyền
-            [FromQuery] int pageSize = 10)  // Mặc định lấy 10 dòng dữ liệu
+            [FromQuery] int pageNumber = 1,  
+            [FromQuery] int pageSize = 10)  
         {
             // Nhận về Tuple (Data, TotalRecords) từ Service
             var (data, totalRecords) = await _studentService.GetStudentsAsync(homeroomClassId, searchTerm, pageNumber, pageSize);
@@ -39,7 +42,7 @@ namespace QuanLyDiem.API.Controllers
 
         // GET: api/Students/classes
         [HttpGet("classes")]
-        public async Task<IActionResult> GetClasses()
+        public async Task<ActionResult<List<ClassLookupDTO>>> GetClasses()
         {
             var classes = await _studentService.GetClassesLookupAsync();
             return Ok(classes);

@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StudentService } from '../../../services/student'; 
-import { StudentResponse } from '../../../models/student';
-import { HomeroomClassResponse } from '../../../models/homeroomclass'; 
+import { StudentResponse, ClassLookup } from '../../../models/student';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
@@ -15,22 +14,20 @@ import { ChangeDetectorRef } from '@angular/core';
   standalone: true, 
 })
 export class StudentListComponent implements OnInit {
-  // CẬP NHẬT: Chỉ cần một mảng chứa dữ liệu của trang hiện tại mang về từ API
   students: StudentResponse[] = [];    
-  homeroomClasses: HomeroomClassResponse[] = []; 
+  homeroomClasses: ClassLookup[] = []; 
 
   searchTerm: string = '';
   selectedClassId?: number;
 
-  // --- CÁC BIẾN QUẢN LÝ PHÂN TRANG TỪ SERVER ---
-  currentPage: number = 1;   // Trang hiện tại
-  pageSize: number = 10;     // Số sinh viên trên một trang
-  totalPages: number = 1;    // Tổng số trang (sẽ tính từ totalRecords)
-  totalRecords: number = 0;  // Tổng số bản ghi thỏa mãn bộ lọc
+  currentPage: number = 1;   
+  pageSize: number = 10;     
+  totalPages: number = 1;    
+  totalRecords: number = 0;  
 
   constructor(
     private studentService: StudentService, 
-    private cdr: ChangeDetectorRef 
+    private cdr: ChangeDetectorRef //đảm bảo chắc chắn UI luôn cập nhật đúng lúc.
   ) { }
 
   ngOnInit(): void {
@@ -38,7 +35,6 @@ export class StudentListComponent implements OnInit {
     this.loadStudents();       
   }
 
-  // 1. Tải danh sách lớp vào dropdown lọc
   loadHomeroomClasses(): void {
     this.studentService.getHomeroomClasses().subscribe({
       next: (data) => {
@@ -61,7 +57,7 @@ export class StudentListComponent implements OnInit {
           this.students = result.data; 
           this.totalRecords = result.totalRecords;
           
-          // Tính toán tổng số trang dựa trên tổng số bản ghi từ Database trả về
+          // Tính toán tổng số trang 
           this.totalPages = Math.ceil(this.totalRecords / this.pageSize) || 1;
 
           // Nếu trang hiện tại lớn hơn tổng số trang (ví dụ sau khi lọc bớt dữ liệu), đưa về trang 1 và tải lại
@@ -97,9 +93,8 @@ export class StudentListComponent implements OnInit {
     if (confirm('Bạn có chắc chắn muốn xóa sinh viên này không?')) {
       this.studentService.deleteStudent(id).subscribe({
         next: (res) => {
-          // CẬP NHẬT: Nhận res.message từ Object JSON
           alert(res.message); 
-          this.loadStudents(); // Tải lại trang hiện tại sau khi xóa thành công    
+          this.loadStudents(); 
         },
         error: (err) => {
           console.error('Lỗi khi thực hiện xóa:', err);

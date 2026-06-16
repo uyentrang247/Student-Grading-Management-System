@@ -19,14 +19,14 @@
 
       <div 
         class="error-msg" 
-        *ngIf="!!(studentForm.get('studentCode')?.touched 
+        *ngIf="(studentForm.get('studentCode')?.touched 
         && studentForm.get('studentCode')?.invalid)">
 
-        <small *ngIf="!!studentForm.get('studentCode')?.errors?.['required']">
+        <small *ngIf="studentForm.get('studentCode')?.errors?.['required']">
           Mã sinh viên không được để trống.
         </small>
 
-        <small *ngIf="!!studentForm.get('studentCode')?.errors?.['pattern']">
+        <small *ngIf="studentForm.get('studentCode')?.errors?.['pattern']">
           Mã sinh viên phải bao gồm chính xác 10 chữ số.
         </small>
       </div>
@@ -47,7 +47,7 @@
 
         <div 
           class="error-msg" 
-          *ngIf="!!(studentForm.get('lastName')?.touched 
+          *ngIf="(studentForm.get('lastName')?.touched 
           && studentForm.get('lastName')?.invalid)">
 
           <small>Họ và lót không được để trống.</small>
@@ -67,7 +67,7 @@
 
         <div 
           class="error-msg" 
-          *ngIf="!!(studentForm.get('firstName')?.touched 
+          *ngIf="(studentForm.get('firstName')?.touched 
           && studentForm.get('firstName')?.invalid)">
 
           <small>Tên sinh viên không được để trống.</small>
@@ -91,7 +91,7 @@
 
         <div 
           class="error-msg" 
-          *ngIf="!!(studentForm.get('gender')?.touched 
+          *ngIf="(studentForm.get('gender')?.touched 
           && studentForm.get('gender')?.invalid)">
 
           <small>Vui lòng chọn giới tính.</small>
@@ -110,7 +110,7 @@
 
         <div 
           class="error-msg" 
-          *ngIf="!!(studentForm.get('dateOfBirth')?.touched 
+          *ngIf="(studentForm.get('dateOfBirth')?.touched 
           && studentForm.get('dateOfBirth')?.invalid)">
 
           <small>Vui lòng chọn ngày sinh.</small>
@@ -141,7 +141,7 @@
 
       <div 
         class="error-msg" 
-        *ngIf="!!(studentForm.get('homeroomClassId')?.touched 
+        *ngIf="(studentForm.get('homeroomClassId')?.touched 
         && studentForm.get('homeroomClassId')?.invalid)">
 
         <small>Vui lòng chọn lớp sinh hoạt.</small>
@@ -162,14 +162,14 @@
 
       <div 
         class="error-msg" 
-        *ngIf="!!(studentForm.get('email')?.touched 
+        *ngIf="(studentForm.get('email')?.touched 
         && studentForm.get('email')?.invalid)">
 
-        <small *ngIf="!!studentForm.get('email')?.errors?.['required']">
+        <small *ngIf="studentForm.get('email')?.errors?.['required']">
           Email không được để trống.
         </small>
 
-        <small *ngIf="!!studentForm.get('email')?.errors?.['email']">
+        <small *ngIf="studentForm.get('email')?.errors?.['email']">
           Email không đúng định dạng quy định.
         </small>
       </div>

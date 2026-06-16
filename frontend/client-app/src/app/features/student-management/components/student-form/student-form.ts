@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormGroup } from '@angular/forms';
-import { HomeroomClassResponse } from '../../../../models/homeroomclass';
+import { ClassLookup } from '../../../../models/student';
 
 @Component({
   selector: 'app-student-form',
@@ -14,7 +14,7 @@ export class StudentFormComponent {
 
   @Input() studentForm!: FormGroup;
 
-  @Input() homeroomClasses: HomeroomClassResponse[] = [];
+  @Input() homeroomClasses: ClassLookup[] = [];
 
   @Input() title: string = '';
 

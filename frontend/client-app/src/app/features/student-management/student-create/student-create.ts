@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StudentService } from '../../../services/student'; 
-import { HomeroomClassResponse } from '../../../models/homeroomclass';
+import {  ClassLookup} from '../../../models/student';
 import { StudentFormComponent } from '../components/student-form/student-form';
 
 @Component({
@@ -15,7 +15,7 @@ import { StudentFormComponent } from '../components/student-form/student-form';
 })
 export class StudentCreateComponent implements OnInit {
   studentForm!: FormGroup;
-  homeroomClasses: HomeroomClassResponse[] = [];
+  homeroomClasses: ClassLookup[] = [];
 
   constructor(
     private fb: FormBuilder,
@@ -24,7 +24,7 @@ export class StudentCreateComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Khởi tạo form trống hoàn toàn kèm các điều kiện Validation giống hệt .NET
+    // Khởi tạo form trống hoàn toàn kèm các điều kiện Validation
     this.studentForm = this.fb.group({
       studentCode: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]], 
       lastName: ['', Validators.required],
