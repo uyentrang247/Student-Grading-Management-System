@@ -15,7 +15,7 @@ import { CourseClass } from '../../../models/enrollment';
 export class ClassListComponent implements OnInit {
   classes: CourseClass[] = [];
   semesters: any[] = [];
-  selectedSemesterId: number | typeof NaN = NaN;
+  selectedSemesterId: number = 0;
 
   constructor(
     private enrollmentService: EnrollmentService,
@@ -41,7 +41,7 @@ export class ClassListComponent implements OnInit {
   }
 
   loadClasses(): void {
-    const semesterParam = isNaN(this.selectedSemesterId as number) ? undefined : (this.selectedSemesterId as number);
+    const semesterParam = this.selectedSemesterId || undefined;
     
     this.enrollmentService.getClasses(semesterParam).subscribe({
       next: (data) => {

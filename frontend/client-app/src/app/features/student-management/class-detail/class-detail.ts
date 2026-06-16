@@ -22,20 +22,16 @@ export class ClassDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private router: Router,
     private enrollmentService: EnrollmentService,
     private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit(): void {
-    // Bóc tách ID lớp từ URL (Ví dụ: /lecturer/classes/4901)
-    this.route.paramMap.subscribe(params => {
-      const idParam = params.get('id');
-      if (idParam) {
-        this.classId = +idParam;
-        this.loadClassDetails();
-      }
-    });
+    const idParam = this.route.snapshot.paramMap.get('id'); // Lấy ID lớp học phần từ URL (route parameter)
+  if (idParam) {
+    this.classId = +idParam; // Chuyển đổi sang số nguyên
+    this.loadClassDetails(); 
+  }
   }
 
   /**
@@ -83,7 +79,7 @@ export class ClassDetailComponent implements OnInit {
   //Khi người dùng chọn file Excel từ máy tính
   
   onFileChange(event: any): void {
-    const file = event.target.files[0];
+    const file = event.target.files[0];// Lấy file được chọn(file don)
     if (file) {
       this.selectedFile = file;
     }
