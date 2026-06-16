@@ -73,13 +73,13 @@ export const routes: Routes = [
     path: 'lecturer/classes', 
     component: ClassListComponent,
     canActivate: [roleGuard],
-    data: { roles: ['Lecturer'] }
+    data: { roles: ['Lecturer','Admin'] }
   },
   { 
     path: 'lecturer/classes/:id', 
     component: ClassDetailComponent,
     canActivate: [roleGuard],
-    data: { roles: ['Lecturer'] }
+    data: { roles: ['Lecturer','Admin'] }
   },
   
   // --- XUẤT BẢNG ĐIỂM (BÁO CÁO) ---
