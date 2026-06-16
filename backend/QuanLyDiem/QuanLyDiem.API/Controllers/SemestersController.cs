@@ -2,12 +2,9 @@
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Data;
 using QuanLyDiem.API.Models;
-using Microsoft.AspNetCore.Authorization;
-
 
 namespace QuanLyDiem.API.Controllers
 {
-    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class SemestersController : ControllerBase

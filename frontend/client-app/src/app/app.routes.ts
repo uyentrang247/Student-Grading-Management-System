@@ -11,9 +11,9 @@ import { SubjectForm } from './features/subjects/subject-form/subject-form';
 import { GradeEntryComponent } from './features/grade-management/grade-entry/grade-entry';
 import { ForgotPasswordComponent } from './features/auth/forgot-password/forgot-password';
 import { CreateLecturerComponent } from './features/lecturer/create-lecturer/create-lecturer';
-import { LecturerListComponent } from './features/lecturer/lecturer-list/lecturer-list';
+import { LecturerListComponent } from './features/lecturer/lecturer-list/lecturer-list'; 
 import { roleGuard } from './guards/role.guard';
-import { EditLecturerComponent } from './features/lecturer/edit-lecturer/edit-lecturer';
+import { EditLecturerComponent } from './features/lecturer/edit-lecturer/edit-lecturer'; 
 import { VerifyOtpComponent } from './features/auth/verify-otp/verify-otp';
 import { ResetPasswordComponent } from './features/auth/reset-password/reset-password';
 import { ProfileComponent } from './features/profile/profile/profile';
@@ -21,8 +21,6 @@ import { FailStudentsListComponent } from './features/grade-management/fail-stud
 import { ClassListComponent } from './features/student-management/class-list/class-list';
 import { ClassDetailComponent } from './features/student-management/class-detail/class-detail';
 import { ExportGradeComponent } from './features/report/export-grade/export-grade';
-import { LecturerReport } from './features/lecturer/lecturer-report/lecturer-report';
-import { AdminStatistics } from './features/admin/admin-statistics/admin-statistics';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -82,56 +80,40 @@ export const routes: Routes = [
   },
 
   // --- NGHIỆP VỤ GIẢNG DẠY ---
-  {
-    path: 'lecturer/grades',
+  { 
+    path: 'lecturer/grades', 
     component: GradeEntryComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   },
-
+  
   // --- DANH SÁCH SINH VIÊN RỚT ---
-  {
-    path: 'lecturer/fail-students',
+  { 
+    path: 'lecturer/fail-students', 
     component: FailStudentsListComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   },
-
+  
   // --- XEM LỚP PHỤ TRÁCH ---
-  {
-    path: 'lecturer/classes',
+  { 
+    path: 'lecturer/classes', 
     component: ClassListComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   },
-  {
-    path: 'lecturer/classes/:id',
+  { 
+    path: 'lecturer/classes/:id', 
     component: ClassDetailComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
   },
-
+  
   // --- XUẤT BẢNG ĐIỂM (BÁO CÁO) ---
-  {
-    path: 'lecturer/export-grade',
+  { 
+    path: 'lecturer/export-grade', 
     component: ExportGradeComponent,
     canActivate: [roleGuard],
     data: { roles: ['Lecturer'] }
-  },
-
-  // --- BÁO CÁO GIẢNG VIÊN ---
-  {
-    path: 'lecturer/reports',
-    component: LecturerReport,
-    canActivate: [roleGuard],
-    data: { roles: ['Lecturer'] }
-  },
-
-  // --- BÁO CÁO ADMIN ---
-  {
-    path: 'admin/reports',
-    component: AdminStatistics,
-    canActivate: [roleGuard],
-    data: { roles: ['Admin'] }
   },
 ];

@@ -4,14 +4,13 @@ import { Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StudentService } from '../../../services/student'; 
 import { HomeroomClassResponse } from '../../../models/homeroomclass';
-import { StudentFormComponent } from '../components/student-form/student-form';
 
 @Component({
   selector: 'app-student-create',
   templateUrl: './student-create.html',
   styleUrls: ['./student-create.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, StudentFormComponent] 
+  imports: [CommonModule, ReactiveFormsModule, RouterModule] 
 })
 export class StudentCreateComponent implements OnInit {
   studentForm!: FormGroup;
@@ -49,26 +48,13 @@ export class StudentCreateComponent implements OnInit {
   // Xử lý khi nhấn nút Thêm Mới
   onSubmit(): void {
     if (this.studentForm.valid) {
-      // Ép kiểu dữ liệu trước khi gửi để tránh lỗi Validation 400 từ .NET
-      const formValues = { ...this.studentForm.value };
-      formValues.homeroomClassId = Number(formValues.homeroomClassId);
-
-      // Gọi API createStudent 
-      this.studentService.createStudent(formValues).subscribe({
-        next: (res) => {
-          // CẬP NHẬT: Hiện message từ Object JSON do .NET trả về
-          alert(res.message); 
-          this.router.navigate(['admin/students']); 
+      // 🌟 Gọi hàm createStudent từ Service để gửi DTO lên .NET
+      this.studentService.createStudent(this.studentForm.value).subscribe({
+        next: (responseMessage) => {
+          alert(responseMessage); // Hiện "Thêm sinh viên thành công!" trả về từ .NET
+          this.router.navigate(['/student']); // Thêm xong tự chuyển về trang danh sách
         },
-        error: (err) => {
-          console.error('Lỗi khi thêm mới sinh viên:', err);
-          // CẬP NHẬT: Hiển thị cảnh báo nếu bị trùng mã sinh viên hoặc lỗi do .NET báo về
-          if (err.error?.message) {
-            alert(err.error.message);
-          } else {
-            alert('Có lỗi hệ thống xảy ra khi thêm mới sinh viên!');
-          }
-        }
+        error: (err) => console.error('Lỗi khi thêm mới sinh viên:', err)
       });
     } else {
       // Kích hoạt hiển thị lỗi đỏ nếu user điền thiếu
@@ -77,6 +63,6 @@ export class StudentCreateComponent implements OnInit {
   }
 
   onCancel(): void {
-    this.router.navigate(['admin/students']);
+    this.router.navigate(['/student']);
   }
 }

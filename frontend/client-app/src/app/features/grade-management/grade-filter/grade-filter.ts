@@ -1,7 +1,6 @@
-import { Component, Output, EventEmitter, Input, ChangeDetectorRef } from '@angular/core';
+import { Component, Output, EventEmitter, Input, OnInit, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { StudentGrade } from '../../../models/student-grade';
 
 @Component({
   selector: 'app-grade-filter',
@@ -14,11 +13,12 @@ export class GradeFilterComponent {
   @Input() courseClasses: any[] = [];
   @Input() selectedClassId: number = 0;
   @Output() classChange = new EventEmitter<number>();
-  @Output() filterChange = new EventEmitter<{filtered: StudentGrade[], keyword: string, failOnly: boolean}>();
+  @Output() filterChange = new EventEmitter<{filtered: any[], keyword: string, showFailOnly: boolean}>();
+  @Output() reset = new EventEmitter<void>();
 
   searchKeyword: string = '';
   showFailOnly: boolean = false;
-  @Input() originalStudents: StudentGrade[] = [];
+  @Input() originalStudents: any[] = [];
 
   constructor(private cdr: ChangeDetectorRef) {}
 
@@ -27,7 +27,7 @@ export class GradeFilterComponent {
   }
 
   onFilter(): void {
-    let filtered: StudentGrade[] = [...this.originalStudents];
+    let filtered = [...this.originalStudents];
     
     const keyword = this.searchKeyword.trim().toLowerCase();
     if (keyword) {
@@ -49,8 +49,15 @@ export class GradeFilterComponent {
     this.filterChange.emit({
       filtered: filtered,
       keyword: this.searchKeyword,
-      failOnly: this.showFailOnly
+      showFailOnly: this.showFailOnly
     });
     this.cdr.detectChanges();
+  }
+
+  onReset(): void {
+    this.searchKeyword = '';
+    this.showFailOnly = false;
+    this.reset.emit();
+    this.onFilter();
   }
 }

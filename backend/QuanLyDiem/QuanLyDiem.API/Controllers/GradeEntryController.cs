@@ -1,9 +1,7 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using QuanLyDiem.API.Data;
 using QuanLyDiem.API.DTOs.GradeEntry;
-using System.Security.Claims;
 
 namespace QuanLyDiem.API.Controllers
 {
@@ -18,25 +16,15 @@ namespace QuanLyDiem.API.Controllers
             _context = context;
         }
 
-        [Authorize(Roles = "Lecturer")]
-        [HttpGet("my-course-classes")]
-        public async Task<ActionResult<IEnumerable<CourseClassForGradeDto>>> GetMyCourseClasses()
+        // GET: api/GradeEntry/lecturer/1/course-classes
+        [HttpGet("lecturer/{lecturerId}/course-classes")]
+        public async Task<ActionResult<IEnumerable<CourseClassForGradeDto>>> GetCourseClassesByLecturer(int lecturerId)
         {
-            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value ?? User.FindFirst("sub")?.Value;
-            if (userIdClaim == null) return Unauthorized();
-            
-            var userId = int.Parse(userIdClaim);
-            
-            // Kiểm tra user có role Lecturer không
-            var user = await _context.Users.FindAsync(userId);
-            if (user == null || user.Role != "Lecturer") 
-                return Forbid();
-            
             var courseClasses = await _context.CourseClasses
                 .Include(c => c.Subject)
                 .Include(c => c.Semester)
                 .Include(c => c.Lecturer)
-                .Where(c => c.LecturerId == userId)
+                .Where(c => c.LecturerId == lecturerId)
                 .Select(c => new CourseClassForGradeDto
                 {
                     CourseClassId = c.CourseClassId,
@@ -197,6 +185,7 @@ namespace QuanLyDiem.API.Controllers
                 })
                 .ToListAsync();
 
+            // Hàm quy đổi điểm chữ
             string GetGradeLetter(double? score)
             {
                 if (!score.HasValue) return "Chưa có";
@@ -209,16 +198,17 @@ namespace QuanLyDiem.API.Controllers
                 return "F";
             }
 
+            // Hàm quy đổi hệ 4
             double? GetGradeScale4(double? score)
             {
                 if (!score.HasValue) return null;
-                if (score >= 9.0) return 4.0;
-                if (score >= 8.0) return 3.5;
-                if (score >= 7.0) return 3.0;
-                if (score >= 6.0) return 2.5;
-                if (score >= 5.0) return 2.0;
-                if (score >= 4.0) return 1.5;
-                return 0.0;
+                if (score >= 9.0) return 4.0;      // A+
+                if (score >= 8.0) return 3.5;      // A
+                if (score >= 7.0) return 3.0;      // B+
+                if (score >= 6.0) return 2.5;      // B
+                if (score >= 5.0) return 2.0;      // C
+                if (score >= 4.0) return 1.5;      // D
+                return 0.0;                         // F
             }
 
             var response = new TranscriptResponseDto

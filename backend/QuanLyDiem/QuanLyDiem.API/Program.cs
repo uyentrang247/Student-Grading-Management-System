@@ -25,21 +25,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 // Đăng ký Services
 builder.Services.AddScoped<StudentService>();
-builder.Services.AddScoped<EnrollmentService>();
 builder.Services.AddSingleton<PasswordHasher>();
 builder.Services.AddScoped<JwtHelper>();
 builder.Services.AddScoped<AuthService>();
-builder.Services.AddScoped<LecturerService>();
-builder.Services.AddScoped<GoogleAuthService>(); 
-builder.Services.AddMemoryCache();             
-builder.Services.AddTransient<IEmailService, EmailService>();
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddScoped<GradeEntryService>();
-builder.Services.AddScoped<ReportService>();
-// Thêm vào phần đăng ký Services (sau builder.Services.AddScoped...)
-builder.Services.AddScoped<ILecturerClassReportService, LecturerClassReportService>();
-builder.Services.AddScoped<IAdminStatisticsService, AdminStatisticsService>();
+
 // Cấu hình JWT Authentication
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
     .AddJwtBearer(options =>

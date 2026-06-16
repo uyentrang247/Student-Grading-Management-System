@@ -15,8 +15,7 @@
       </tr>
     </thead>
     <tbody>
-      <!-- Dùng displayedStudents đã có sẵn dữ liệu -->
-      <tr *ngFor="let student of displayedStudents; let i = index">
+      <tr *ngFor="let student of getDisplayedStudents(); let i = index">
         <td class="text-center">{{ (currentPage - 1) * pageSize + i + 1 }}</td>
         <td class="fw-semibold">{{ student.studentCode }}</td>
         <td>{{ student.fullName }}</td>
@@ -31,12 +30,12 @@
         </td>
         <td class="text-center">
           <span class="grade-score">
-            {{ student.average !== null ? (student.average | number:'1.1-1') : '---' }}
+            {{ calculateAverage(student.processScore, student.finalScore) !== null ? (calculateAverage(student.processScore, student.finalScore) | number:'1.1-1') : '---' }}
           </span>
         </td>
-        <td class="text-center">{{ student.gradeLetter }}</td>
+        <td class="text-center">{{ getGradeLetter(calculateAverage(student.processScore, student.finalScore)) }}</td>
         <td class="text-center">
-          {{ student.gradeScale4 !== null ? (student.gradeScale4 | number:'1.1-1') : '---' }}
+          {{ getGradeScale4(calculateAverage(student.processScore, student.finalScore)) !== null ? (getGradeScale4(calculateAverage(student.processScore, student.finalScore)) | number:'1.1-1') : '---' }}
         </td>
         <td class="text-center">
           <button class="btn-edit-single" (click)="onEdit(student)" title="Sửa điểm">

@@ -1,12 +1,5 @@
 import { Component, Input, Output, EventEmitter, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { StudentGrade } from '../../../models/student-grade';
-
-interface StudentGradeExtended extends StudentGrade {
-  average: number | null;
-  gradeLetter: string;
-  gradeScale4: number | null;
-}
 
 @Component({
   selector: 'app-grade-list',
@@ -16,46 +9,31 @@ interface StudentGradeExtended extends StudentGrade {
   styleUrls: ['./grade-list.css']
 })
 export class GradeListComponent {
-  @Input() students: StudentGrade[] = [];
+  @Input() students: any[] = [];
   @Input() currentPage: number = 1;
   @Input() pageSize: number = 10;
-  @Output() edit = new EventEmitter<StudentGrade>();
-
-  // Mảng sinh viên đã tính toán sẵn
-  displayedStudents: StudentGradeExtended[] = [];
+  @Output() edit = new EventEmitter<any>();
 
   constructor(private cdr: ChangeDetectorRef) {}
 
-  ngOnChanges(): void {
-    this.updateDisplayedStudents();
+  getDisplayedStudents(): any[] {
+    const start = (this.currentPage - 1) * this.pageSize;
+    return this.students.slice(start, start + this.pageSize);
   }
 
-  private updateDisplayedStudents(): void {
-    const start = (this.currentPage - 1) * this.pageSize;
-    const pageStudents = this.students.slice(start, start + this.pageSize);
-    
-    this.displayedStudents = pageStudents.map(s => ({
-      ...s,
-      average: this.calculateAverage(s.processScore, s.finalScore),
-      gradeLetter: this.getGradeLetter(this.calculateAverage(s.processScore, s.finalScore)),
-      gradeScale4: this.getGradeScale4(this.calculateAverage(s.processScore, s.finalScore))
-    }));
-    
+  onEdit(student: any): void {
+    this.edit.emit(student);
     this.cdr.detectChanges();
   }
 
-  onEdit(student: StudentGradeExtended): void {
-    this.edit.emit(student);
-  }
-
-  private calculateAverage(process: number | null, final: number | null): number | null {
+  calculateAverage(process: number | null, final: number | null): number | null {
     if (process !== null && final !== null) {
       return Math.round((process * 0.4 + final * 0.6) * 10) / 10;
     }
     return null;
   }
 
-  private getGradeLetter(score: number | null): string {
+  getGradeLetter(score: number | null): string {
     if (score === null) return 'Chưa có';
     if (score >= 9.0) return 'A+';
     if (score >= 8.0) return 'A';
@@ -66,7 +44,7 @@ export class GradeListComponent {
     return 'F';
   }
 
-  private getGradeScale4(score: number | null): number | null {
+  getGradeScale4(score: number | null): number | null {
     if (score === null) return null;
     if (score >= 9.0) return 4.0;
     if (score >= 8.0) return 3.5;

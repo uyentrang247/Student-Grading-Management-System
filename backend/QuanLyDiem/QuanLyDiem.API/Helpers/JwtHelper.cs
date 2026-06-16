@@ -30,9 +30,7 @@ namespace QuanLyDiem.API.Helpers
                 // BỔ SUNG DÒNG NÀY ĐỂ ĐƯA FULLNAME VÀO TOKEN
                 new Claim("FullName", user.FullName ?? ""), 
                 
-                new Claim("role", user.Role ?? "User"),
-                new Claim("UserId", user.UserId.ToString()), 
-                new Claim(ClaimTypes.Role, user.Role ?? "User")
+                new Claim("role", user.Role ?? "User")
             };
 
             var token = new JwtSecurityToken(

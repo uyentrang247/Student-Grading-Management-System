@@ -11,16 +11,22 @@
     </select>
   </div>
 
-  <div class="col-md-6">
+  <div class="col-md-4">
     <label class="form-label fw-semibold">
       <i class="fas fa-search me-1"></i> Tìm kiếm sinh viên
     </label>
     <div class="input-group">
       <span class="input-group-text bg-white"><i class="fas fa-user-graduate text-muted"></i></span>
       <input type="text" class="form-control qnu-input" placeholder="MSSV hoặc Họ tên" [(ngModel)]="searchKeyword" (input)="onFilter()">
-      <button class="btn btn-outline-secondary" type="button" (click)="searchKeyword = ''; onFilter()" title="Xóa tìm kiếm">
+      <button class="btn btn-outline-secondary" type="button" (click)="searchKeyword = ''; onFilter()">
         <i class="fas fa-times"></i>
       </button>
     </div>
+  </div>
+
+  <div class="col-md-2 d-flex align-items-end">
+    <button class="btn btn-sm btn-outline-secondary w-100" (click)="onReset()">
+      <i class="fas fa-undo-alt me-1"></i> Reset
+    </button>
   </div>
 </div>
