@@ -3,15 +3,14 @@ import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angula
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { StudentService } from '../../../services/student'; 
-import { StudentResponse, ClassLookup} from '../../../models/student';
-import { StudentFormComponent } from '../components/student-form/student-form';
+import { ClassLookup } from '../../../models/student';
 
 @Component({
   selector: 'app-student-edit',
   templateUrl: './student-edit.html',
   styleUrls: ['./student-edit.css'],
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule, StudentFormComponent] 
+  imports: [CommonModule, ReactiveFormsModule, RouterModule] 
 })
 export class StudentEditComponent implements OnInit {
   studentForm!: FormGroup;
@@ -26,7 +25,6 @@ export class StudentEditComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    // Khởi tạo cấu trúc form kèm Validation
     this.studentForm = this.fb.group({
       studentCode: ['', [Validators.required, Validators.pattern(/^\d{10}$/)]], 
       lastName: ['', Validators.required],
@@ -39,7 +37,6 @@ export class StudentEditComponent implements OnInit {
 
     this.loadHomeroomClasses();
 
-    // Lấy ID ep sang number và load dữ liệu cũ
     this.studentId = Number(this.route.snapshot.paramMap.get('id'));
     if (this.studentId) {
       this.loadStudentDetail();
@@ -56,7 +53,6 @@ export class StudentEditComponent implements OnInit {
   loadStudentDetail(): void {
     this.studentService.getStudentById(this.studentId).subscribe({
       next: (student) => {
-        //Cắt bỏ phần giờ giấc dư thừa từ Server trả về để đổ vào form, vì input type="date" chỉ nhận yyyy-MM-dd
         const formattedDate = student.dateOfBirth ? student.dateOfBirth.split('T')[0] : '';
 
         this.studentForm.patchValue({
@@ -79,20 +75,16 @@ export class StudentEditComponent implements OnInit {
 
   onSubmit(): void {
     if (this.studentForm.valid) {
-      // Mẹo nhỏ: Ép kiểu homeroomClassId về số nguyên, vì form HTML đôi khi trả về string khiến API .NET chê dữ liệu không hợp lệ
       const formValues = { ...this.studentForm.value };
       formValues.homeroomClassId = Number(formValues.homeroomClassId);
       
-      // Xử lý gửi dữ liệu
       this.studentService.updateStudent(this.studentId, formValues).subscribe({
         next: (res) => {
-          // CẬP NHẬT: Nhận res.message từ Object JSON
           alert(res.message); 
           this.router.navigate(['admin/students']); 
         },
         error: (err) => {
           console.error('Lỗi khi cập nhật dữ liệu:', err);
-          // CẬP NHẬT: Bắt lỗi trùng mã sinh viên (400 Bad Request) từ .NET trả về
           if (err.error?.message) {
             alert(err.error.message);
           } else {
