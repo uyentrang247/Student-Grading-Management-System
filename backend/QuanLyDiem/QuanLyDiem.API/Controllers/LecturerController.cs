@@ -26,7 +26,7 @@ namespace QuanLyDiem.API.Controllers
             _lecturerClassReportService = lecturerClassReportService;
         }
 
-        [HttpPost("create")]
+[HttpPost("create")]
         public async Task<IActionResult> Create([FromBody] CreateLecturerDto model)
         {
             try
@@ -41,52 +41,49 @@ namespace QuanLyDiem.API.Controllers
         }
 
         [HttpGet("search")]
-        public async Task<IActionResult> Search(string name)
+        public async Task<IActionResult> Search([FromQuery] string name)
         {
-            var result = await _context.Users
-                .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
-                .ToListAsync();
-            return Ok(result);
+            try
+            {
+                var result = await _lecturerService.SearchLecturersAsync(name);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
-            var lecturers = await _context.Users
-                .Where(u => u.Role == "Lecturer")
-                .Include(u => u.Faculty)
-                .Select(u => new
-                {
-                    u.UserId,
-                    u.Username,
-                    u.FullName,
-                    u.Email,
-                    u.FacultyId,
-                    FacultyName = u.Faculty != null ? u.Faculty.FacultyName : ""
-                })
-                .ToListAsync();
-
-            return Ok(lecturers);
+            try
+            {
+                var lecturers = await _lecturerService.GetAllLecturersAsync();
+                return Ok(lecturers);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [HttpGet("{id}")]
         public async Task<IActionResult> GetById(int id)
         {
-            var lecturer = await _context.Users
-                .Where(u => u.UserId == id && u.Role == "Lecturer")
-                .Select(u => new
-                {
-                    u.UserId,
-                    u.Username,
-                    u.FullName,
-                    u.Email,
-                    u.FacultyId
-                })
-                .FirstOrDefaultAsync();
-
-            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
-
-            return Ok(lecturer);
+            try
+            {
+                var lecturer = await _lecturerService.GetLecturerByIdAsync(id);
+                return Ok(lecturer);
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize(Roles = "Admin")]
@@ -98,44 +95,38 @@ namespace QuanLyDiem.API.Controllers
                 return BadRequest(ModelState);
             }
 
-            var lecturer = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
-
-            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
-
-            var emailExists = await _context.Users
-                .AnyAsync(u => u.Email == dto.Email && u.UserId != id);
-
-            if (emailExists) return BadRequest(new { message = "Email đã được sử dụng bởi người khác." });
-
-            lecturer.FullName = dto.FullName;
-            lecturer.Email = dto.Email;
-            lecturer.FacultyId = dto.FacultyId ?? lecturer.FacultyId;
-
-            _context.Users.Update(lecturer);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Cập nhật thông tin giảng viên thành công." });
+            try
+            {
+                string resultMessage = await _lecturerService.UpdateLecturerAsync(id, dto);
+                return Ok(new { message = resultMessage });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         [Authorize(Roles = "Admin")]
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteLecturer(int id)
         {
-            var lecturer = await _context.Users
-                .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
-
-            if (lecturer == null) return NotFound("Không tìm thấy giảng viên.");
-
-            var isTeaching = await _context.Users
-                .AnyAsync(u => u.UserId == id && u.CourseClasses != null && u.CourseClasses.Any());
-
-            if (isTeaching) return BadRequest(new { message = "Không thể xóa giảng viên đang phụ trách lớp học phần." });
-
-            _context.Users.Remove(lecturer);
-            await _context.SaveChangesAsync();
-
-            return Ok(new { message = "Xóa tài khoản giảng viên thành công." });
+            try
+            {
+                string resultMessage = await _lecturerService.DeleteLecturerAsync(id);
+                return Ok(new { message = resultMessage });
+            }
+            catch (KeyNotFoundException ex)
+            {
+                return NotFound(new { message = ex.Message });
+            }
+            catch (InvalidOperationException ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { message = ex.Message });
+            }
         }
 
         // ==================== API CHO LECTURER REPORT COMPONENT ====================

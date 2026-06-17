@@ -17,6 +17,56 @@ namespace QuanLyDiem.API.Services
             _context = context;
         }
 
+        public async Task<IEnumerable<object>> GetAllLecturersAsync()
+        {
+            return await _context.Users
+                .Where(u => u.Role == "Lecturer")
+                .Include(u => u.Faculty)
+                .Select(u => new
+                {
+                    u.UserId,
+                    u.Username,
+                    u.FullName,
+                    u.Email,
+                    u.FacultyId,
+                    FacultyName = u.Faculty != null ? u.Faculty.FacultyName : ""
+                })
+                .ToListAsync();
+        }
+
+        public async Task<object> GetLecturerByIdAsync(int id)
+        {
+            var lecturer = await _context.Users
+                .Where(u => u.UserId == id && u.Role == "Lecturer")
+                .Select(u => new
+                {
+                    u.UserId,
+                    u.Username,
+                    u.FullName,
+                    u.Email,
+                    u.FacultyId
+                })
+                .FirstOrDefaultAsync();
+
+            if (lecturer == null) 
+                throw new KeyNotFoundException("Không tìm thấy giảng viên.");
+
+            return lecturer;
+        }
+public async Task<IEnumerable<object>> SearchLecturersAsync(string name)
+{
+    return await _context.Users
+        .Where(u => u.Role == "Lecturer" && u.FullName.Contains(name))
+        .Select(u => new
+        {
+            u.UserId,
+            u.Username,
+            u.FullName,
+            u.Email,
+            u.FacultyId
+        })
+        .ToListAsync();
+}
         public async Task<string> CreateLecturerAsync(CreateLecturerDto dto)
         {
             if (await _context.Users.AnyAsync(u => u.Email.ToLower() == dto.Email.ToLower()))
@@ -77,6 +127,26 @@ namespace QuanLyDiem.API.Services
             await _context.SaveChangesAsync();
 
             return "Cập nhật thông tin giảng viên thành công.";
+        }
+
+        public async Task<string> DeleteLecturerAsync(int id)
+        {
+            var lecturer = await _context.Users
+                .FirstOrDefaultAsync(u => u.UserId == id && u.Role == "Lecturer");
+
+            if (lecturer == null) 
+                throw new KeyNotFoundException("Không tìm thấy giảng viên.");
+
+            var isTeaching = await _context.Users
+                .AnyAsync(u => u.UserId == id && u.CourseClasses != null && u.CourseClasses.Any());
+
+            if (isTeaching) 
+                throw new InvalidOperationException("Không thể xóa giảng viên đang phụ trách lớp học phần.");
+
+            _context.Users.Remove(lecturer);
+            await _context.SaveChangesAsync();
+
+            return "Xóa tài khoản giảng viên thành công.";
         }
 
         private string GenerateRandomPassword(int length)
