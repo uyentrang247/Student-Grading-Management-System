@@ -22,9 +22,7 @@ export class VerifyOtpComponent implements OnInit {
   ) {}
 
   ngOnInit() {
-    this.route.queryParams.subscribe(params => {
-      this.email = params['email'] || '';
-    });
+    this.email = this.route.snapshot.queryParams['email'] || '';
   }
 
   nextStep() {

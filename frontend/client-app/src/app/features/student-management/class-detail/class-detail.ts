@@ -27,11 +27,11 @@ export class ClassDetailComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    const idParam = this.route.snapshot.paramMap.get('id'); // Lấy ID lớp học phần từ URL (route parameter)
-  if (idParam) {
-    this.classId = +idParam; // Chuyển đổi sang số nguyên
-    this.loadClassDetails(); 
-  }
+    const idParam = Number(this.route.snapshot.paramMap.get('id')); 
+    if (idParam) {
+      this.classId = idParam;
+      this.loadClassDetails();
+    }
   }
 
   /**
