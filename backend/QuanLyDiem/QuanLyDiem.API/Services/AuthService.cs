@@ -57,6 +57,7 @@ namespace QuanLyDiem.API.Services
             if (user == null) return false;
 
             var otp = new Random().Next(100000, 999999).ToString();
+            //luu vao cache voi thoi gian 5 phut
             _cache.Set($"OTP_{model.Email}", otp, TimeSpan.FromMinutes(5));
 
             try
