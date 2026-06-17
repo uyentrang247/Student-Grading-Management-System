@@ -51,10 +51,21 @@ namespace QuanLyDiem.API.Controllers
             return Ok(courseClasses);
         }
 
-        // GET: api/GradeEntry/class/1/students
         [HttpGet("class/{courseClassId}/students")]
         public async Task<ActionResult<IEnumerable<StudentGradeResponseDto>>> GetStudentsByClass(int courseClassId)
         {
+            var courseClass = await _context.CourseClasses
+                .Include(c => c.Subject)
+                .FirstOrDefaultAsync(c => c.CourseClassId == courseClassId);
+
+            if (courseClass == null)
+            {
+                return NotFound();
+            }
+
+            var processWeight = courseClass.Subject?.ProcessWeight ?? 0.4;
+            var finalWeight = courseClass.Subject?.FinalWeight ?? 0.6;
+
             var enrollments = await _context.Enrollments
                 .Include(e => e.Student)
                     .ThenInclude(s => s!.HomeroomClass)
@@ -71,7 +82,10 @@ namespace QuanLyDiem.API.Controllers
                     CourseClassId = e.CourseClassId,
                     ClassCode = e.CourseClass != null ? e.CourseClass.ClassCode : "",
                     ProcessScore = e.ProcessScore,
-                    FinalScore = e.FinalScore
+                    FinalScore = e.FinalScore,
+
+                    ProcessWeight = processWeight,
+                    FinalWeight = finalWeight
                 })
                 .ToListAsync();
 

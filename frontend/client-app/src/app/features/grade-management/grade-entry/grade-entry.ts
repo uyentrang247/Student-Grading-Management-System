@@ -38,7 +38,6 @@ export class GradeEntryComponent implements OnInit {
 
   constructor(
     private gradeEntryService: GradeEntryService,
-    private authService: AuthService,
     private cdr: ChangeDetectorRef
   ) {}
 

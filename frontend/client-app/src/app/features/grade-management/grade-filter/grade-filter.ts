@@ -39,8 +39,10 @@ export class GradeFilterComponent {
     
     if (this.showFailOnly) {
       filtered = filtered.filter(s => {
+        const pw = s.processWeight; 
+        const fw = s.finalWeight;
         const avg = s.processScore !== null && s.finalScore !== null
-          ? Math.round((s.processScore * 0.4 + s.finalScore * 0.6) * 10) / 10
+          ? Math.round((s.processScore * pw + s.finalScore * fw) * 10) / 10
           : null;
         return avg !== null && avg < 4.0;
       });
