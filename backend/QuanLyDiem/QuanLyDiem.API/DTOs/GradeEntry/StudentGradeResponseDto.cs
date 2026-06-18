@@ -11,5 +11,7 @@ namespace QuanLyDiem.API.DTOs.GradeEntry
 		public string ClassCode { get; set; } = string.Empty;
 		public double? ProcessScore { get; set; }
 		public double? FinalScore { get; set; }
-	}
+        public double ProcessWeight { get; set; } 
+        public double FinalWeight { get; set; }
+    }
 }
