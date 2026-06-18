@@ -24,15 +24,12 @@ export interface EnrollmentStudent {
   studentCode: string;
   lastName: string;  
   firstName: string; 
-  gender: string;             // Hiển thị trực tiếp lên cột "Giới tính"
-  dateOfBirth: string;        // Hiển thị trực tiếp lên cột "Ngày Sinh"
-  homeroomClassName: string;  // Hiển thị trực tiếp lên cột "Lớp Sinh Hoạt"
+  gender: string;             
+  dateOfBirth: string;        
+  homeroomClassName: string;  
 }
 
-/**
- * 3. Cấu trúc dữ liệu phẳng cho trang CHI TIẾT lớp (Màn hình số 2)
- * Nhận trọn vẹn thông tin tiêu đề lớp và mảng danh sách sinh viên chỉ qua 1 Request
- */
+
 export interface ClassDetailsResponse {
   courseClassId: number;
   className: string;   // Mã lớp học phần (Ví dụ: 4901)
@@ -41,7 +38,7 @@ export interface ClassDetailsResponse {
 }
 
 /**
- * 4. Cấu trúc kết quả trả về khi gọi các API Thêm thủ công / Xóa sinh viên
+ * Cấu trúc kết quả trả về khi gọi các API Thêm thủ công / Xóa sinh viên
  */
 export interface ServiceResult {
   isSuccess: boolean;
@@ -49,7 +46,7 @@ export interface ServiceResult {
 }
 
 /**
- * 5. Cấu trúc kết quả trả về khi gọi API Import file Excel bằng Cache
+ *  Cấu trúc kết quả trả về khi gọi API Import file Excel bằng Cache
  */
 export interface ExcelImportResult {
   isSuccess: boolean;

@@ -1,8 +1,10 @@
 import { Component } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { AuthService } from '../../../services/auth';
+import { ChangeDetectorRef } from '@angular/core';
+
 
 @Component({
   selector: 'app-forgot-password',
@@ -15,7 +17,7 @@ export class ForgotPasswordComponent {
   email: string = '';
   isLoading: boolean = false;
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router, private cdRef: ChangeDetectorRef) {}
 
   requestOtp() {
     if (!this.email) {
@@ -25,7 +27,7 @@ export class ForgotPasswordComponent {
 
     this.isLoading = true;
     
-    this.http.post('http://localhost:5059/api/auth/forgot-password', { email: this.email }).subscribe({
+    this.authService.forgotPassword(this.email).subscribe({
       next: (res: any) => {
         alert(res.message);
         this.router.navigate(['/forgot-password/verify-otp'], { queryParams: { email: this.email } });
@@ -33,6 +35,7 @@ export class ForgotPasswordComponent {
       error: (err) => {
         alert(err.error?.message || 'Có lỗi xảy ra.');
         this.isLoading = false;
+        this.cdRef.detectChanges();
       }
     });
   }

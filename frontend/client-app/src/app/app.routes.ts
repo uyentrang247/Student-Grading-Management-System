@@ -37,13 +37,16 @@ export const routes: Routes = [
   // --- QUẢN LÝ ĐÀO TẠO (Admin) ---
   { path: 'admin/lecturers/create', component: CreateLecturerComponent },
   { path: 'admin/lecturers', component: LecturerListComponent },
-  { path: 'admin/students', component: StudentListComponent },
+  { path: 'admin/students', component: StudentListComponent,canActivate: [roleGuard],
+    data: { roles: ['Admin'] } },
   { path: 'subjects', component: SubjectList },
   { path: 'course-classes', component: CourseClassList },
 
   // --- CHI TIẾT CÁC QUẢN LÝ ---
-  { path: 'student/create', component: StudentCreateComponent },
-  { path: 'student/edit/:id', component: StudentEditComponent },
+  { path: 'student/create', component: StudentCreateComponent,canActivate: [roleGuard],
+    data: { roles: ['Admin'] } },
+  { path: 'student/edit/:id', component: StudentEditComponent,canActivate: [roleGuard],
+    data: { roles: ['Admin'] } },
   { path: 'subjects/create', component: SubjectForm },
   { path: 'subjects/edit/:id', component: SubjectForm },
   { path: 'course-classes/create', component: CourseClassForm },
@@ -70,13 +73,13 @@ export const routes: Routes = [
     path: 'lecturer/classes', 
     component: ClassListComponent,
     canActivate: [roleGuard],
-    data: { roles: ['Lecturer'] }
+    data: { roles: ['Lecturer','Admin'] }
   },
   { 
     path: 'lecturer/classes/:id', 
     component: ClassDetailComponent,
     canActivate: [roleGuard],
-    data: { roles: ['Lecturer'] }
+    data: { roles: ['Lecturer','Admin'] }
   },
   
   // --- XUẤT BẢNG ĐIỂM (BÁO CÁO) ---

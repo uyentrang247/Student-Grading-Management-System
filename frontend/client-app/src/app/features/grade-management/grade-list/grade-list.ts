@@ -34,12 +34,18 @@ export class GradeListComponent {
     const start = (this.currentPage - 1) * this.pageSize;
     const pageStudents = this.students.slice(start, start + this.pageSize);
     
-    this.displayedStudents = pageStudents.map(s => ({
+    this.displayedStudents = pageStudents.map(s => {
+      const pw = s.processWeight;
+      const fw = s.finalWeight;
+      
+      const avg = this.calculateAverage(s.processScore, s.finalScore, pw, fw);
+      return{
       ...s,
-      average: this.calculateAverage(s.processScore, s.finalScore),
-      gradeLetter: this.getGradeLetter(this.calculateAverage(s.processScore, s.finalScore)),
-      gradeScale4: this.getGradeScale4(this.calculateAverage(s.processScore, s.finalScore))
-    }));
+      average: avg,
+      gradeLetter: this.getGradeLetter(avg),
+      gradeScale4: this.getGradeScale4(avg)
+    }
+  });
     
     this.cdr.detectChanges();
   }
@@ -48,9 +54,9 @@ export class GradeListComponent {
     this.edit.emit(student);
   }
 
-  private calculateAverage(process: number | null, final: number | null): number | null {
+  private calculateAverage(process: number | null, final: number | null, processWeight: number, finalWeight: number): number | null {
     if (process !== null && final !== null) {
-      return Math.round((process * 0.4 + final * 0.6) * 10) / 10;
+      return Math.round((process * processWeight + final * finalWeight) * 10) / 10;
     }
     return null;
   }

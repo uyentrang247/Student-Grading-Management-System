@@ -9,7 +9,8 @@
         (change)="onSearch()" 
         class="form-input class-dropdown">
         <option [ngValue]="undefined">-- Tất cả các lớp sinh hoạt --</option>
-        <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId">
+        //[ngValue] giữ đúng kiểu gốc của homeroomClassId (number) thay vì chuyển thành string như [value] 
+        <option *ngFor="let cls of homeroomClasses" [ngValue]="cls.homeroomClassId"> 
           {{ cls.className }}
         </option>
       </select>
